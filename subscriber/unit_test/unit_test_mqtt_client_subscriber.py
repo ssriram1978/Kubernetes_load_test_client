@@ -3,8 +3,6 @@ import time
 import sys
 import traceback
 import unittest
-import subprocess
-import threading
 
 
 def import_all_packages():
@@ -26,49 +24,29 @@ def import_all_packages():
 
 import_all_packages()
 
-from mqtt_client import MQTTClient
+from subscriber.mqtt_subscriber import MQTTClientSubscriber
 
 
 class TestMQTTClient(unittest.TestCase):
 
     def setUp(self):
         os.environ["mqtt_broker_key"] = "68.128.155.233"
-        os.environ["mqtt_broker_port_key"] = "1889"
-        os.environ["message_key"] = "{\
-  \"lastUpdated\": \"2018-11-19T18:21:03Z\",\
-  \"unitName\": \"VZW_LH_UNIT_01\",\
-  \"unitMacId\": \"864508030027459\",\
-  \"sensor\": {\
-    \"name\": \"cHe_AssetTracker\",\
-    \"characteristics\": [\
-      {\
-        \"characteristicsName\": \"temperature\",\
-        \"currentValue\": \"30.2999\",\
-        \"readLevel\": \"R\",\
-        \"parameterType\": \"Number\",\
-        \"measurementUnit\": \"Celcius\"\
-      }\
-    ]\
-  }\
-}"
-    os.environ["enqueue_topic_key"] = "temp2"
-    os.environ["messages_per_second_key"] = "10000"
-    os.environ["test_duration_in_sec_key"] = "60"
-    os.environ["log_level_key"] = "info"
+        os.environ["mqtt_broker_port_key"] = "30080"
+        os.environ["enqueue_topic_key"] = "ThingspaceSDK/12344444444444555/UNITOnBoard"
+        os.environ["average_latency_for_n_sec_key"] = "1"
+        os.environ["test_duration_in_sec_key"] = "10"
+        os.environ["log_level_key"] = "info"
 
     def test_run(self):
-        print("Validating **************** Validating MQTT Client *****************.")
-        worker = MQTTClient()
-        MQTTClient.continue_poll = True
+        print("Validating **************** Validating MQTT Client Subscriber *****************.")
+        worker = MQTTClientSubscriber()
         try:
             worker.perform_job()
         except KeyboardInterrupt:
-            print("Keyboard interrupt." + sys.exc_info()[0])
             print("Exception in user code:")
             print("-" * 60)
             traceback.print_exc(file=sys.stdout)
             print("-" * 60)
-            MQTTClient.continue_poll = False
 
     def tearDown(self):
         pass
