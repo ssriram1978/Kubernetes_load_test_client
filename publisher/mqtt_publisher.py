@@ -2,7 +2,7 @@
 import time
 import os
 import sys, traceback
-from datetime import datetime, timedelta
+from datetime import datetime
 
 import paho.mqtt.client as mqtt
 import logging
@@ -209,13 +209,13 @@ class MQTTClientPublisher:
             self.json_parsed_data['lastUpdated'] = datetime.now().isoformat(timespec='microseconds')
             io = StringIO()
             json.dump(self.json_parsed_data, io)
-
+            """
             self.logger.debug("enqueuing MQTT message {} to topic at {}:{}."
                           .format(io.getvalue(),
                                   self.enqueue_topic,
                                   self.mqtt_broker,
                                   self.mqtt_broker_port))
-
+            """
             self.mqtt_client_instance.publish(self.enqueue_topic,
                                               io.getvalue())
 

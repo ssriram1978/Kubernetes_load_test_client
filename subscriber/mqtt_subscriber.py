@@ -2,12 +2,14 @@
 import time
 import os
 import sys, traceback
-from datetime import datetime, timedelta
+from datetime import datetime
 import dateutil.parser
-
+import threading
 import paho.mqtt.client as mqtt
 import logging
 import json
+from collections import deque
+
 
 def import_all_packages():
     realpath = os.path.realpath(__file__)
@@ -33,6 +35,7 @@ class MQTTClientSubscriber:
     """
     Class used to subscribe to a MQTT topic.
     """
+    message_queue = deque()
 
     def __init__(self):
         """
@@ -48,6 +51,7 @@ class MQTTClientSubscriber:
         self.mqtt_client_instance = None
         self.load_environment_variables()
         self.create_logger()
+        self.create_latency_compute_thread()
 
     def load_environment_variables(self):
         """
@@ -151,16 +155,39 @@ class MQTTClientSubscriber:
         :param msg:
         :return:
         """
-        self.parse_message_and_compute_latency(msg.payload)
+        msgq_message = (datetime.now().isoformat(timespec='microseconds'),
+                                                   msg.payload)
+        MQTTClientSubscriber.message_queue.append(msgq_message)
 
-    def parse_message_and_compute_latency(self, message):
+    def create_latency_compute_thread(self):
+        self.latency_compute_thread = threading.Thread(name="{}{}".format("latency_compute_thread", 1),
+                                                        target=MQTTClientSubscriber.run_latency_compute_thread)
+        self.latency_compute_thread.do_run = True
+        self.latency_compute_thread.start()
+
+    @staticmethod
+    def run_latency_compute_thread():
+        logging.error("Starting {}".format(threading.current_thread().getName()))
+        t = threading.currentThread()
+        while getattr(t, "do_run", True):
+            t = threading.currentThread()
+            try:
+                if len(MQTTClientSubscriber.message_queue):
+                    dequeued_message = MQTTClientSubscriber.message_queue.popleft()
+                    msg_rcvd_timestamp, msg = dequeued_message[0], dequeued_message[1]
+                    MQTTClientSubscriber.parse_message_and_compute_latency(msg, msg_rcvd_timestamp)
+            except:
+                logging.error("caught an exception.")
+
+    @staticmethod
+    def parse_message_and_compute_latency(message, msg_rcvd_timestamp):
         json_parsed_data = json.loads(message)
-        time_difference = datetime.now() - dateutil.parser.parse(json_parsed_data['lastUpdated'])
+        time_difference = dateutil.parser.parse(msg_rcvd_timestamp) - dateutil.parser.parse(json_parsed_data['lastUpdated'])
         if time_difference.seconds:
-            self.logger.info("Latency in seconds = {}.{}".format(time_difference.seconds,
+            logging.error("Latency in seconds = {}.{}".format(time_difference.seconds,
                                                       time_difference.microseconds))
         elif time_difference.microseconds:
-            self.logger.info("Latency in milliseconds = {}".format(time_difference.microseconds / 10**3))
+            logging.error("Latency in milliseconds = {}".format(time_difference.microseconds / 10**3))
 
     def perform_job(self):
         """
