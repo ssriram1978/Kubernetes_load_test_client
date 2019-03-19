@@ -49,6 +49,7 @@ class MQTTClientSubscriber:
         self.test_duration_in_sec = 0
         self.log_level = None
         self.mqtt_client_instance = None
+        self.max_consumer_threads = 1
         self.load_environment_variables()
         self.create_logger()
         self.create_latency_compute_thread()
@@ -76,19 +77,23 @@ class MQTTClientSubscriber:
                                                       default='0'))
             self.log_level = os.getenv("log_level_key",
                                        default="info")
+            self.max_consumer_threads = int(os.getenv("max_consumer_threads_key",
+                                                      default='1'))
 
         logging.error(("mqtt_broker={},\n"
                           "mqtt_broker_port={},\n"
                           "dequeue_topic={},\n"
                           "average_latency_for_n_sec={},\n"
                           "test_duration_in_sec={},\n"
-                          "self.log_level={}.\n"
+                          "log_level={},\n"
+                           "max_consumer_threads={}."
                           .format(self.mqtt_broker,
                                   self.mqtt_broker_port,
                                   self.dequeue_topic,
                                   self.average_latency_for_n_sec,
                                   self.test_duration_in_sec,
-                                  self.log_level)))
+                                  self.log_level,
+                                  self.max_consumer_threads)))
 
     def create_logger(self):
         """
@@ -160,10 +165,13 @@ class MQTTClientSubscriber:
         MQTTClientSubscriber.message_queue.append(msgq_message)
 
     def create_latency_compute_thread(self):
-        self.latency_compute_thread = threading.Thread(name="{}{}".format("latency_compute_thread", 1),
+        self.latency_compute_thread = [0] * self.max_consumer_threads
+        for index in range(self.max_consumer_threads):
+            self.latency_compute_thread[index] = threading.Thread(name="{}{}".format("latency_compute_thread", index),
                                                         target=MQTTClientSubscriber.run_latency_compute_thread)
-        self.latency_compute_thread.do_run = True
-        self.latency_compute_thread.start()
+            self.latency_compute_thread[index].do_run = True
+            self.latency_compute_thread[index].name = "{}_{}".format("latency_compute_thread", index)
+            self.latency_compute_thread[index].start()
 
     @staticmethod
     def run_latency_compute_thread():
@@ -178,16 +186,20 @@ class MQTTClientSubscriber:
                     MQTTClientSubscriber.parse_message_and_compute_latency(msg, msg_rcvd_timestamp)
             except:
                 logging.error("caught an exception.")
+        logging.error("Consumer {}: Exiting"
+                                      .format(threading.current_thread().getName()))
 
     @staticmethod
     def parse_message_and_compute_latency(message, msg_rcvd_timestamp):
         json_parsed_data = json.loads(message)
         time_difference = dateutil.parser.parse(msg_rcvd_timestamp) - dateutil.parser.parse(json_parsed_data['lastUpdated'])
         if time_difference.seconds:
-            logging.error("Latency in seconds = {}.{}".format(time_difference.seconds,
+            logging.error("{}:Latency in seconds = {}.{}".format(threading.current_thread().getName(),
+                                                                 time_difference.seconds,
                                                       time_difference.microseconds))
         elif time_difference.microseconds:
-            logging.error("Latency in milliseconds = {}".format(time_difference.microseconds / 10**3))
+            logging.error("{}:Latency in milliseconds = {}".format(threading.current_thread().getName(),
+                                                                   time_difference.microseconds / 10**3))
 
     def perform_job(self):
         """
