@@ -6,6 +6,11 @@ from datetime import datetime
 
 import paho.mqtt.client as mqtt
 import logging
+
+logging.basicConfig(format='%(levelname)s:%(asctime)s:%(message)s',
+                    level=logging.INFO,
+                    datefmt='%m/%d/%Y %I:%M:%S %p')
+
 import json
 from io import StringIO
 
@@ -29,6 +34,7 @@ def import_all_packages():
 import_all_packages()
 
 
+
 class MQTTClientPublisher:
     """
     This class publishes MQTT messages to a MQTT broker.
@@ -48,7 +54,7 @@ class MQTTClientPublisher:
         self.mqtt_client_instance = None
         self.json_parsed_data = None
         self.load_environment_variables()
-        self.create_logger()
+        self.set_log_level()
         self.parse_message_into_json()
 
     def load_environment_variables(self):
@@ -78,7 +84,7 @@ class MQTTClientPublisher:
             self.log_level = os.getenv("log_level_key",
                                        default="info")
 
-        logging.error(("mqtt_broker={},\n"
+        logging.info(("mqtt_broker={},\n"
                           "mqtt_broker_port={},\n"
                           "message={},\n"
                           "enqueue_topic={},\n"
@@ -93,38 +99,12 @@ class MQTTClientPublisher:
                                   self.test_duration_in_sec,
                                   self.log_level)))
 
-    def create_logger(self):
+    def set_log_level(self):
         """
         Create Logger.
         :return:
         """
-        # create logger
-        self.logger = logging.getLogger(__name__)
-
-        # create console handler and set level to debug
-        self.ch = logging.StreamHandler()
-
-        # create formatter
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-
-        # add formatter to ch
-        self.ch.setFormatter(formatter)
-
-        # add ch to logger
-        self.logger.addHandler(self.ch)
-
-        if self.log_level.find('info'):
-            self.logger.setLevel(logging.INFO)
-            self.ch.setLevel(logging.INFO)
-        elif self.log_level.find('debug'):
-            self.logger.setLevel(logging.DEBUG)
-            self.ch.setLevel(logging.DEBUG)
-        elif self.log_level.find('warn'):
-            self.logger.setLevel(logging.WARNING)
-            self.ch.setLevel(logging.WARNING)
-        elif self.log_level.find('error'):
-            self.logger.setLevel(logging.ERROR)
-            self.ch.setLevel(logging.ERROR)
+        pass
 
     def connect(self):
         """
@@ -154,8 +134,8 @@ class MQTTClientPublisher:
         :return:
         """
         self.json_parsed_data = json.loads(self.message)
-        self.logger.info("JSON parsed message = {}".format(self.json_parsed_data))
-        self.logger.info("timestamp = {}".format(self.json_parsed_data['lastUpdated']))
+        logging.debug("JSON parsed message = {}".format(self.json_parsed_data))
+        logging.debug("timestamp = {}".format(self.json_parsed_data['lastUpdated']))
 
     def perform_job(self):
         """
@@ -185,18 +165,18 @@ class MQTTClientPublisher:
             execution_time = current_time - previous_time
             total_execution_time = current_time - first_called
             current_total_time = total_execution_time.seconds
-            self.logger.info("current execution_time_micro sec={},"
+            logging.info("current execution_time_micro sec={},"
                              "current execution time in sec={},"
                              "current_total_time={}"
                              .format(execution_time.microseconds,
                                      execution_time.seconds,
                                      current_total_time))
             if execution_time.seconds > 1:
-                self.logger.info("Not sleeping now.")
+                logging.info("Not sleeping now.")
             else:
                 sleep_time = 1 - execution_time.microseconds * (10 ** (-6))
                 if sleep_time > 0:
-                    self.logger.info("Sleeping for {} milliseconds.".format(sleep_time))
+                    logging.info("Sleeping for {} milliseconds.".format(sleep_time))
                     time.sleep(1 - execution_time.microseconds * (10 ** (-6)))
             previous_time = current_time
 
@@ -209,13 +189,11 @@ class MQTTClientPublisher:
             self.json_parsed_data['lastUpdated'] = datetime.now().isoformat(timespec='microseconds')
             io = StringIO()
             json.dump(self.json_parsed_data, io)
-            """
-            self.logger.debug("enqueuing MQTT message {} to topic at {}:{}."
+            logging.debug("enqueuing MQTT message {} to topic at {}:{}."
                           .format(io.getvalue(),
                                   self.enqueue_topic,
                                   self.mqtt_broker,
                                   self.mqtt_broker_port))
-            """
             self.mqtt_client_instance.publish(self.enqueue_topic,
                                               io.getvalue())
 
@@ -228,9 +206,9 @@ if __name__ == '__main__':
     try:
         worker.perform_job()
     except KeyboardInterrupt:
-        print("Keyboard interrupt." + sys.exc_info()[0])
-        print("Exception in user code:")
-        print("-" * 60)
+        logging.error("Keyboard interrupt." + sys.exc_info()[0])
+        logging.error("Exception in user code:")
+        logging.error("-" * 60)
         traceback.print_exc(file=sys.stdout)
-        print("-" * 60)
+        logging.error("-" * 60)
 

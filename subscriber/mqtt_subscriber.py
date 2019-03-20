@@ -7,6 +7,10 @@ import dateutil.parser
 import threading
 import paho.mqtt.client as mqtt
 import logging
+logging.basicConfig(format='%(levelname)s:%(asctime)s:%(message)s',
+                    level=logging.INFO,
+                    datefmt='%m/%d/%Y %I:%M:%S %p')
+
 import json
 from collections import deque
 
@@ -80,7 +84,7 @@ class MQTTClientSubscriber:
             self.max_consumer_threads = int(os.getenv("max_consumer_threads_key",
                                                       default='1'))
 
-        logging.error(("mqtt_broker={},\n"
+        logging.info(("mqtt_broker={},\n"
                           "mqtt_broker_port={},\n"
                           "dequeue_topic={},\n"
                           "average_latency_for_n_sec={},\n"
@@ -100,33 +104,7 @@ class MQTTClientSubscriber:
         Create Logger.
         :return:
         """
-        # create logger
-        self.logger = logging.getLogger(__name__)
-
-        # create console handler and set level to debug
-        self.ch = logging.StreamHandler()
-
-        # create formatter
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-
-        # add formatter to ch
-        self.ch.setFormatter(formatter)
-
-        # add ch to logger
-        self.logger.addHandler(self.ch)
-
-        if self.log_level.find('info'):
-            self.logger.setLevel(logging.INFO)
-            self.ch.setLevel(logging.INFO)
-        elif self.log_level.find('debug'):
-            self.logger.setLevel(logging.DEBUG)
-            self.ch.setLevel(logging.DEBUG)
-        elif self.log_level.find('warn'):
-            self.logger.setLevel(logging.WARNING)
-            self.ch.setLevel(logging.WARNING)
-        elif self.log_level.find('error'):
-            self.logger.setLevel(logging.ERROR)
-            self.ch.setLevel(logging.ERROR)
+        pass
 
     def connect(self):
         """
@@ -148,7 +126,7 @@ class MQTTClientSubscriber:
         :param rc:
         :return:
         """
-        logging.error("Connected with result code " + str(rc))
+        logging.info("Connected with result code " + str(rc))
         # Subscribing in on_connect() means that if we lose the connection and
         # reconnect then subscriptions will be renewed.
         client.subscribe(self.dequeue_topic)
@@ -160,9 +138,12 @@ class MQTTClientSubscriber:
         :param msg:
         :return:
         """
+        start_time = datetime.now()
         msgq_message = (datetime.now().isoformat(timespec='microseconds'),
                                                    msg.payload)
         MQTTClientSubscriber.message_queue.append(msgq_message)
+        time_elapsed = datetime.now() - start_time
+        logging.debug('time elapsed to process this message. {} microseconds.'.format(time_elapsed.microseconds))
 
     def create_latency_compute_thread(self):
         self.latency_compute_thread = [0] * self.max_consumer_threads
@@ -175,7 +156,7 @@ class MQTTClientSubscriber:
 
     @staticmethod
     def run_latency_compute_thread():
-        logging.error("Starting {}".format(threading.current_thread().getName()))
+        logging.info("Starting {}".format(threading.current_thread().getName()))
         t = threading.currentThread()
         current_index = 0
         while getattr(t, "do_run", True):
@@ -186,9 +167,9 @@ class MQTTClientSubscriber:
                 MQTTClientSubscriber.parse_message_and_compute_latency(msg, msg_rcvd_timestamp)
                 current_index+=1
             except:
-                logging.error("caught an exception.")
+                logging.info("No more messages.")
                 time.sleep(0.1)
-        logging.error("Consumer {}: Exiting"
+        logging.info("Consumer {}: Exiting"
                                       .format(threading.current_thread().getName()))
 
     @staticmethod
@@ -196,11 +177,11 @@ class MQTTClientSubscriber:
         json_parsed_data = json.loads(message)
         time_difference = dateutil.parser.parse(msg_rcvd_timestamp) - dateutil.parser.parse(json_parsed_data['lastUpdated'])
         if time_difference.seconds:
-            logging.error("{}:Latency in seconds = {}.{}".format(threading.current_thread().getName(),
+            logging.info("{}:Latency in seconds = {}.{}".format(threading.current_thread().getName(),
                                                                  time_difference.seconds,
                                                       time_difference.microseconds))
         elif time_difference.microseconds:
-            logging.error("{}:Latency in milliseconds = {}".format(threading.current_thread().getName(),
+            logging.info("{}:Latency in milliseconds = {}".format(threading.current_thread().getName(),
                                                                    time_difference.microseconds / 10**3))
 
     def perform_job(self):
@@ -220,9 +201,9 @@ if __name__ == '__main__':
     try:
         worker.perform_job()
     except KeyboardInterrupt:
-        print("Keyboard interrupt." + sys.exc_info()[0])
-        print("Exception in user code:")
-        print("-" * 60)
+        logging.error("Keyboard interrupt." + sys.exc_info()[0])
+        logging.error("Exception in user code:")
+        logging.error("-" * 60)
         traceback.print_exc(file=sys.stdout)
-        print("-" * 60)
+        logging.error("-" * 60)
         MQTTClientSubscriber.continue_poll = False
