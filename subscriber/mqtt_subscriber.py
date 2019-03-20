@@ -35,7 +35,7 @@ class MQTTClientSubscriber:
     """
     Class used to subscribe to a MQTT topic.
     """
-    message_queue = deque()
+    message_queue = []
 
     def __init__(self):
         """
@@ -177,15 +177,17 @@ class MQTTClientSubscriber:
     def run_latency_compute_thread():
         logging.error("Starting {}".format(threading.current_thread().getName()))
         t = threading.currentThread()
+        current_index = 0
         while getattr(t, "do_run", True):
             t = threading.currentThread()
             try:
-                if len(MQTTClientSubscriber.message_queue):
-                    dequeued_message = MQTTClientSubscriber.message_queue.popleft()
-                    msg_rcvd_timestamp, msg = dequeued_message[0], dequeued_message[1]
-                    MQTTClientSubscriber.parse_message_and_compute_latency(msg, msg_rcvd_timestamp)
+                dequeued_message = MQTTClientSubscriber.message_queue[current_index]
+                msg_rcvd_timestamp, msg = dequeued_message[0], dequeued_message[1]
+                MQTTClientSubscriber.parse_message_and_compute_latency(msg, msg_rcvd_timestamp)
+                current_index+=1
             except:
                 logging.error("caught an exception.")
+                time.sleep(0.1)
         logging.error("Consumer {}: Exiting"
                                       .format(threading.current_thread().getName()))
 

@@ -36,7 +36,7 @@ class TestMQTTClient(unittest.TestCase):
         os.environ["average_latency_for_n_sec_key"] = "1"
         os.environ["test_duration_in_sec_key"] = "10"
         os.environ["log_level_key"] = "info"
-        os.environ["max_consumer_threads_key"] = "10"
+        os.environ["max_consumer_threads_key"] = "1"
 
     def test_run(self):
         print("Validating **************** Validating MQTT Client Subscriber *****************.")
