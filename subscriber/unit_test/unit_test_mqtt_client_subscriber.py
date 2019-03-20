@@ -30,8 +30,8 @@ from subscriber.mqtt_subscriber import MQTTClientSubscriber
 class TestMQTTClient(unittest.TestCase):
 
     def setUp(self):
-        os.environ["mqtt_broker_key"] = "68.128.155.233"
-        os.environ["mqtt_broker_port_key"] = "30080"
+        os.environ["mqtt_broker_key"] = "172.20.0.2"
+        os.environ["mqtt_broker_port_key"] = "1883"
         os.environ["enqueue_topic_key"] = "ThingspaceSDK/12344444444444555/UNITOnBoard"
         os.environ["average_latency_for_n_sec_key"] = "1"
         os.environ["test_duration_in_sec_key"] = "10"

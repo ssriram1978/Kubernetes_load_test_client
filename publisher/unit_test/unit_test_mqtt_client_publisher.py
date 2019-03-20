@@ -30,8 +30,8 @@ from publisher.mqtt_publisher import MQTTClientPublisher
 class TestMQTTClient(unittest.TestCase):
 
     def setUp(self):
-        os.environ["mqtt_broker_key"] = "68.128.155.233"
-        os.environ["mqtt_broker_port_key"] = "30080"
+        os.environ["mqtt_broker_key"] = "172.20.0.2"
+        os.environ["mqtt_broker_port_key"] = "1883"
         os.environ["message_key"] = "{\
   \"lastUpdated\": \"2018-11-19T18:21:03Z\",\
   \"unitName\": \"VZW_LH_UNIT_01\",\
@@ -50,8 +50,8 @@ class TestMQTTClient(unittest.TestCase):
   }\
 }"
     os.environ["enqueue_topic_key"] = "ThingspaceSDK/12344444444444555/UNITOnBoard"
-    os.environ["messages_per_second_key"] = "500"
-    os.environ["test_duration_in_sec_key"] = "10000"
+    os.environ["messages_per_second_key"] = "1000"
+    os.environ["test_duration_in_sec_key"] = "100"
     os.environ["log_level_key"] = "info"
 
     def test_run(self):
