@@ -1,0 +1,80 @@
+version: '3.2'
+services:
+  rabbitmq:
+    image: rabbitmq:3.8-rc-management
+    environment:
+      RABBITMQ_DEFAULT_USER: "guest"
+      RABBITMQ_DEFAULT_PASS: "guest"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    volumes:
+      - "./rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins"
+      - "./rabbitmq/rabbitmq-env.conf:/etc/rabbitmq/rabbitmq-env.conf"
+      - "./rabbitmq/rabbitmq-modified.conf:/etc/rabbitmq/rabbitmq-modified.conf"
+      - "./rabbitmq/rabbitmq-definitions.json:/etc/rabbitmq/rabbitmq-definitions.json"
+  mqtt_publisher:
+    image: ssriram1978/mqtt_publisher:latest
+    depends_on:
+      - redis
+      - rabbitmq
+    environment:
+      mqtt_broker_key: "rabbitmq"
+      mqtt_broker_port_key: "1883"
+      message_key: "{\
+                     \"lastUpdated\": \"2018-11-19T18:21:03Z\",\
+                     \"unitName\": \"VZW_LH_UNIT_01\",\
+                     \"unitMacId\": \"864508030027459\",\
+                     \"sensor\": {\
+                       \"name\": \"cHe_AssetTracker\",\
+                       \"characteristics\": [\
+                         {\
+                           \"characteristicsName\": \"temperature\",\
+                           \"currentValue\": \"30.2999\",\
+                           \"readLevel\": \"R\",\
+                           \"parameterType\": \"Number\",\
+                           \"measurementUnit\": \"Celcius\"\
+                         }\
+                       ]\
+                     }\
+                   }"
+      enqueue_topic_key: "topic1"
+      messages_per_second_key: "100"
+      test_duration_in_sec_key: "100"
+      log_level_key: "info"
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+  mqtt_subscriber:
+    image: ssriram1978/mqtt_subscriber:latest
+    depends_on:
+      - redis
+      - rabbitmq
+    environment:
+      mqtt_broker_key: "rabbitmq"
+      mqtt_broker_port_key: "1883"
+      enqueue_topic_key: "topic1"
+      average_latency_for_n_sec_key: "1"
+      test_duration_in_sec_key: "100"
+      log_level_key: "info"
+      max_consumer_threads_key: "1"
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    environment:
+      - REDIS_HOSTS=redis:redis:6379
+    ports:
+      - 9010:8081
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+
