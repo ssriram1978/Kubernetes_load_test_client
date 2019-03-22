@@ -1,2 +1,4 @@
 paho-mqtt
 datetime
+redis
+confluent_kafka

@@ -5,4 +5,4 @@ WORKDIR /publisher
 COPY requirements.txt ./
 COPY . /publisher
 RUN pip install --no-cache-dir -r requirements.txt
-CMD python3 /publisher/mqtt_publisher.py
+CMD python3 /publisher/publisher.py

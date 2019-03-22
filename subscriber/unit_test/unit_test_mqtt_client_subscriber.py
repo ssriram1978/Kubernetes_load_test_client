@@ -24,7 +24,7 @@ def import_all_packages():
 
 import_all_packages()
 
-from subscriber.mqtt_subscriber import MQTTClientSubscriber
+from subscriber.mqtt_subscriber import Subscriber
 
 
 class TestMQTTClient(unittest.TestCase):
@@ -40,7 +40,7 @@ class TestMQTTClient(unittest.TestCase):
 
     def test_run(self):
         print("Validating **************** Validating MQTT Client Subscriber *****************.")
-        worker = MQTTClientSubscriber()
+        worker = Subscriber()
         try:
             worker.perform_job()
         except KeyboardInterrupt:

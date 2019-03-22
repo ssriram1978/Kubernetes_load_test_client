@@ -24,14 +24,14 @@ def import_all_packages():
 
 import_all_packages()
 
-from publisher.mqtt_publisher import MQTTClientPublisher
+from publisher.publisher import Publisher
 
 
-class TestMQTTClient(unittest.TestCase):
+class TestClient(unittest.TestCase):
 
     def setUp(self):
-        os.environ["mqtt_broker_key"] = "172.20.0.2"
-        os.environ["mqtt_broker_port_key"] = "1883"
+        os.environ["broker_key"] = "172.20.0.2"
+        os.environ["broker_port_key"] = "1883"
         os.environ["message_key"] = "{\
   \"lastUpdated\": \"2018-11-19T18:21:03Z\",\
   \"unitName\": \"VZW_LH_UNIT_01\",\
@@ -54,10 +54,13 @@ class TestMQTTClient(unittest.TestCase):
     os.environ["messages_per_second_key"] = "100"
     os.environ["test_duration_in_sec_key"] = "100"
     os.environ["log_level_key"] = "info"
+    os.environ["redis_server_hostname_key"] = "redis"
+    os.environ["redis_server_port_key"] = "6379"
+    os.environ["broker_type_key"] = "mqtt"
 
     def test_run(self):
-        print("Validating **************** Validating MQTT Client Publisher *****************.")
-        worker = MQTTClientPublisher()
+        print("Validating **************** Validating Client Publisher *****************.")
+        worker = Publisher()
         try:
             worker.perform_job()
         except KeyboardInterrupt:
