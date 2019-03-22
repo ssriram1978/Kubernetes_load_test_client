@@ -49,6 +49,7 @@ class TestMQTTClient(unittest.TestCase):
     ]\
   }\
 }"
+
     os.environ["enqueue_topic_key"] = "ThingspaceSDK/12344444444444555/UNITOnBoard"
     os.environ["messages_per_second_key"] = "100"
     os.environ["test_duration_in_sec_key"] = "100"
