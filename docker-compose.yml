@@ -8,6 +8,7 @@ services:
     ports:
       - "15672:15672"
       - "5672:5672"
+      - "1889:1883"
     volumes:
       - "./rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins"
       - "./rabbitmq/rabbitmq-env.conf:/etc/rabbitmq/rabbitmq-env.conf"
@@ -20,7 +21,7 @@ services:
       - rabbitmq
     environment:
       broker_hostname_key: "rabbitmq"
-      broker_port_key: "1883"
+      broker_port_key: "1889"
       topic_key: "topic1"
       message_key: "{\
                      \"lastUpdated\": \"2018-11-19T18:21:03Z\",\
@@ -58,7 +59,7 @@ services:
       - rabbitmq
     environment:
       broker_hostname_key: "rabbitmq"
-      broker_port_key: "1883"
+      broker_port_key: "1889"
       topic_key: "topic1"
       average_latency_for_n_sec_key: "1"
       test_duration_in_sec_key: "100"

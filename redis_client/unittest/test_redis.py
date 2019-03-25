@@ -33,8 +33,8 @@ from redis_client.redis_interface import RedisInterface
 class TestRedisInterface(unittest.TestCase):
     def setUp(self):
         os.environ["redis_log_keyname_key"] = "load_test"
-        os.environ["total_job_enqueued_count_redis_name_key"] = "enqueue"
-        os.environ["total_job_dequeued_count_redis_name_key"] = "dequeue"
+        os.environ["total_job_enqueued_count_redis_name_key"] = "publish"
+        os.environ["total_job_dequeued_count_redis_name_key"] = "subscribe"
         self.dirname = os.path.dirname(os.path.realpath(__file__))
         self.create_test_docker_container()
         self.redisInterface = RedisInterface()
@@ -99,7 +99,7 @@ class TestRedisClient(unittest.TestCase):
                                           stdout=subprocess.PIPE)
         self.assertIsNotNone(completedProcess)
         self.assertIsNotNone(completedProcess.stdout)
-    """
+
     def test_key_in_redis(self):
         redisClient_inst1 = RedisClient()
         self.assertTrue(redisClient_inst1.set_the_key_in_redis_db("abcxyz"))
@@ -123,7 +123,7 @@ class TestRedisClient(unittest.TestCase):
 
     def test_write_event(self):
         redisClient_inst1 = RedisClient()
-        redisClient_inst1.cont_id="12345"
+        redisClient_inst1.cont_id = "12345"
         self.assertTrue(redisClient_inst1.write_an_event_on_redis_db("Hello world"))
         self.assertTrue(redisClient_inst1.write_an_event_on_redis_db("Hello world2"))
         self.assertTrue(redisClient_inst1.check_if_the_key_exists_in_redis_db(redisClient_inst1.cont_id))
@@ -131,12 +131,12 @@ class TestRedisClient(unittest.TestCase):
     def test_incr_key(self):
         redisClient_inst1 = RedisClient()
         self.assertTrue(redisClient_inst1.increment_key_in_redis_db("incr_key"))
-        self.assertEqual(redisClient_inst1.read_key_value_from_redis_db("incr_key"),b'1')
+        self.assertEqual(redisClient_inst1.read_key_value_from_redis_db("incr_key"), b'1')
         self.assertTrue(redisClient_inst1.increment_key_in_redis_db("incr_key"))
-        self.assertEqual(redisClient_inst1.read_key_value_from_redis_db("incr_key"),b'2')
+        self.assertEqual(redisClient_inst1.read_key_value_from_redis_db("incr_key"), b'2')
         self.assertTrue(redisClient_inst1.increment_key_in_redis_db("incr_key"))
-        self.assertEqual(redisClient_inst1.read_key_value_from_redis_db("incr_key"),b'3')
-    """
+        self.assertEqual(redisClient_inst1.read_key_value_from_redis_db("incr_key"), b'3')
+
     def test_find_keys_matching_pattern(self):
         redisClient_inst1 = RedisClient()
         for index in range(10):
@@ -145,7 +145,7 @@ class TestRedisClient(unittest.TestCase):
         logging.debug("keys = {}".format(keys))
         self.assertNotEqual(len(keys), 0)
         for key in keys:
-            self.assertTrue(key.decode('utf-8').find('key') >=0)
+            self.assertTrue(key.decode('utf-8').find('key') >= 0)
 
     def tearDown(self):
         self.redisClient.delete_key_from_redis_db("abcxyz")

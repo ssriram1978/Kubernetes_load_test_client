@@ -6,7 +6,7 @@ import time
 import traceback
 from datetime import datetime
 
-from publisher_subscriber.publisher_subscriber import ProduceConsumeAPI
+from publisher_subscriber.publisher_subscriber import PublisherSubscriberAPI
 from redis_client.redis_interface import RedisInterface
 
 logging.basicConfig(format='%(levelname)s:%(asctime)s:%(message)s',
@@ -52,7 +52,7 @@ class Publisher:
         self.log_level = None
         self.json_parsed_data = None
         self.redis_instance = RedisInterface()
-        self.producer_consumer_instance = ProduceConsumeAPI(is_producer=True)
+        self.producer_consumer_instance = PublisherSubscriberAPI(is_producer=True)
         self.broker_type = None
         self.load_environment_variables()
         self.set_log_level()

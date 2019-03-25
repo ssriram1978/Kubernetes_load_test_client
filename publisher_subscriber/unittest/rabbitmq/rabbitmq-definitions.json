@@ -1,0 +1,51 @@
+{
+        "users": [
+                {
+                        "name": "guest",
+                        "password": "guest",
+                        "tags": "administrator"
+                }
+        ],
+        "vhosts": [
+                {
+                        "name": "/"
+                }
+        ],
+        "permissions": [
+                {
+                        "user": "guest",
+                        "vhost": "/",
+                        "configure": ".*",
+                        "write": ".*",
+                        "read": ".*"
+                }
+        ],
+        "policies": [
+                {
+                        "vhost": "/",
+                        "name": "common-queue-configuration",
+                        "pattern": "^common",
+                        "apply-to": "queues",
+                        "definition": {
+                                "ha-mode": "exactly",
+                                "ha-params": 1,
+                                "ha-sync-mode": "automatic"
+                        }
+                },
+                {
+                        "vhost": "/",
+                        "name": "mqtt-queue-configuration",
+                        "pattern": "^mqtt",
+                        "apply-to": "queues",
+                        "definition": {
+                                "max-length": 10000,
+                                "message-ttl": 100000,
+                                "dead-letter-exchange": "mqtt_dead_letter_exchange",
+                                "dead-letter-routing-key": "message_dead_lettered",
+                                "ha-mode": "exactly",
+                                "ha-params": 1,
+                                "ha-sync-mode": "automatic"
+                        }
+                }
+        ]
+}

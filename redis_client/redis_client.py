@@ -64,7 +64,7 @@ class RedisClient(object):
                      .format(self.redis_server_port))
 
     def connect_to_redis_server(self):
-        while self.redis_instance:
+        while self.redis_instance is None:
             self.redis_instance = redis.StrictRedis(host=self.redis_server_hostname,
                                                     port=self.redis_server_port,
                                                     db=0)
@@ -155,7 +155,7 @@ class RedisClient(object):
 
     def read_key_value_from_redis_db(self, key):
         return_value = -1
-        if self.redis_instance:
+        if self.redis_instance is not None:
             try:
                 if self.redis_instance.exists(key):
                     return_value = self.redis_instance.get(key)

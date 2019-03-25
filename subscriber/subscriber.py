@@ -10,7 +10,7 @@ from datetime import datetime
 
 import dateutil.parser
 
-from publisher_subscriber.publisher_subscriber import ProduceConsumeAPI
+from publisher_subscriber.publisher_subscriber import PublisherSubscriberAPI
 from redis_client.redis_interface import RedisInterface
 
 logging.basicConfig(format='%(levelname)s:%(asctime)s:%(message)s',
@@ -101,7 +101,11 @@ class Subscriber:
         msgq_message = (datetime.now().isoformat(timespec='microseconds'),
                         msg.payload)
         Subscriber.message_queue.append(msgq_message)
-        self.redis_instance.redis_instance.
+        self.redis_instance.increment_dequeue_count()
+        self.redis_instance.write_an_event_in_redis_db("Consumer {}: Dequeued Message = {}"
+                                                   .format(self.thread_identifier,
+                                                           msg))
+
     def create_latency_compute_thread(self):
         self.latency_compute_thread = [0] * self.max_consumer_threads
         for index in range(self.max_consumer_threads):
@@ -149,8 +153,8 @@ class Subscriber:
         Perform subscription.
         :return:
         """
-        self.producer_consumer_instance = ProduceConsumeAPI(is_consumer=True,
-                                                            subscription_cb=self.on_message)
+        self.producer_consumer_instance = PublisherSubscriberAPI(is_consumer=True,
+                                                                 subscription_cb=self.on_message)
     def cleanup(self):
         pass
 

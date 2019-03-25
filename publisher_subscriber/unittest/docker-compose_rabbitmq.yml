@@ -1,0 +1,32 @@
+version: '3.2'
+services:
+  rabbitmq:
+    image: rabbitmq:3.8-rc-management
+    environment:
+      RABBITMQ_DEFAULT_USER: "guest"
+      RABBITMQ_DEFAULT_PASS: "guest"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+      - "1888:1883"
+    volumes:
+      - "./rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins"
+      - "./rabbitmq/rabbitmq-env.conf:/etc/rabbitmq/rabbitmq-env.conf"
+      - "./rabbitmq/rabbitmq-modified.conf:/etc/rabbitmq/rabbitmq-modified.conf"
+      - "./rabbitmq/rabbitmq-definitions.json:/etc/rabbitmq/rabbitmq-definitions.json"
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    environment:
+      - REDIS_HOSTS=redis:redis:6379
+    ports:
+      - 9010:8081
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"

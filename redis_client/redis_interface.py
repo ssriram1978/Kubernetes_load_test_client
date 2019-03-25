@@ -46,8 +46,8 @@ class RedisInterface(object):
         defined in the OS.
         :return:
         """
-        while self.redis_log_keyname is None or \
-                self.total_job_dequeued_count_redis_name is None:
+        while not self.redis_log_keyname or \
+                not self.total_job_dequeued_count_redis_name:
             time.sleep(2)
             logging.info("RedisInterface:{} "
                          "Trying to read the "
