@@ -53,8 +53,7 @@ class RabbitMsgQAPI:
         self.cont_id = os.popen("cat /proc/self/cgroup | head -n 1 | cut -d '/' -f3").read()
         self.thread_identifier = thread_identifier
         self.__read_environment_variables()
-        if is_consumer:
-            self.subscription_cb = subscription_cb
+        self.subscription_cb = subscription_cb
         self.connect()
 
     def __read_environment_variables(self):
@@ -83,6 +82,10 @@ class RabbitMsgQAPI:
                      .format(self.thread_identifier,
                              self.broker_port))
 
+    def on_subscribe(self, client, userdata, mid, granted_qos):
+        print("successfully subscribed.")
+        logging.info("successfully subscribed.")
+
     def connect(self):
         """
         Connect to a broker.
@@ -96,27 +99,44 @@ class RabbitMsgQAPI:
             self.publish_topic_in_redis_db(self.topic)
 
         self.client_instance = mqtt.Client()
-        self.client_instance.on_connect = self.on_connect
-        self.client_instance.on_message = self.on_message
-        self.client_instance.connect_async(self.broker_hostname, self.broker_port, 60)
-        self.client_instance.loop_start()
+        if self.is_consumer:
+            while not self.is_connected:
+                try:
+                    self.client_instance.on_connect = self.on_connect
+                    self.client_instance.on_message = self.on_message
+                    self.client_instance.connect(self.broker_hostname, self.broker_port, 60)
+                    self.client_instance.loop_forever()
+                    while not self.is_connected:
+                        logging.info("{}: Trying to connect to {}:{}."
+                                     .format(self.thread_identifier,
+                                             self.broker_hostname,
+                                             self.broker_port))
+                        time.sleep(5)
 
-        while not self.is_connected:
-            logging.info("{}: Trying to connect to {}:{}."
-                         .format(self.thread_identifier,
-                                 self.broker_hostname,
-                                 self.broker_port))
-            time.sleep(5)
+                    logging.info("{}: Successfully connected to {}:{}"
+                                 .format(self.thread_identifier,
+                                         self.broker_hostname,
+                                         self.broker_port))
 
-        logging.info("{}: Successfully connected to {}:{}"
-                     .format(self.thread_identifier,
-                             self.broker_hostname,
-                             self.broker_port))
-
-    def on_subscribed(self):
-        logging.info("{}: successfully subscribed to topic = {}"
-                     .format(self.thread_identifier,
-                             self.topic))
+                except:
+                    logging.info("{}: Trying to connect to {}:{}."
+                                 .format(self.thread_identifier,
+                                         self.broker_hostname,
+                                         self.broker_port))
+                    time.sleep(5)
+        elif self.is_producer:
+            while not self.is_connected:
+                try:
+                    self.client_instance.on_connect = self.on_connect
+                    self.client_instance.connect(self.broker_hostname, self.broker_port, 60)
+                    self.is_connected = True
+                except:
+                    logging.info("{}: Trying to connect to {}:{}."
+                                 .format(self.thread_identifier,
+                                         self.broker_hostname,
+                                         self.broker_port))
+                    time.sleep(5)
+                    pass
 
     def publish_topic_in_redis_db(self, key_prefix):
         if self.cont_id and len(self.cont_id) >= 12:
@@ -138,52 +158,42 @@ class RabbitMsgQAPI:
 
         logging.debug("{}:Connected with result code {}".format(self.thread_identifier,
                                                                 str(rc)))
-        if self.is_consumer:
-            # Subscribing in on_connect() means that if we lose the connection and
-            # reconnect then subscriptions will be renewed.
-            logging.info("{}: Subscribing to topic {}."
-                         .format(self.thread_identifier,
-                                 self.topic))
 
-            self.client_instance.on_subscribe = self.on_subscribed
+        if self.is_consumer:
+            logging.info("Trying to subscribe to topic {} at broker {}:{}."
+                         .format(self.topic,
+                                 self.broker_hostname,
+                                 self.broker_port))
             self.client_instance.on_message = self.on_message
-            self.client_instance.subscribe(self.topic)
+            self.client_instance.on_subscribe = self.on_subscribe
+            client.subscribe(self.topic)
 
     def on_message(self, client, userdata, message):
-        message_string = '{} Received message {} on topic {} with QOS {}.' \
-            .format(self.thread_identifier,
-                    message.payload,
-                    message.topic,
-                    str(message.qos))
-
-        logging.info(message_string)
+        message = "Received message from topic: {},payload={}.".format(message.topic, message.payload)
+        logging.debug(message)
+        self.redis_instance.write_an_event_in_redis_db(message)
+        self.redis_instance.increment_dequeue_count()
         self.subscription_cb(message.payload)
         self.client_instance.on_message = self.on_message
-        self.redis_instance.increment_dequeue_count()
 
+    def get_topic_name(self):
+        return self.topic
 
-def get_topic_name(self):
-    return self.topic
+    def cleanup(self):
+        pass
 
+    def publish(self, message):
+        """
+        This method tries to post a message to the pre-defined topic.
+        :param message:
+        :return status False or True:
+        """
 
-def cleanup(self):
-    pass
-
-
-def publish(self, message):
-    """
-    This method tries to post a message to the pre-defined topic.
-    :param message:
-    :return status False or True:
-    """
-    event = "{}: Successfully posted a message = {} into topic {}." \
-        .format(self.thread_identifier,
-                message,
-                self.topic)
-    self.redis_instance.write_an_event_in_redis_db(event)
-    self.redis_instance.increment_enqueue_count()
-    logging.debug("{}: Publishing message {} to topic {}."
-                  .format(self.thread_identifier,
-                          message,
-                          self.topic))
-    self.client_instance.publish(message)
+        message = "{}: Publishing a message {} to topic {}." \
+            .format(self.thread_identifier,
+                    message,
+                    self.topic)
+        logging.debug(message)
+        self.redis_instance.write_an_event_in_redis_db(message)
+        self.client_instance.publish(self.topic, message)
+        self.redis_instance.increment_enqueue_count()

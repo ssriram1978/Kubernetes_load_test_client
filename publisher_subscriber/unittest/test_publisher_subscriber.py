@@ -40,13 +40,13 @@ class TestProducerConsumer(unittest.TestCase):
     redis_instance = None
 
     def setUp(self):
-        os.environ["broker_hostname_key"] = "localhost"
+        os.environ["broker_hostname_key"] = "68.128.155.233"
         os.environ["broker_port_key"] = "1888"
-        os.environ["topic_key"] = "producer_consumer"
+        os.environ["topic_key"] = "ThingspaceSDK/12344444444444555/UNITOnBoard"
         os.environ["redis_log_keyname_key"] = "producer_consumer"
         os.environ["total_job_enqueued_count_redis_name_key"] = "produced"
         os.environ["total_job_dequeued_count_redis_name_key"] = "consumed"
-        os.environ["redis_server_hostname_key"] = "localhost"
+        os.environ["redis_server_hostname_key"] = "68.128.155.233"
         os.environ["redis_server_port_key"] = "6379"
         os.environ["type_of_messaging_queue_key"] = PublisherSubscriberAPI.rabbitMsgQType
         self.dirname = os.path.dirname(os.path.realpath(__file__))
@@ -121,10 +121,10 @@ class TestProducerConsumer(unittest.TestCase):
     def start_produce_consume_activity(self, msg_q_type):
         logging.debug("Creating consumer threads to consume jobs.")
         self.create_consumers(msg_q_type)
-        time.sleep(60)
+        time.sleep(10)
         logging.debug("Creating producer instance and producing jobs.")
         self.create_producer_and_produce_jobs(msg_q_type)
-        time.sleep(30)
+        time.sleep(10)
         logging.debug("Validating if the consumer successfully dequeued messages.")
         redis_instance = RedisInterface(threading.current_thread().getName())
         self.assertEqual(redis_instance.get_current_enqueue_count(),
@@ -138,7 +138,7 @@ class TestProducerConsumer(unittest.TestCase):
         self.start_produce_consume_activity(PublisherSubscriberAPI.rabbitMsgQType)
 
     def post_messages(self):
-        messages = [str(x) for x in range(1,100)]
+        messages = [str(x) for x in range(1, 100)]
         for message in messages:
             self.producer_instance.publish(message)
         self.producer_instance.cleanup()

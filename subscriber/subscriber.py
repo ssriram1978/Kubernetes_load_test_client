@@ -91,7 +91,7 @@ class Subscriber:
         """
         pass
 
-    def on_message(self, client, userdata, msg):
+    def on_message(self, msg):
         """
         The callback for when a PUBLISH message is received from the server.
         :param userdata:
@@ -101,10 +101,9 @@ class Subscriber:
         msgq_message = (datetime.now().isoformat(timespec='microseconds'),
                         msg.payload)
         Subscriber.message_queue.append(msgq_message)
-        self.redis_instance.increment_dequeue_count()
         self.redis_instance.write_an_event_in_redis_db("Consumer {}: Dequeued Message = {}"
-                                                   .format(self.thread_identifier,
-                                                           msg))
+                                                       .format(threading.current_thread().getName(),
+                                                               msg.payload))
 
     def create_latency_compute_thread(self):
         self.latency_compute_thread = [0] * self.max_consumer_threads
@@ -155,6 +154,7 @@ class Subscriber:
         """
         self.producer_consumer_instance = PublisherSubscriberAPI(is_consumer=True,
                                                                  subscription_cb=self.on_message)
+
     def cleanup(self):
         pass
 
