@@ -9,6 +9,7 @@ import traceback
 from datetime import datetime
 
 import dateutil.parser
+import redis
 
 from publisher_subscriber.publisher_subscriber import PublisherSubscriberAPI
 
@@ -42,6 +43,8 @@ class Subscriber:
     This Class is used to subscribe to a topic in a message queue.
     """
     message_queue = []
+    max_queue_size = 10000
+    redis_instance = None
 
     def __init__(self):
         """
@@ -50,11 +53,17 @@ class Subscriber:
         self.average_latency_for_n_sec = 0
         self.test_duration_in_sec = 0
         self.log_level = None
+        self.topic = None
         self.max_consumer_threads = 1
         self.producer_consumer_instance = None
         self.is_loopback = False
+        self.redis_server_hostname = None
+        self.redis_server_port = None
         self.load_environment_variables()
         self.create_logger()
+        if not Subscriber.redis_instance:
+            Subscriber.redis_instance = redis.Redis(self.redis_server_hostname,
+                                                    port=self.redis_server_port)
         self.create_latency_compute_thread()
 
     def load_environment_variables(self):
@@ -62,7 +71,10 @@ class Subscriber:
         Load environment variables.
         :return:
         """
-        while not self.test_duration_in_sec:
+        while not self.test_duration_in_sec or \
+                not self.redis_server_hostname or \
+                not self.redis_server_port or \
+                self.topic is None:
             time.sleep(1)
             self.test_duration_in_sec = int(os.getenv("test_duration_in_sec_key",
                                                       default='0'))
@@ -73,14 +85,26 @@ class Subscriber:
             if os.getenv("is_loopback_key", default="false") == "true":
                 self.is_loopback = True
 
+            self.redis_server_hostname = os.getenv("redis_server_hostname_key",
+                                                   default=None)
+            self.redis_server_port = int(os.getenv("redis_server_port_key",
+                                                   default=0))
+            self.topic = os.getenv("topic_key", default=None)
+
         logging.info(("test_duration_in_sec={},\n"
                       "log_level={},\n"
                       "is_loopback={},\n"
+                      "topic={},\n"
                       "max_consumer_threads={}."
                       .format(self.test_duration_in_sec,
                               self.log_level,
                               self.is_loopback,
+                              self.topic,
                               self.max_consumer_threads)))
+        logging.info("redis_server_hostname={}"
+                     .format(self.redis_server_hostname))
+        logging.info("redis_server_port={}"
+                     .format(self.redis_server_port))
 
     def create_logger(self):
         """
@@ -105,50 +129,71 @@ class Subscriber:
     def create_latency_compute_thread(self):
         self.latency_compute_thread = [0] * self.max_consumer_threads
         for index in range(self.max_consumer_threads):
-            self.latency_compute_thread[index] = threading.Thread(name="{}{}".format("latency_compute_thread", index),
-                                                                  target=Subscriber.run_latency_compute_thread)
+            self.latency_compute_thread[index] = threading.Thread(name="{}{}"
+                                                                  .format("latency_compute_thread",
+                                                                          index),
+                                                                  target=Subscriber.run_latency_compute_thread,
+                                                                  args=(),
+                                                                  kwargs={'topic':
+                                                                              self.topic}
+                                                                  )
             self.latency_compute_thread[index].do_run = True
             self.latency_compute_thread[index].name = "{}_{}".format("latency_compute_thread", index)
             self.latency_compute_thread[index].start()
 
     @staticmethod
-    def run_latency_compute_thread():
+    def run_latency_compute_thread(*args, **kwargs):
         logging.info("Starting {}".format(threading.current_thread().getName()))
+        topic = None
+        for name, value in kwargs.items():
+            logging.debug("name={},value={}".format(name, value))
+            if name == 'topic':
+                topic = value
         t = threading.currentThread()
         current_index = 0
-        running_count = 0
         while getattr(t, "do_run", True):
             t = threading.currentThread()
             try:
                 dequeued_message = Subscriber.message_queue[current_index]
                 msg_rcvd_timestamp, msg = dequeued_message[0], dequeued_message[1]
-                Subscriber.parse_message_and_compute_latency(msg, msg_rcvd_timestamp)
+                Subscriber.parse_message_and_compute_latency(msg, msg_rcvd_timestamp, topic)
                 current_index += 1
-            except:
-                logging.debug("No more messages.")
-                """
-                running_count +=1
-                if running_count > 5:
+                if current_index >= Subscriber.max_queue_size:
                     del Subscriber.message_queue
                     Subscriber.message_queue = []
-                    running_count = 0
-                """
+                    current_index = 0
+            except:
+                logging.debug("No more messages.")
                 time.sleep(0.1)
         logging.info("Consumer {}: Exiting"
                      .format(threading.current_thread().getName()))
 
     @staticmethod
-    def parse_message_and_compute_latency(message, msg_rcvd_timestamp):
+    def publish_latency_in_redis_db(time_difference, topic, timestamp_from_message):
+        try:
+            dt = None
+            latency = time_difference.microseconds / 1000
+            logging.info("{}:Latency in milliseconds = {}".format(threading.current_thread().getName(),
+                                                                  latency))
+            if Subscriber.redis_instance:
+                ts = dateutil.parser.parse(timestamp_from_message)
+                dt = ts.isoformat(timespec='seconds')
+            value = Subscriber.redis_instance.hmget(topic, str(dt))[0]
+            if not value:
+                value = [latency]
+            else:
+                value = eval(value.decode('utf8'))
+                value.append(latency)
+            Subscriber.redis_instance.hset(topic, str(dt), str(value))
+        except:
+            logging.error("{}: Unable to connect to redis.".format(threading.current_thread().getName()))
+
+    @staticmethod
+    def parse_message_and_compute_latency(message, msg_rcvd_timestamp, topic):
         json_parsed_data = json.loads(message)
         time_difference = dateutil.parser.parse(msg_rcvd_timestamp) - dateutil.parser.parse(
             json_parsed_data['lastUpdated'])
-        if time_difference.seconds:
-            logging.info("{}:Latency in seconds = {}.{}".format(threading.current_thread().getName(),
-                                                                time_difference.seconds,
-                                                                time_difference.microseconds))
-        elif time_difference.microseconds:
-            logging.info("{}:Latency in milliseconds = {}".format(threading.current_thread().getName(),
-                                                                  time_difference.microseconds / 10 ** 3))
+        Subscriber.publish_latency_in_redis_db(time_difference, topic, json_parsed_data['lastUpdated'])
 
     def perform_job(self):
         """
@@ -163,7 +208,7 @@ class Subscriber:
         end_time = time.time()
         while end_time - start_time < self.test_duration_in_sec:
             logging.debug("total test duration = {},current_test_duration = {}."
-                         .format(self.test_duration_in_sec, (end_time - start_time)))
+                          .format(self.test_duration_in_sec, (end_time - start_time)))
             time.sleep(1)
             end_time = time.time()
         self.cleanup()
