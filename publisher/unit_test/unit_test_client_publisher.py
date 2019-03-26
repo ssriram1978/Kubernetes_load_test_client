@@ -30,8 +30,8 @@ from publisher.publisher import Publisher
 class TestClient(unittest.TestCase):
 
     def setUp(self):
-        os.environ["broker_key"] = "172.20.0.2"
-        os.environ["broker_port_key"] = "1883"
+        os.environ["broker_hostname_key"] = "68.128.155.233"
+        os.environ["broker_port_key"] = "1888"
         os.environ["message_key"] = "{\
   \"lastUpdated\": \"2018-11-19T18:21:03Z\",\
   \"unitName\": \"VZW_LH_UNIT_01\",\
@@ -49,17 +49,19 @@ class TestClient(unittest.TestCase):
     ]\
   }\
 }"
-
-    os.environ["enqueue_topic_key"] = "ThingspaceSDK/12344444444444555/UNITOnBoard"
+    os.environ["topic_key"] = "ThingspaceSDK/12344444444444555/UNITOnBoard"
     os.environ["messages_per_second_key"] = "100"
     os.environ["test_duration_in_sec_key"] = "100"
     os.environ["log_level_key"] = "info"
-    os.environ["redis_server_hostname_key"] = "redis"
+    os.environ["redis_server_hostname_key"] = "68.128.155.233"
     os.environ["redis_server_port_key"] = "6379"
-    os.environ["broker_type_key"] = "mqtt"
+    os.environ["redis_log_keyname_key"] = "produce_load_test"
+    os.environ["total_job_enqueued_count_redis_name_key"] = "total_produced_count"
+    os.environ["total_job_dequeued_count_redis_name_key"] = "total_consumed_count"
+    os.environ["type_of_messaging_queue_key"] = "RabbitMQ"
 
     def test_run(self):
-        print("Validating **************** Validating Client Publisher *****************.")
+        print("Validating **************** Validating Publisher Client *****************.")
         worker = Publisher()
         try:
             worker.perform_job()

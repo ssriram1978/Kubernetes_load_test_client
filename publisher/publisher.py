@@ -52,7 +52,8 @@ class Publisher:
         self.log_level = None
         self.json_parsed_data = None
         self.redis_instance = RedisInterface()
-        self.producer_consumer_instance = PublisherSubscriberAPI(is_producer=True)
+        self.producer_consumer_instance = PublisherSubscriberAPI(is_producer=True,
+                                                                 thread_identifier='Producer')
         self.broker_type = None
         self.load_environment_variables()
         self.set_log_level()
@@ -65,7 +66,6 @@ class Publisher:
         """
         while not self.message or \
                 not self.messages_per_second or \
-                not self.broker_type or \
                 not self.test_duration_in_sec:
             time.sleep(1)
             self.message = os.getenv("message_key",
@@ -76,18 +76,14 @@ class Publisher:
                                                       default='0'))
             self.log_level = os.getenv("log_level_key",
                                        default="info")
-            self.broker_type = int(os.getenv("broker_type_key",
-                                             default='mqtt'))
 
         logging.info(("message={},\n"
                       "messages_per_second={},\n"
                       "test_duration_in_sec={},\n"
-                      "self.broker_type={},\n"
                       "self.log_level={}.\n"
                       .format(self.message,
                               self.messages_per_second,
                               self.test_duration_in_sec,
-                              self.broker_type,
                               self.log_level)))
 
     def set_log_level(self):

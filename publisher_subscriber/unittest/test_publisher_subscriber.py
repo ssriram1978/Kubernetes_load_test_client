@@ -70,24 +70,21 @@ class TestProducerConsumer(unittest.TestCase):
 
     @staticmethod
     def run_consumer_instance(*args, **kwargs):
-        msgq_type = False
         subscription_cb_function = None
         logging.debug("Starting {}".format(threading.current_thread().getName()))
         for name, value in kwargs.items():
             logging.debug("name={},value={}".format(name, value))
-            if name == 'msgq_type':
-                msgq_type = value
-            elif name == 'subscription_cb':
+            if name == 'subscription_cb':
                 subscription_cb_function = value
 
         t = threading.currentThread()
 
         consumer_instance = PublisherSubscriberAPI(is_consumer=True,
                                                    thread_identifier="Consumer",
-                                                   subscription_cb=subscription_cb_function,
-                                                   type_of_messaging_queue=msgq_type)
+                                                   subscription_cb=subscription_cb_function)
         while getattr(t, "do_run", True):
-            time.sleep(5)
+            time.sleep(1)
+        logging.debug("************ Test ended. Cleaning up...******************************")
         consumer_instance.cleanup()
         logging.debug("Consumer {}: Exiting"
                       .format(threading.current_thread().getName()))
@@ -98,8 +95,7 @@ class TestProducerConsumer(unittest.TestCase):
             self.consumer_threads[index] = threading.Thread(name="{}{}".format("thread", index),
                                                             target=TestProducerConsumer.run_consumer_instance,
                                                             args=(),
-                                                            kwargs={'msgq_type': msgq_type,
-                                                                    'subscription_cb': TestProducerConsumer.subscription_cb_fn}
+                                                            kwargs={'subscription_cb': TestProducerConsumer.subscription_cb_fn}
                                                             )
             self.consumer_threads[index].do_run = True
             self.consumer_threads[index].name = "{}_{}".format("consumer", index)
@@ -113,8 +109,7 @@ class TestProducerConsumer(unittest.TestCase):
 
     def create_producer_and_produce_jobs(self, msgq_type):
         self.producer_instance = PublisherSubscriberAPI(is_producer=True,
-                                                        thread_identifier="Producer",
-                                                        type_of_messaging_queue=msgq_type)
+                                                        thread_identifier="Producer")
         logging.debug("Posting messages.")
         self.assertTrue(self.post_messages())
 
@@ -173,16 +168,9 @@ class TestProducerConsumer(unittest.TestCase):
             logging.debug("Trying to join thread {}."
                           .format(self.consumer_threads[index].getName()))
             self.consumer_threads[index].join(1.0)
-            time.sleep(1)
+            time.sleep(5)
             if self.consumer_threads[index].is_alive():
-                try:
-                    logging.debug("Trying to __stop thread {}."
-                                  .format(self.consumer_threads[index].getName()))
-                    self.consumer_threads[index].__stop()
-
-                except:
-                    logging.debug("Caught an exception while stopping thread {}"
-                                  .format(self.consumer_threads[index].getName()))
+                raise KeyboardInterrupt
 
     def tearDown(self):
         self.cleanup_test_environment()

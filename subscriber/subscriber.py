@@ -11,7 +11,6 @@ from datetime import datetime
 import dateutil.parser
 
 from publisher_subscriber.publisher_subscriber import PublisherSubscriberAPI
-from redis_client.redis_interface import RedisInterface
 
 logging.basicConfig(format='%(levelname)s:%(asctime)s:%(message)s',
                     level=logging.INFO,
@@ -52,7 +51,6 @@ class Subscriber:
         self.test_duration_in_sec = 0
         self.log_level = None
         self.max_consumer_threads = 1
-        self.redis_instance = RedisInterface()
         self.producer_consumer_instance = None
         self.is_loopback = False
         self.load_environment_variables()
@@ -91,19 +89,18 @@ class Subscriber:
         """
         pass
 
-    def on_message(self, msg):
+    @staticmethod
+    def on_message(msg):
         """
         The callback for when a PUBLISH message is received from the server.
         :param userdata:
         :param msg:
         :return:
         """
+        logging.debug("Received message {}.".format(msg))
         msgq_message = (datetime.now().isoformat(timespec='microseconds'),
-                        msg.payload)
+                        msg)
         Subscriber.message_queue.append(msgq_message)
-        self.redis_instance.write_an_event_in_redis_db("Consumer {}: Dequeued Message = {}"
-                                                       .format(threading.current_thread().getName(),
-                                                               msg.payload))
 
     def create_latency_compute_thread(self):
         self.latency_compute_thread = [0] * self.max_consumer_threads
@@ -119,6 +116,7 @@ class Subscriber:
         logging.info("Starting {}".format(threading.current_thread().getName()))
         t = threading.currentThread()
         current_index = 0
+        running_count = 0
         while getattr(t, "do_run", True):
             t = threading.currentThread()
             try:
@@ -127,9 +125,14 @@ class Subscriber:
                 Subscriber.parse_message_and_compute_latency(msg, msg_rcvd_timestamp)
                 current_index += 1
             except:
-                logging.info("No more messages.")
-                del Subscriber.message_queue
-                Subscriber.message_queue = []
+                logging.debug("No more messages.")
+                """
+                running_count +=1
+                if running_count > 5:
+                    del Subscriber.message_queue
+                    Subscriber.message_queue = []
+                    running_count = 0
+                """
                 time.sleep(0.1)
         logging.info("Consumer {}: Exiting"
                      .format(threading.current_thread().getName()))
@@ -153,10 +156,28 @@ class Subscriber:
         :return:
         """
         self.producer_consumer_instance = PublisherSubscriberAPI(is_consumer=True,
-                                                                 subscription_cb=self.on_message)
+                                                                 thread_identifier='Consumer',
+                                                                 subscription_cb=Subscriber.on_message)
+        start_time = time.time()
+        time.sleep(1)
+        end_time = time.time()
+        while end_time - start_time < self.test_duration_in_sec:
+            logging.debug("total test duration = {},current_test_duration = {}."
+                         .format(self.test_duration_in_sec, (end_time - start_time)))
+            time.sleep(1)
+            end_time = time.time()
+        self.cleanup()
 
     def cleanup(self):
-        pass
+        self.producer_consumer_instance.cleanup()
+        for index in range(self.max_consumer_threads):
+            self.latency_compute_thread[index].do_run = False
+        time.sleep(5)
+        for index in range(self.max_consumer_threads):
+            logging.debug("Trying to join thread {}."
+                          .format(self.latency_compute_thread[index].getName()))
+            self.latency_compute_thread[index].join(1.0)
+            time.sleep(1)
 
 
 if __name__ == '__main__':

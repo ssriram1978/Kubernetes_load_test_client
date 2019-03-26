@@ -44,14 +44,13 @@ class PublisherSubscriberAPI:
     def __init__(self,
                  is_producer=False,
                  is_consumer=False,
-                 type_of_messaging_queue=None,
                  thread_identifier=None,
                  subscription_cb=None):
         self.message_queue_instance = None
         self.is_producer = is_producer
         self.is_consumer = is_consumer
         self.subscription_cb = subscription_cb
-        self.type_of_messaging_queue = type_of_messaging_queue
+        self.type_of_messaging_queue = None
         self.thread_identifier = thread_identifier
         self.read_environment_variables()
         self.__connect()
