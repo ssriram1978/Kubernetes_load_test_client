@@ -1,4 +1,5 @@
 paho-mqtt
 datetime
+python-dateutil
 redis
 confluent_kafka

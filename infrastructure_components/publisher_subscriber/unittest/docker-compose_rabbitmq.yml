@@ -30,3 +30,19 @@ services:
     volumes:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
+  fauxton:
+    image: 3apaxicom/fauxton
+    depends_on:
+      - rabbitmq
+      - redis-commander
+    ports:
+      - 8000:8000
+    command:
+      - sh
+      - "-c"
+      - "fauxton -c http://mec-poc:5984"
+    extra_hosts:
+      - "mec-poc: localhost"
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"

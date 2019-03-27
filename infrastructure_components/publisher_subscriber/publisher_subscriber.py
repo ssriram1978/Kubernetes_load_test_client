@@ -26,8 +26,8 @@ def import_all_modules():
 
 import_all_modules()
 
-from publisher_subscriber.rabbit_msgq_api.rabbit_msgq_api import RabbitMsgQAPI
-from publisher_subscriber.confluent_kafka_msgq_api.confluent_kafka_msgq_api import \
+from infrastructure_components.publisher_subscriber.rabbit_msgq_api.rabbit_msgq_api import RabbitMsgQAPI
+from infrastructure_components.publisher_subscriber.confluent_kafka_msgq_api.confluent_kafka_msgq_api import \
     ConfluentKafkaMsgQAPI
 
 

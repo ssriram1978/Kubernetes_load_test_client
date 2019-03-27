@@ -1,11 +1,10 @@
-import os
-import time
-import sys
-import redis
 import logging
-import traceback
-import unittest
+import os
+import sys
+import time
 from datetime import datetime
+
+import redis
 
 
 def import_all_paths():
@@ -170,6 +169,26 @@ class RedisClient(object):
         return_value = None
         try:
             return_value = self.redis_instance.keys(pattern=(pattern + '*').encode('utf-8'))
+        except:
+            logging.error("Caught an exception.")
+        return return_value
+
+    def get_list_of_values_based_upon_a_key(self, name, key):
+        logging.info("Trying to get_list_of_values_based_upon_a_key name={}, key={}."
+                     .format(name, key))
+        return_value = None
+        try:
+            return_value = self.redis_instance.hmget(name, key)
+        except:
+            logging.error("Caught an exception.")
+        return return_value
+
+    def set_key_to_value_within_name(self, name, key, value):
+        logging.info("Trying to set_key_to_value_within_name name={}, key={}, value={}."
+                     .format(name, key, value))
+        return_value = None
+        try:
+            return_value = self.redis_instance.hset(name, key, value)
         except:
             logging.error("Caught an exception.")
         return return_value

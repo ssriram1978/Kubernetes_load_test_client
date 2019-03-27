@@ -28,8 +28,8 @@ def import_all_paths():
 
 import_all_paths()
 
-from publisher_subscriber.publisher_subscriber import PublisherSubscriberAPI
-from redis_client.redis_interface import RedisInterface
+from infrastructure_components.publisher_subscriber.publisher_subscriber import PublisherSubscriberAPI
+from infrastructure_components.redis_client.redis_interface import RedisInterface
 
 logging.basicConfig(format='%(levelname)s:%(asctime)s:%(message)s',
                     level=logging.DEBUG,
@@ -95,7 +95,8 @@ class TestProducerConsumer(unittest.TestCase):
             self.consumer_threads[index] = threading.Thread(name="{}{}".format("thread", index),
                                                             target=TestProducerConsumer.run_consumer_instance,
                                                             args=(),
-                                                            kwargs={'subscription_cb': TestProducerConsumer.subscription_cb_fn}
+                                                            kwargs={
+                                                                'subscription_cb': TestProducerConsumer.subscription_cb_fn}
                                                             )
             self.consumer_threads[index].do_run = True
             self.consumer_threads[index].name = "{}_{}".format("consumer", index)

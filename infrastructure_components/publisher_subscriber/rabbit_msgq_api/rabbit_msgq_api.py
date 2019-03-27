@@ -6,8 +6,6 @@ import time
 
 import paho.mqtt.client as mqtt
 
-from redis_client.redis_interface import RedisInterface
-
 
 def import_all_paths():
     realpath = os.path.realpath(__file__)
@@ -27,6 +25,8 @@ def import_all_paths():
 
 
 import_all_paths()
+
+from infrastructure_components.redis_client.redis_interface import RedisInterface
 
 
 class RabbitMsgQAPI:
@@ -74,8 +74,8 @@ class RabbitMsgQAPI:
             self.broker_hostname = os.getenv("broker_hostname_key", default=None)
             self.broker_port = int(os.getenv("broker_port_key", default="1883"))
             self.topic = os.getenv("topic_key", default=None)
-        if self.cont_id and len(self.cont_id) >= 12:
-            self.topic += '_' + self.cont_id[:12]
+        # if self.cont_id and len(self.cont_id) >= 12:
+        #    self.topic += '_' + self.cont_id[:12]
         logging.info("RabbitMsgQAPI:{} broker_hostname={}"
                      .format(self.thread_identifier,
                              self.broker_hostname))
@@ -206,7 +206,7 @@ class RabbitMsgQAPI:
             client.subscribe(self.topic)
 
     def on_message(self, client, userdata, message):
-        event_message = "Received message from topic: {},payload={}." \
+        event_message = "\n \n Received message from topic: {},payload={}." \
             .format(message.topic, message.payload)
         logging.debug(event_message)
         self.redis_instance.write_an_event_in_redis_db(event_message)
@@ -234,7 +234,7 @@ class RabbitMsgQAPI:
         :return status False or True:
         """
 
-        event_message = "{}: Publishing a message {} to topic {}." \
+        event_message = "\n \n {}: Publishing a message {} to topic {}." \
             .format(self.thread_identifier,
                     message,
                     self.topic)

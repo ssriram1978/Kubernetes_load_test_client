@@ -1,7 +1,5 @@
 import os
-import time
 import sys
-import traceback
 import subprocess
 import unittest
 import logging
@@ -26,8 +24,8 @@ def import_all_paths():
 
 import_all_paths()
 
-from redis_client.redis_client import RedisClient
-from redis_client.redis_interface import RedisInterface
+from infrastructure_components.redis_client.redis_client import RedisClient
+from infrastructure_components.redis_client.redis_interface import RedisInterface
 
 
 class TestRedisInterface(unittest.TestCase):

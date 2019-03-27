@@ -1,8 +1,10 @@
 FROM python
 RUN  apt-get update
-RUN mkdir /subscriber
-WORKDIR /subscriber
-COPY requirements.txt ./
-COPY . /subscriber
+RUN mkdir /parent_directory
+RUN mkdir /parent_directory/subscriber
+WORKDIR /parent_directory/subscriber
+COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
-CMD python3 /subscriber/mqtt_subscriber.py
+COPY . /parent_directory/subscriber
+ADD  infrastructure_components.tar.gz /parent_directory
+CMD python3 /parent_directory/subscriber/subscriber.py

@@ -1,5 +1,5 @@
 import os
-import sys, traceback
+import sys
 import time
 import logging
 
@@ -23,7 +23,7 @@ def import_all_paths():
 
 import_all_paths()
 
-from redis_client.redis_client import RedisClient
+from infrastructure_components.redis_client.redis_client import RedisClient
 
 
 class RedisInterface(object):
@@ -127,6 +127,16 @@ class RedisInterface(object):
     def find_keys_matching_a_pattern(self, pattern):
         logging.debug("Trying to find all keys matching this pattern {}.".format(pattern))
         return self.redis_instance.find_keys_matching_a_pattern(pattern)
+
+    def get_list_of_values_based_upon_a_key(self, name, key):
+        logging.info("Trying to get_list_of_values_based_upon_a_key name={}, key={}."
+                     .format(name, key))
+        return self.redis_instance.get_list_of_values_based_upon_a_key(name, key)
+
+    def set_key_to_value_within_name(self, name, key, value):
+        logging.info("Trying to set_key_to_value_within_name name={}, key={}, value={}."
+                     .format(name, key, value))
+        return self.redis_instance.set_key_to_value_within_name(name, key, value)
 
     def cleanup(self):
         pass

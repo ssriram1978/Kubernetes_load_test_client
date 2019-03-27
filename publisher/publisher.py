@@ -6,9 +6,6 @@ import time
 import traceback
 from datetime import datetime
 
-from publisher_subscriber.publisher_subscriber import PublisherSubscriberAPI
-from redis_client.redis_interface import RedisInterface
-
 logging.basicConfig(format='%(levelname)s:%(asctime)s:%(message)s',
                     level=logging.INFO,
                     datefmt='%m/%d/%Y %I:%M:%S %p')
@@ -35,6 +32,9 @@ def import_all_paths():
 
 
 import_all_paths()
+
+from infrastructure_components.publisher_subscriber.publisher_subscriber import PublisherSubscriberAPI
+from infrastructure_components.redis_client.redis_interface import RedisInterface
 
 
 class Publisher:
