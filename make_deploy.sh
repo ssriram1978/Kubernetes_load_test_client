@@ -50,13 +50,13 @@ create_infrastructure() {
 }
 
 deploy_infrastructure() {
-   echo "docker-compose up -d"
-   docker-compose up -d
+   echo "docker stack deploy -c docker-compose.yml load_test"
+   docker stack deploy -c docker-stack.yml load_test
 }
 
 teardown_infrastructure() {
-   echo "docker-compose down"
-   docker-compose down
+   echo "docker stack rm load_test"
+   docker stack rm load_test
 }
 
 create_deploy_infrastructure() {
@@ -70,11 +70,11 @@ create_deploy_infrastructure() {
 }
 
 case "$1" in
-  build) create_infrastructure ;;
-  deploy) deploy_infrastructure $2 ;;
+  build) create_infrastructure $2 ;;
+  deploy) deploy_infrastructure ;;
   build_and_deploy) create_deploy_infrastructure $2 ;;
   stop) teardown_infrastructure ;;
-  *) echo "usage: $0 build|deploy <tag> |build_and_deploy <tag> |stop"
+  *) echo "usage: $0 build <tag> |deploy|build_and_deploy <tag> |stop"
      exit 1
      ;;
 esac
