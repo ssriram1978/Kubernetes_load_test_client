@@ -1,2 +1,2 @@
-# mqtt_load_test_client
-mqtt_load_test_client
+# IOT_load_test_client
+IOT_load_test_client
