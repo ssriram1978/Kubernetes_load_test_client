@@ -35,53 +35,53 @@ Pros and Cons of purchasing a performance load test tool for evaluating IOT-MEC 
 
 Requirements:
 -------------
-    The performance load test tool shall deliver the following requirements:
+The performance load test tool shall deliver the following requirements:
 
-    The performance load test tool shall be able to emulate/mimic thousands of IOT endpoints by authenticating and establish a secure connection with the IOT-MEC environment.
+The performance load test tool shall be able to emulate/mimic thousands of IOT endpoints by authenticating and establish a secure connection with the IOT-MEC environment.
     
-    The performance load test tool shall be able to provide the following options to the end user:
-      For the message producer instance:
-        1. An option to choose the content of the IOT message 
-        
-        2. An option to choose how many instances of IOT end points should it emulate.
-        
-        3. Frequency in seconds which translates to the the number of message to be sent in one second to the IOT-MEC environment.
-        
-        4. Duration in seconds of the performance load test to be conducted.
-        
-        5. Unique queue identifier (a topic) where the message has to be published.
-        
-      For the message consumer instance:
-        1. Unique queue identifier (a topic) to where this consumer should subscribe to and listen for messages.
-        
-        2. Duration in seconds of the performance load test to be conducted.
+The performance load test tool shall be able to provide the following options to the end user:
+  For the message producer instance:
+   1. An option to choose the content of the IOT message 
+   
+   2. An option to choose how many instances of IOT end points should it emulate.
+    
+   3. Frequency in seconds which translates to the the number of message to be sent in one second to the IOT-MEC environment.
+    
+   4. Duration in seconds of the performance load test to be conducted.
 
-        3. Accurately measure (in milliseconds) the end-to-end latency introduced by the IOT-MEC environment for every IOT data that it produces and that get translated to an equivalent action from the IOT-MEC environment. For this, the following steps highlight how the end-to-end latency shall be computed by the performance load test tool.
+   5. Unique queue identifier (a topic) where the message has to be published.
+        
+  For the message consumer instance:
+   1. Unique queue identifier (a topic) to where this consumer should subscribe to and listen for messages.
+    
+   2. Duration in seconds of the performance load test to be conducted.
 
-            The message producer instance shall:
-                1. Insert the current date and timestamp in microseconds into the original payload which informs when the message was published to the Unique queue identifier (a topic).
+   3. Accurately measure (in milliseconds) the end-to-end latency introduced by the IOT-MEC environment for every IOT data that it produces and that get translated to an equivalent action from the IOT-MEC environment. For this, the following steps highlight how the end-to-end latency shall be computed by the performance load test tool.
 
-            IOT-MEC environment hosting the iPass solution shall 
-              1. Consume the message published to the Unique queue identifier (a topic). 
-              2. Produce a corresponding action (example: turn off a water valve,...) by publishing it to another Unique queue identifier (a topic).
-              3. In this process, it makes sure to copy the original sender date and timestamp from the original payload to the corresponding action payload.
+       The message producer instance shall:
+            1. Insert the current date and timestamp in microseconds into the original payload which informs when the message was published to the Unique queue identifier (a topic).
+
+        IOT-MEC environment hosting the iPass solution shall 
+          1. Consume the message published to the Unique queue identifier (a topic). 
+          2. Produce a corresponding action (example: turn off a water valve,...) by publishing it to another Unique queue identifier (a topic).
+          3. In this process, it makes sure to copy the original sender date and timestamp from the original payload to the corresponding action payload.
               
-            The message consumer instance shall:
-              1. Extract the date and timestamp from the message dequeued from the Unique queue identifier (a topic) and compare it with the current date and timestamp to compute the end-to-end latency.
-              
-              2. After having computed the latency, the message consumer instance shall publish this information to a non volatile memory which can be further extracted, transformed and loaded into more meaningful visual graphical plots.
+        The message consumer instance shall:
+         1. Extract the date and timestamp from the message dequeued from the Unique queue identifier (a topic) and compare it with the current date and timestamp to compute the end-to-end latency.
+          
+         2. After having computed the latency, the message consumer instance shall publish this information to a non volatile memory which can be further extracted, transformed and loaded into more meaningful visual graphical plots.
          
-         4. The performance test tool should provide a plug-in factory interface for developers to plug different flavors of message queue clients into the test environment and be able to use the tool to initiate the load test towards those newly developed messaging queue brokers.
-In other words, here is how the test environment should look like.
+   4. The performance test tool should provide a plug-in factory interface for developers to plug different flavors of message queue clients into the test environment and be able to use the tool to initiate the load test towards those newly developed messaging queue brokers.
+	In other words, here is how the test environment should look like.
 
-    5. Each publisher instance must be capable of sending 1000 messages per second or publish 1 message every 1 millisecond.
-    6. Each subscriber instance must be capable of handling 1000 messages per second or 1 message every millisecond.
-    7. All the instances shown above must be able to automatically configure themselves based upon the OS environment variables which could be modified dynamically via a yaml file (Kubernetes or Docker swarm).
-    8. When there are hundreds of publisher instances, each of them must advertise their unique message queue topic to a database.
-    9. There will be a corresponding consumer instance (1-1 mapping between producer-consumer) which shall pick an available producer topic and shall start consuming messages from that topic.
-    10. Each consumer instance shall publish the computed latency values into a database indexed by the messaging queue topic name as the key.
-    11. There will be a plotter instance which shall read the database for the published latency_topic_keys and shall get all the latencies per second and feed it to ELK or prometheus client to graphically plot the values.
-    12. The producer, consumer and plotter instances should be able to be scaled up-down dynamically via a YAML file (kubernetes or docker-swarm).
+   5. Each publisher instance must be capable of sending 1000 messages per second or publish 1 message every 1 millisecond.
+   6. Each subscriber instance must be capable of handling 1000 messages per second or 1 message every millisecond.
+   7. All the instances shown above must be able to automatically configure themselves based upon the OS environment variables which could be modified dynamically via a yaml file (Kubernetes or Docker swarm).
+   8. When there are hundreds of publisher instances, each of them must advertise their unique message queue topic to a database.
+   9. There will be a corresponding consumer instance (1-1 mapping between producer-consumer) which shall pick an available producer topic and shall start consuming messages from that topic.
+   10. Each consumer instance shall publish the computed latency values into a database indexed by the messaging queue topic name as the key.
+   11. There will be a plotter instance which shall read the database for the published latency_topic_keys and shall get all the latencies per second and feed it to ELK or prometheus client to graphically plot the values.
+   12. The producer, consumer and plotter instances should be able to be scaled up-down dynamically via a YAML file (kubernetes or docker-swarm).
 
 Evaluation of open source languages and tools for delivering the expected performance load test requirements:
 -------------------------------------------------------------------------------------------------------------
@@ -106,3 +106,47 @@ Goals:
       Snaplogic
       Losant
       Kafka Streams.
+      
+A working prototype of a Performance Load test tool for IOT-MEC:
+----------------------------------------------------------------
+Here is the source code that is still work in progress that demonstrates a possible solution for a performance load test tool for IOT-MEC.
+
+https://github.com/ssriram1978/IOT_load_test_client
+
+git clone https://github.com/ssriram1978/IOT_load_test_client.git
+There are 4 sub directories or packages inside the cloned repository.
+publisher - This package contains the publisher script that produces payloads into the configured topics at the configured broker.
+The unit_test directory contains the unit test script that validates publisher code.
+subscriber - This package contains the subscriber script that subscribes to a configured topic at the configured broker and computes the end-to-end latency.
+The unit_test directory contains the unit test script that validates subscriber code.
+plotter - This package contains the code for talking to the configured graphical plotter (ELK or prometheus clients).
+infrastructure_components - This package contains the common packages used by the end users (publisher, subscriber and plotter packages).
+portainer_data  - Persistant volume mounted into the portainer docker for storing the login credentials.
+publisher_subscriber - The factory model that abstracts the actual broker client code from the end users (producer and subscriber packages).
+The unit_test directory contains the unit test script that validates publisher_subscriber factory interface.
+redis_client: The redis client interface that abstracts the actual redis client API calls to the end users (producer and subscriber packages)
+The unit_test directory contains the unit test script that validates redis interface.
+There is a make_deploy.sh shell script.
+./make_deploy.sh build sss 
+This command will build docker images of producer and consumer directories and mark them with tag sss.
+./make_deploy.sh deploy
+This command will invoke the docker-stack.yml file and deploy all the built components in your local host where you built the docker images.
+./make_deploy.sh build_and_deploy sss
+This command will build docker images of producer and consumer directories and mark them with tag sss and will invoke the docker-stack.yml file and deploy all the built components in your local host where you built the docker images.
+docker-stack.yml – contains the list of services and their respective configuration details.
+rabbitmq – creates a rabbitmq container.
+publisher – creates a publisher container. (deploy section can be modified to create as many replicas that you need).
+subscriber – creates a consumer container. (deploy section can be modified to create as many replicas that you need).
+redis – creates a redis server in a container.
+redis-commander: creates a container that provides a redis web interface for redis.
+portainer -- creates a container to provide a web interface to inspect the docker swarm and stacks.
+filebeat – creates a container to route all the container logs to logstash container.
+logstash – creates a container to handle all the docker logs.
+kibana – creates a container to handle the web interface to access the ELK stack.
+elasticsearch – creates a container to handle the elastic search of all the logstash.
+Note 1: In this docker-stack.yml, change the hard coded IP address of the test bed to your local PC IP address to run all the docker instances on your laptop.
+Note 2: In this docker-stack.yml, you can observe the following port mappings:
+<ip address>:5601 – to access the kibana web interface.
+<ip address>:9010 – to access the redis commander web interface.
+<ip address>:9000 – to access the portainer docker web interface.
+<ip address>:15672 – to access the rabbitMQ docker web interface.
