@@ -85,27 +85,43 @@ The performance load test tool shall be able to provide the following options to
 
 Evaluation of open source languages and tools for delivering the expected performance load test requirements:
 -------------------------------------------------------------------------------------------------------------
- In order to scale to hundreds and thousands of producer and consumer instances, a highly resilient micro service architecture is desired.
- Producer and consumer instances shall be developed as a docker container which can be scaled to the desired limits at run time.
- The open source ELK (Elastic search, Logstash and Kibana visual boards) shall be used to depict the computed latency in visual graphical format.
-   A real IOT end device shall send a maximum of 1000 message per second (one message every millisecond). 
-   In order to satisfy this requirement, any high level language shall be used for development. 
-   It is observed that PYTHON is the easiest and the developer friendly language that can also generate a thousand IOT messages per second.
-   You really don't need a compiled in language (C,C++) for development where a simple interpreter language (shell programming, python) shall fit the requirement.
+	 In order to scale to hundreds and thousands of producer and consumer instances, a highly resilient micro service architecture is desired.
+	 
+ 	Producer and consumer instances shall be developed as a docker container which can be scaled to the desired limits at run time.
+	
+ 	The open source ELK (Elastic search, Logstash and Kibana visual boards) shall be used to depict the computed latency in visual graphical format.
+	
+   	A real IOT end device shall send a maximum of 1000 message per second (one message every millisecond). 
+	
+   	In order to satisfy this requirement, any high level language shall be used for development. 
+	
+   	It is observed that PYTHON is the easiest and the developer friendly language that can also generate a thousand IOT messages per second.
+	
+   	You really don't need a compiled in language (C,C++) for development where a simple interpreter language (shell programming, python) shall fit the requirement.
+	
     Python provides rich options to import various plug in modules (MQTT, Kafka, ELK, Docker,....) to get the desired job done at a faster development speed.
 
 Goals:
 ------
  We plan to evaluate the following options for Messaging system that could be incorporated into our MEC-IOT environment:
-      RabbitMQ
-      Kafka
-      ZeroMQ
-      NATS
-      Pulsar
+ 
+      	RabbitMQ
+	
+      	Kafka
+	
+      	ZeroMQ
+	
+      	NATS
+	
+      	Pulsar
+	
  We plan to evaluate the following iPass solutions that could be incorporated into our MEC-IOT environment.
-      Snaplogic
-      Losant
-      Kafka Streams.
+ 	
+	Snaplogic
+	
+      	Losant
+	
+      	Kafka Streams.
       
 A working prototype of a Performance Load test tool for IOT-MEC:
 ----------------------------------------------------------------
