@@ -29,7 +29,7 @@ services:
       restart_policy:
         condition: on-failure
     environment:
-      broker_hostname_key: "68.128.155.54"
+      broker_hostname_key: "68.128.155.233"
       broker_port_key: "1889"
       topic_key: "ThingspaceSDK/12344444444444555/UNITOnBoard"
       message_key: "{\
@@ -75,7 +75,7 @@ services:
       restart_policy:
         condition: on-failure
     environment:
-      broker_hostname_key: "68.128.155.54"
+      broker_hostname_key: "68.128.155.233"
       broker_port_key: "1889"
       topic_key: "ThingspaceSDK/12344444444444555/UNITOnBoard"
       average_latency_for_n_sec_key: "1"
@@ -130,7 +130,6 @@ services:
   filebeat:
     image: docker.elastic.co/beats/filebeat:6.6.1
     user: root
-    name: filebeat
     depends_on:
       - logstash
       - kibana
@@ -139,7 +138,7 @@ services:
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
     environment:
-      - output.elasticsearch.hosts=["68.128.155.54:9200"]
+      - output.elasticsearch.hosts=["68.128.155.233:9200"]
       - strict.perms=false
 
   logstash:
