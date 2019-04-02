@@ -115,39 +115,63 @@ Here is the source code that is still work in progress that demonstrates a possi
 1. git clone https://github.com/ssriram1978/IOT_load_test_client.git
 
 2. There are 4 sub directories or packages inside the cloned repository.
-	a. publisher - This package contains the publisher script that produces payloads into the configured topics at the configured broker.
+
+		a. publisher - This package contains the publisher script that produces payloads into the configured topics at the configured broker.
 		The unit_test directory contains the unit test script that validates publisher code.
-	b. subscriber - This package contains the subscriber script that subscribes to a configured topic at the configured broker and computes the end-to-end latency.
+		
+		b. subscriber - This package contains the subscriber script that subscribes to a configured topic at the configured broker and computes the end-to-end latency.
+		
 		The unit_test directory contains the unit test script that validates subscriber code.
-	c. plotter - This package contains the code for talking to the configured graphical plotter (ELK or prometheus clients).
-	d. infrastructure_components - This package contains the common packages used by the end users (publisher, subscriber and plotter packages).
-		1. portainer_data  - Persistant volume mounted into the portainer docker for storing the login credentials.
-		2. publisher_subscriber - The factory model that abstracts the actual broker client code from the end users (producer and subscriber packages).
+		
+		c. plotter - This package contains the code for talking to the configured graphical plotter (ELK or prometheus clients).
+		
+		d. infrastructure_components - This package contains the common packages used by the end users (publisher, subscriber and plotter packages).
+		
+			1. portainer_data  - Persistant volume mounted into the portainer docker for storing the login credentials.
+			2. publisher_subscriber - The factory model that abstracts the actual broker client code from the end users (producer and subscriber packages).
+			
 			The unit_test directory contains the unit test script that validates publisher_subscriber factory interface.
-		3. redis_client: The redis client interface that abstracts the actual redis client API calls to the end users (producer and subscriber packages)
+			3. redis_client: The redis client interface that abstracts the actual redis client API calls to the end users (producer and subscriber packages)
+			
 			The unit_test directory contains the unit test script that validates redis interface.
 
 3. There is a make_deploy.sh shell script.
+
 	./make_deploy.sh build sss 
-		This command will build docker images of producer and consumer directories and mark them with tag sss.
+	This command will build docker images of producer and consumer directories and mark them with tag sss.
+
 	./make_deploy.sh deploy
 		This command will invoke the docker-stack.yml file and deploy all the built components in your local host 			where you built the docker images.
+	
 	./make_deploy.sh build_and_deploy sss
 		This command will build docker images of producer and consumer directories and mark them with tag sss and will invoke the docker-stack.yml file and deploy all the built components in your local host where you built the docker images.
+		
 4. docker-stack.yml – contains the list of services and their respective configuration details.
+
 	a. rabbitmq – creates a rabbitmq container.
+	
 	b. publisher – creates a publisher container. (deploy section can be modified to create as many replicas that you need).
+	
 	c.subscriber – creates a consumer container. (deploy section can be modified to create as many replicas that you need).
+	
 	d. redis – creates a redis server in a container.
+	
 	e. redis-commander: creates a container that provides a redis web interface for redis.
+	
 	f. portainer -- creates a container to provide a web interface to inspect the docker swarm and stacks.
+	
 	g. filebeat – creates a container to route all the container logs to logstash container.
+	
 	h. logstash – creates a container to handle all the docker logs.
+	
 	i. kibana – creates a container to handle the web interface to access the ELK stack.
+	
 	j. elasticsearch – creates a container to handle the elastic search of all the logstash.
-	Note 1: In this docker-stack.yml, change the hard coded IP address of the test bed to your local PC IP address to run all the docker instances on your laptop.
-	Note 2: In this docker-stack.yml, you can observe the following port mappings:
-		<ip address>:5601 – to access the kibana web interface.
-		<ip address>:9010 – to access the redis commander web interface.
-		<ip address>:9000 – to access the portainer docker web interface.
-		<ip address>:15672 – to access the rabbitMQ docker web interface.
+	
+		Note 1: In this docker-stack.yml, change the hard coded IP address of the test bed to your local PC IP address to run all the docker instances on your laptop.
+		
+		Note 2: In this docker-stack.yml, you can observe the following port mappings:
+			<ip address>:5601 – to access the kibana web interface.
+			<ip address>:9010 – to access the redis commander web interface.
+			<ip address>:9000 – to access the portainer docker web interface.
+			<ip address>:15672 – to access the rabbitMQ docker web interface.
