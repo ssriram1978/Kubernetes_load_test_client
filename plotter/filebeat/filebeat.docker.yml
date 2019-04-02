@@ -9,6 +9,6 @@ filebeat.autodiscover:
       hints.enabled: true
 
 output.elasticsearch:
-  hosts: '${ELASTICSEARCH_HOSTS:68.128.155.233:5044}'
+  hosts: '${ELASTICSEARCH_HOSTS:68.128.155.233:9200}'
 
 
