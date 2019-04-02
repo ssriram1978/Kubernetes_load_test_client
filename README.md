@@ -70,6 +70,18 @@ Requirements:
               1. Extract the date and timestamp from the message dequeued from the Unique queue identifier (a topic) and compare it with the current date and timestamp to compute the end-to-end latency.
               
               2. After having computed the latency, the message consumer instance shall publish this information to a non volatile memory which can be further extracted, transformed and loaded into more meaningful visual graphical plots.
+         
+         4. The performance test tool should provide a plug-in factory interface for developers to plug different flavors of message queue clients into the test environment and be able to use the tool to initiate the load test towards those newly developed messaging queue brokers.
+In other words, here is how the test environment should look like.
+
+    5. Each publisher instance must be capable of sending 1000 messages per second or publish 1 message every 1 millisecond.
+    6. Each subscriber instance must be capable of handling 1000 messages per second or 1 message every millisecond.
+    7. All the instances shown above must be able to automatically configure themselves based upon the OS environment variables which could be modified dynamically via a yaml file (Kubernetes or Docker swarm).
+    8. When there are hundreds of publisher instances, each of them must advertise their unique message queue topic to a database.
+    9. There will be a corresponding consumer instance (1-1 mapping between producer-consumer) which shall pick an available producer topic and shall start consuming messages from that topic.
+    10. Each consumer instance shall publish the computed latency values into a database indexed by the messaging queue topic name as the key.
+    11. There will be a plotter instance which shall read the database for the published latency_topic_keys and shall get all the latencies per second and feed it to ELK or prometheus client to graphically plot the values.
+    12. The producer, consumer and plotter instances should be able to be scaled up-down dynamically via a YAML file (kubernetes or docker-swarm).
 
 Evaluation of open source languages and tools for delivering the expected performance load test requirements:
 -------------------------------------------------------------------------------------------------------------
