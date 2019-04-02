@@ -115,7 +115,6 @@ services:
     command: -H unix:///var/run/docker.sock
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /home/mec-poc/portainer_data:/data
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
 
@@ -134,13 +133,12 @@ services:
       - logstash
       - kibana
     volumes:
-      - /plotter/filebeat/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /home/sriram/git/load_test_3/plotter/filebeat/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
     environment:
       - output.elasticsearch.hosts=["68.128.155.233:9200"]
       - strict.perms=false
-
   logstash:
     image: docker.elastic.co/logstash/logstash-oss:6.6.1
     ports:
@@ -186,4 +184,4 @@ configs:
   kibana_config:
     file: ./plotter/kibana/config/kibana.yml
   filebeat_config:
-    file: ./plotter/filebeat/filebeat.yml
+    file: ./plotter/filebeat/filebeat.docker.yml
