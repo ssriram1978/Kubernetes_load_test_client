@@ -73,7 +73,8 @@ The performance load test tool shall be able to provide the following options to
          
    4. The performance test tool should provide a plug-in factory interface for developers to plug different flavors of message queue clients into the test environment and be able to use the tool to initiate the load test towards those newly developed messaging queue brokers.
 	In other words, here is how the test environment should look like.
-
+	![](architecture_load_test.png)
+	
    5. Each publisher instance must be capable of sending 1000 messages per second or publish 1 message every 1 millisecond.
    6. Each subscriber instance must be capable of handling 1000 messages per second or 1 message every millisecond.
    7. All the instances shown above must be able to automatically configure themselves based upon the OS environment variables which could be modified dynamically via a yaml file (Kubernetes or Docker swarm).
