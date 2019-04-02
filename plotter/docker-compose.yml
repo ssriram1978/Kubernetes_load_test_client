@@ -1,0 +1,48 @@
+version: '2'
+services:
+  logstash:
+    image: docker.elastic.co/logstash/logstash:5.3.0
+    ports:
+      - "12201:12201/udp"
+      - "5044:5044"
+    environment:
+      - "xpack.monitoring.elasticsearch.url=http://elasticsearch:9200"
+    volumes:
+      - .:/usr/share/logstash/pipeline
+    links:
+      - elasticsearch:elasticsearch
+    depends_on:
+      - elasticsearch
+    command: logstash -f /usr/share/logstash/pipeline/ --config.reload.automatic
+  kibana:
+    image: docker.elastic.co/kibana/kibana:5.3.0
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      XPACK_SECURITY_ENABLED: "false"
+    links:
+      - elasticsearch:elasticsearch
+    depends_on:
+      - elasticsearch
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.3.0
+    ports:
+      - "9200:9200"
+    environment:
+      - "http.host=0.0.0.0"
+      - "transport.host=127.0.0.1"
+      - "ES_JAVA_OPTS=-Xmx2g -Xms2g"
+      - "xpack.security.enabled=false"
+  plop:
+    image: alpine
+    logging:
+      driver: gelf
+      options:
+        gelf-address: udp://localhost:12201
+        tag: "staging"
+    links:
+      - logstash:logstash
+    depends_on:
+      - logstash
+    command: /bin/sh -c "while true; do echo My Message `date`; sleep 1; done;"

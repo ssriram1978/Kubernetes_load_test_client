@@ -1,4 +1,4 @@
-version: '3.2'
+version: '3.3'
 services:
   rabbitmq:
     image: rabbitmq:3.8-rc-management
@@ -118,91 +118,73 @@ services:
       - /home/mec-poc/portainer_data:/data
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
-  prometheus:
-    image: prom/prometheus
-    volumes:
-      - ./prometheus/:/etc/prometheus/
-      - prometheus_data:/prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
-      - '--web.console.templates=/usr/share/prometheus/consoles'
-    ports:
-      - 9090:9090
+
+#  logspout:
+#    image: gliderlabs/logspout:latest
+#    command: 'syslog://:5000'
+#    depends_on:
+#      - logstash
+#    volumes:
+#      - '/var/run/docker.sock:/var/run/docker.sock'
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:6.6.1
+    user: root
+    name: filebeat
     depends_on:
-      - cadvisor
-    networks:
-      - monitor-net
-    deploy:
-      placement:
-        constraints:
-          - node.role==manager
-
-  node-exporter:
-    image: prom/node-exporter
+      - logstash
+      - kibana
     volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/rootfs:ro
-    command:
-      - '--path.procfs=/host/proc'
-      - '--path.sysfs=/host/sys'
-      - --collector.filesystem.ignored-mount-points
-      - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
-    ports:
-      - 9100:9100
-    networks:
-      - monitor-net
-    deploy:
-      mode: global
+      - /plotter/filebeat/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - output.elasticsearch.hosts=["68.128.155.54:9200"]
+      - strict.perms=false
 
-  alertmanager:
-    image: prom/alertmanager
+  logstash:
+    image: docker.elastic.co/logstash/logstash-oss:6.6.1
     ports:
-      - 9093:9093
-    volumes:
-      - "./plotter/prometheus/alertmanager/:/etc/alertmanager/"
-    networks:
-      - monitor-net
-    command:
-      - '--config.file=/etc/alertmanager/config.yml'
-      - '--storage.path=/alertmanager'
-    deploy:
-      placement:
-        constraints:
-           - node.role==manager
-
-  cadvisor:
-    image: google/cadvisor
-    volumes:
-      - /:/rootfs:ro
-      - /var/run:/var/run:rw
-      - /sys:/sys:ro
-      - /var/lib/docker/:/var/lib/docker:ro
-    ports:
-      - 8080:8080
-    networks:
-      - monitor-net
-    deploy:
-      mode: global
-
-  grafana:
-    image: grafana/grafana
+      - "5044:5044"
+      - "9600:9600"
+    configs:
+      - source: logstash_config
+        target: /usr/share/logstash/config/logstash.yml
+      - source: logstash_pipeline
+        target: /usr/share/logstash/pipeline/logstash.conf
+    environment:
+      - DROP_NON_JSON=false
+      - STDOUT=true
     depends_on:
-      - prometheus
+      - elasticsearch
+  kibana:
+    image: docker.elastic.co/kibana/kibana-oss:6.6.1
+    depends_on:
+      - elasticsearch
     ports:
-      - 3000:3000
-    volumes:
-      - grafana_data:/var/lib/grafana
-      - ./plotter/prometheus/grafana/provisioning/:/etc/grafana/provisioning/
-    env_file:
-      - ./plotter/prometheus/grafana/config.monitoring
-    networks:
-      - monitor-net
-volumes:
-    prometheus_data: {}
-    grafana_data: {}
+      - '5601:5601'
+    configs:
+      - source: kibana_config
+        target: /usr/share/kibana/config/kibana.yml
 
-networks:
-  monitor-net:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.6.1
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    configs:
+      - source: elastic_config
+        target: /usr/share/elasticsearch/config/elasticsearch.yml
+
+configs:
+
+  elastic_config:
+    file: ./plotter/elasticsearch/config/elasticsearch.yml
+  logstash_config:
+    file: ./plotter/logstash/config/logstash.yml
+  logstash_pipeline:
+    file: ./plotter/logstash/pipeline/logstash.conf
+  kibana_config:
+    file: ./plotter/kibana/config/kibana.yml
+  filebeat_config:
+    file: ./plotter/filebeat/filebeat.yml

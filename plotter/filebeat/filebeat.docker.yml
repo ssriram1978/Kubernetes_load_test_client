@@ -1,0 +1,14 @@
+filebeat.config:
+  modules:
+    path: ${path.config}/modules.d/*.yml
+    reload.enabled: false
+
+filebeat.autodiscover:
+  providers:
+    - type: docker
+      hints.enabled: true
+
+output.elasticsearch:
+  hosts: '${ELASTICSEARCH_HOSTS:68.128.155.54:5044}'
+
+
