@@ -1,7 +1,12 @@
 # !/usr/bin/env python3
+import datetime
 import logging
 import os
 import sys
+import time
+import traceback
+
+import dateutil.parser
 
 logging.basicConfig(format='%(levelname)s:%(asctime)s:%(message)s',
                     level=logging.INFO,
@@ -39,17 +44,100 @@ class Plotter:
         """
         Initialize the class instance variables.
         """
-        self.load_environment_variables()
         self.redis_instance = RedisInterface("Plotter")
-        self.topic = None
+        self.latency_redis_key = None
+        self.latency_compute_start_key_name = None
+        self.load_environment_variables()
 
     def load_environment_variables(self):
         """
         Load environment variables.
         :return:
         """
-        pass
+        while not self.latency_redis_key or \
+                not self.latency_compute_start_key_name:
+            time.sleep(1)
+            self.latency_redis_key = os.getenv("latency_redis_key",
+                                               default=None)
+            self.latency_compute_start_key_name = os.getenv("latency_compute_start_key_name_key",
+                                                            default=None)
+        logging.info(("latency_redis_key={},\n"
+                      "latency_compute_start_key_name={}."
+                      .format(self.latency_redis_key,
+                              self.latency_compute_start_key_name)))
 
     def perform_job(self):
+        is_first_timestamp_obtained = False
+        timestamp = None
+
         if self.redis_instance:
-            value = self.redis_instance.get_list_of_values_based_upon_a_key(topic, str(dt))[0]
+            while not is_first_timestamp_obtained:
+                try:
+                    timestamp = self.redis_instance.get_value_based_upon_the_key(
+                        self.latency_compute_start_key_name)
+                    if timestamp:
+                        logging.info("Obtained the first starting time as {}"
+                                     .format(self.latency_compute_start_key_name))
+                        is_first_timestamp_obtained = True
+                except:
+                    logging.error("Unable to find a key {} in redis."
+                                  .format(self.latency_compute_start_key_name))
+                    time.sleep(1)
+                    continue
+            ts = dateutil.parser.parse(timestamp)
+            dt = str(ts.isoformat(timespec='seconds'))
+
+            while True:
+                latency_list = self.redis_instance.get_list_of_values_based_upon_a_key(self.latency_redis_key, dt)
+                logging.info("{} : {}".format(dt, latency_list))
+                if not latency_list[0]:
+                    logging.info("Breaking from the loop because there is no value for the key{}"
+                                 .format(dt))
+                    break
+                year = ts.year
+                month = ts.month
+                day = ts.day
+                hour = ts.hour
+                minute = ts.minute
+                second = ts.second
+
+                if second == 59:
+                    second = 0
+                    minute += 1
+                else:
+                    second += 1
+                if minute == 60:
+                    minute = 0
+                    hour += 1
+                if hour == 24:
+                    hour = 0
+                    day += 1
+                if day == 28:
+                    day = 0
+                    month += 1
+                if month == 12:
+                    month = 1
+                    year += 1
+
+                ts = datetime.datetime(year=year,
+                                       month=month,
+                                       day=day,
+                                       hour=hour,
+                                       minute=minute,
+                                       second=second)
+                dt = str(ts.isoformat(timespec='seconds'))
+
+    def cleanup(self):
+        pass
+
+
+if __name__ == '__main__':
+    plotter = Plotter()
+    try:
+        plotter.perform_job()
+    except KeyboardInterrupt:
+        logging.error("Keyboard interrupt." + sys.exc_info()[0])
+        logging.error("Exception in user code:")
+        logging.error("-" * 60)
+        traceback.print_exc(file=sys.stdout)
+        logging.error("-" * 60)

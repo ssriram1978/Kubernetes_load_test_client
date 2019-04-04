@@ -2,7 +2,6 @@ version: '3.3'
 services:
   rabbitmq:
     image: rabbitmq:3.8-rc-management
-    hostname: rabbitmq
     environment:
       RABBITMQ_DEFAULT_USER: "guest"
       RABBITMQ_DEFAULT_PASS: "guest"
@@ -27,10 +26,10 @@ services:
       #          cpus: "0.8"
       #          memory: 2000M
       restart_policy:
-        condition: on-failure
+        condition: none
     environment:
-      broker_hostname_key: "68.128.155.54"
-      broker_port_key: "1889"
+      broker_hostname_key: 'rabbitmq'
+      broker_port_key: "1883"
       topic_key: "ThingspaceSDK/12344444444444555/UNITOnBoard"
       message_key: "{\
                      \"lastUpdated\": \"2018-11-19T18:21:03Z\",\
@@ -73,10 +72,10 @@ services:
       #          cpus: "0.8"
       #          memory: 2000M
       restart_policy:
-        condition: on-failure
+        condition: none
     environment:
-      broker_hostname_key: "68.128.155.54"
-      broker_port_key: "1889"
+      broker_hostname_key: 'rabbitmq'
+      broker_port_key: "1883"
       topic_key: "ThingspaceSDK/12344444444444555/UNITOnBoard"
       average_latency_for_n_sec_key: "1"
       test_duration_in_sec_key: "100"
@@ -88,7 +87,29 @@ services:
       latency_publish_key: 'latency_results'
       total_job_enqueued_count_redis_name_key: 'total_produced_count'
       total_job_dequeued_count_redis_name_key: 'total_consumed_count'
+      latency_compute_start_key_name_key: 'latency_compute_start_key_name'
       type_of_messaging_queue_key: 'RabbitMQ'
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+  plotter:
+    image: ssriram1978/plotter:latest
+    depends_on:
+      - redis-commander
+    deploy:
+      replicas: 1
+      #      resources:
+      #        limits:
+      #          cpus: "0.8"
+      #          memory: 2000M
+      restart_policy:
+        condition: none
+    environment:
+      redis_server_hostname_key: 'redis'
+      redis_server_port_key:  '6379'
+      redis_log_keyname_key: 'plotter_load_test_events'
+      latency_redis_key: 'ThingspaceSDK/12344444444444555/UNITOnBoard_latency_results'
+      latency_compute_start_key_name_key: 'latency_compute_start_key_name'
     volumes:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
@@ -130,7 +151,6 @@ services:
   filebeat:
     image: docker.elastic.co/beats/filebeat:6.6.1
     user: root
-    name: filebeat
     depends_on:
       - logstash
       - kibana
@@ -139,7 +159,7 @@ services:
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
     environment:
-      - output.elasticsearch.hosts=["68.128.155.54:9200"]
+      - output.elasticsearch.hosts=["elasticsearch:9200"]
       - strict.perms=false
 
   logstash:
@@ -177,7 +197,6 @@ services:
         target: /usr/share/elasticsearch/config/elasticsearch.yml
 
 configs:
-
   elastic_config:
     file: ./plotter/elasticsearch/config/elasticsearch.yml
   logstash_config:

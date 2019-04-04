@@ -33,20 +33,41 @@ build_push_directory() {
 
 
 create_infrastructure() {
-   $tag =$1
+   tag =$1
+   directory_name =$2
 
    echo "gzip_infrastructure_components"
    gzip_infrastructure_components
-   
-   echo "build_push_directory publisher $tag"
-   build_push_directory \
+
+   if [ "$2" == "all" ]; then
+    echo "build_push_directory publisher $tag"
+    build_push_directory \
       publisher \
       $tag
-
-   echo "build_push_directory subscriber $tag"
-   build_push_directory \
+    echo "build_push_directory subscriber $tag"
+    build_push_directory \
       subscriber \
       $tag
+    echo "build_push_directory subscriber $tag"
+    build_push_directory \
+      plotter \
+      $tag
+    elif [ "$2" == "publisher" ]; then
+    echo "build_push_directory publisher $tag"
+    build_push_directory \
+      publisher \
+      $tag
+    elif [ "$2" == "subscriber" ]; then
+    echo "build_push_directory publisher $tag"
+    build_push_directory \
+      subscriber \
+      $tag
+    elif [ "$2" == "plotter" ]; then
+    echo "build_push_directory plotter $tag"
+    build_push_directory \
+      plotter \
+      $tag
+    fi
 }
 
 deploy_infrastructure() {
@@ -61,10 +82,13 @@ teardown_infrastructure() {
 
 create_deploy_infrastructure() {
    tag=$1
+   directory_name=$2
 
    echo "create_infrastructure "
    create_infrastructure \
-     $tag
+     $tag \
+     $directory_name
+
    echo "deploy_infrastructure"
    deploy_infrastructure
 }
@@ -72,9 +96,9 @@ create_deploy_infrastructure() {
 case "$1" in
   build) create_infrastructure $2 ;;
   deploy) deploy_infrastructure ;;
-  build_and_deploy) create_deploy_infrastructure $2 ;;
+  build_and_deploy) create_deploy_infrastructure $2 $3 ;;
   stop) teardown_infrastructure ;;
-  *) echo "usage: $0 build <tag> |deploy|build_and_deploy <tag> |stop"
+  *) echo "usage: $0 build <tag> |deploy|build_and_deploy <tag> <all|directory_name> |stop"
      exit 1
      ;;
 esac

@@ -165,7 +165,7 @@ class RedisClient(object):
         return return_value
 
     def find_keys_matching_a_pattern(self, pattern):
-        logging.info("Trying to find all keys matching this pattern {}.".format(pattern))
+        logging.debug("Trying to find all keys matching this pattern {}.".format(pattern))
         return_value = None
         try:
             return_value = self.redis_instance.keys(pattern=(pattern + '*').encode('utf-8'))
@@ -174,7 +174,7 @@ class RedisClient(object):
         return return_value
 
     def get_list_of_values_based_upon_a_key(self, name, key):
-        logging.info("Trying to get_list_of_values_based_upon_a_key name={}, key={}."
+        logging.debug("Trying to get_list_of_values_based_upon_a_key name={}, key={}."
                      .format(name, key))
         return_value = None
         try:
@@ -184,7 +184,7 @@ class RedisClient(object):
         return return_value
 
     def set_key_to_value_within_name(self, name, key, value):
-        logging.info("Trying to set_key_to_value_within_name name={}, key={}, value={}."
+        logging.debug("Trying to set_key_to_value_within_name name={}, key={}, value={}."
                      .format(name, key, value))
         return_value = None
         try:

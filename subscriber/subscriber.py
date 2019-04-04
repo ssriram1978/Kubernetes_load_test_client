@@ -45,6 +45,7 @@ class Subscriber:
     message_queue = []
     max_queue_size = 10000
     redis_instance = None
+    latency_compute_start_key_name = None
 
     def __init__(self):
         """
@@ -71,6 +72,7 @@ class Subscriber:
         :return:
         """
         while not self.test_duration_in_sec or \
+                not Subscriber.latency_compute_start_key_name or \
                 not self.topic:
             time.sleep(1)
             self.test_duration_in_sec = int(os.getenv("test_duration_in_sec_key",
@@ -79,6 +81,8 @@ class Subscriber:
                                        default="info")
             self.latency_publish_name = os.getenv("latency_publish_key",
                                                   default="latency")
+            Subscriber.latency_compute_start_key_name = os.getenv("latency_compute_start_key_name_key",
+                                                                  default=None)
             self.max_consumer_threads = int(os.getenv("max_consumer_threads_key",
                                                       default='1'))
             if os.getenv("is_loopback_key", default="false") == "true":
@@ -91,12 +95,14 @@ class Subscriber:
                       "is_loopback={},\n"
                       "latency_publish_name={},\n"
                       "topic={},\n"
+                      "latency_compute_start_key_name={},\n"
                       "max_consumer_threads={}."
                       .format(self.test_duration_in_sec,
                               self.log_level,
                               self.is_loopback,
                               self.latency_publish_name,
                               self.topic,
+                              Subscriber.latency_compute_start_key_name,
                               self.max_consumer_threads)))
 
     def create_logger(self):
@@ -147,11 +153,18 @@ class Subscriber:
                 latency_name = value
         t = threading.currentThread()
         current_index = 0
+        is_first_key_published_in_redis = False
         while getattr(t, "do_run", True):
             t = threading.currentThread()
             try:
                 dequeued_message = Subscriber.message_queue[current_index]
                 msg_rcvd_timestamp, msg = dequeued_message[0], dequeued_message[1]
+                if not is_first_key_published_in_redis:
+                    if Subscriber.latency_compute_start_key_name:
+                        Subscriber.redis_instance.set_the_key_in_redis_db(
+                            key=Subscriber.latency_compute_start_key_name,
+                            value=msg_rcvd_timestamp)
+                        is_first_key_published_in_redis = True
                 Subscriber.parse_message_and_compute_latency(msg, msg_rcvd_timestamp, topic + '_' + latency_name)
                 current_index += 1
                 if current_index >= Subscriber.max_queue_size:

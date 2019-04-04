@@ -58,7 +58,7 @@ class RedisInterface(object):
             self.total_job_enqueued_count_redis_name = os.getenv("total_job_enqueued_count_redis_name_key",
                                                                  default="total_job_enqueued_count")
             self.total_job_dequeued_count_redis_name = os.getenv("total_job_dequeued_count_redis_name_key",
-                                                                 default=None)
+                                                                 default="total_job_dequeued_count")
         logging.info("RedisInterface:{} "
                      "redis_log_keyname={}, "
                      "total_job_enqueued_count_redis_name={}, "
@@ -129,14 +129,23 @@ class RedisInterface(object):
         return self.redis_instance.find_keys_matching_a_pattern(pattern)
 
     def get_list_of_values_based_upon_a_key(self, name, key):
-        logging.info("Trying to get_list_of_values_based_upon_a_key name={}, key={}."
+        logging.debug("Trying to get_list_of_values_based_upon_a_key name={}, key={}."
                      .format(name, key))
         return self.redis_instance.get_list_of_values_based_upon_a_key(name, key)
 
     def set_key_to_value_within_name(self, name, key, value):
-        logging.info("Trying to set_key_to_value_within_name name={}, key={}, value={}."
+        logging.debug("Trying to set_key_to_value_within_name name={}, key={}, value={}."
                      .format(name, key, value))
         return self.redis_instance.set_key_to_value_within_name(name, key, value)
+
+    def get_value_based_upon_the_key(self, key):
+        value = self.redis_instance.read_key_value_from_redis_db(key)
+        logging.debug("RedisInterface:{}."
+                      "{}={}"
+                      .format(self.thread_identifer,
+                              key,
+                              value))
+        return value
 
     def cleanup(self):
         pass
