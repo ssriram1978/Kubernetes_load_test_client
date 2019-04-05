@@ -8,9 +8,8 @@ import traceback
 
 import dateutil.parser
 
-logging.basicConfig(format='%(levelname)s:%(asctime)s:%(message)s',
-                    level=logging.INFO,
-                    datefmt='%m/%d/%Y %I:%M:%S %p')
+logging.basicConfig(format='%(message)s',
+                    level=logging.INFO)
 
 
 def import_all_paths():
@@ -61,7 +60,7 @@ class Plotter:
                                                default=None)
             self.latency_compute_start_key_name = os.getenv("latency_compute_start_key_name_key",
                                                             default=None)
-        logging.info(("latency_redis_key={},\n"
+        logging.debug(("latency_redis_key={},\n"
                       "latency_compute_start_key_name={}."
                       .format(self.latency_redis_key,
                               self.latency_compute_start_key_name)))
@@ -74,26 +73,43 @@ class Plotter:
             while not is_first_timestamp_obtained:
                 try:
                     timestamp = self.redis_instance.get_value_based_upon_the_key(
-                        self.latency_compute_start_key_name)
+                        self.latency_compute_start_key_name).decode('utf-8')
                     if timestamp:
-                        logging.info("Obtained the first starting time as {}"
-                                     .format(self.latency_compute_start_key_name))
+                        logging.debug("Obtained the first starting time as {}"
+                                     .format(timestamp))
                         is_first_timestamp_obtained = True
                 except:
-                    logging.error("Unable to find a key {} in redis."
+                    logging.debug("Unable to find a key {} in redis."
                                   .format(self.latency_compute_start_key_name))
                     time.sleep(1)
                     continue
-            ts = dateutil.parser.parse(timestamp)
+            try:
+                ts = dateutil.parser.parse(timestamp)
+            except:
+                logging.debug("Unable to parse {}.".format(timestamp))
+                return
             dt = str(ts.isoformat(timespec='seconds'))
 
+            null_data_retry_attempts = 60
+            current_retry_attempts = 0
             while True:
-                latency_list = self.redis_instance.get_list_of_values_based_upon_a_key(self.latency_redis_key, dt)
-                logging.info("{} : {}".format(dt, latency_list))
+                latency_list = self.redis_instance. \
+                    get_list_of_values_based_upon_a_key(self.latency_redis_key, dt)
                 if not latency_list[0]:
-                    logging.info("Breaking from the loop because there is no value for the key{}"
-                                 .format(dt))
-                    break
+                    if current_retry_attempts >= null_data_retry_attempts:
+                        logging.debug("Giving up...Breaking from the loop because there is no value for the key{}"
+                                     .format(dt))
+                        break
+                    else:
+                        current_retry_attempts += 1
+                        logging.debug("There is no value for the key{}, waiting for a second to fetch new data."
+                                     .format(dt))
+                        time.sleep(1)
+                        continue
+                else:
+                    current_retry_attempts = 0
+                    logging.info("{} : {}".format(dt, latency_list[0].decode('utf-8')))
+
                 year = ts.year
                 month = ts.month
                 day = ts.day

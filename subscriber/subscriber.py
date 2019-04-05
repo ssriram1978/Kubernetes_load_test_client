@@ -161,9 +161,10 @@ class Subscriber:
                 msg_rcvd_timestamp, msg = dequeued_message[0], dequeued_message[1]
                 if not is_first_key_published_in_redis:
                     if Subscriber.latency_compute_start_key_name:
+                        json_parsed_data = json.loads(msg)
                         Subscriber.redis_instance.set_the_key_in_redis_db(
                             key=Subscriber.latency_compute_start_key_name,
-                            value=msg_rcvd_timestamp)
+                            value=json_parsed_data['lastUpdated'])
                         is_first_key_published_in_redis = True
                 Subscriber.parse_message_and_compute_latency(msg, msg_rcvd_timestamp, topic + '_' + latency_name)
                 current_index += 1
