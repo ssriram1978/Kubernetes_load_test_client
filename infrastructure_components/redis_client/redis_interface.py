@@ -1,7 +1,7 @@
+import logging
 import os
 import sys
 import time
-import logging
 
 
 def import_all_paths():
@@ -32,7 +32,7 @@ class RedisInterface(object):
     """
 
     def __init__(self, thread_identifer=None):
-        logging.info("Instantiating RedisInterface.")
+        logging.debug("Instantiating RedisInterface.")
         self.total_job_enqueued_count_redis_name = None
         self.total_job_dequeued_count_redis_name = None
         self.redis_log_keyname = None
@@ -49,24 +49,24 @@ class RedisInterface(object):
         while not self.redis_log_keyname or \
                 not self.total_job_dequeued_count_redis_name:
             time.sleep(2)
-            logging.info("RedisInterface:{} "
-                         "Trying to read the "
-                         "environment variables..."
-                         .format(self.thread_identifer))
+            logging.debug("RedisInterface:{} "
+                          "Trying to read the "
+                          "environment variables..."
+                          .format(self.thread_identifer))
             self.redis_log_keyname = os.getenv("redis_log_keyname_key",
                                                default=None)
             self.total_job_enqueued_count_redis_name = os.getenv("total_job_enqueued_count_redis_name_key",
                                                                  default="total_job_enqueued_count")
             self.total_job_dequeued_count_redis_name = os.getenv("total_job_dequeued_count_redis_name_key",
                                                                  default="total_job_dequeued_count")
-        logging.info("RedisInterface:{} "
-                     "redis_log_keyname={}, "
-                     "total_job_enqueued_count_redis_name={}, "
-                     "total_job_dequeued_count_redis_name={}. "
-                     .format(self.thread_identifer,
-                             self.redis_log_keyname,
-                             self.total_job_enqueued_count_redis_name,
-                             self.total_job_dequeued_count_redis_name))
+        logging.debug("RedisInterface:{} "
+                      "redis_log_keyname={}, "
+                      "total_job_enqueued_count_redis_name={}, "
+                      "total_job_dequeued_count_redis_name={}. "
+                      .format(self.thread_identifer,
+                              self.redis_log_keyname,
+                              self.total_job_enqueued_count_redis_name,
+                              self.total_job_dequeued_count_redis_name))
 
     def get_current_enqueue_count(self):
         count = self.redis_instance.read_key_value_from_redis_db(self.total_job_enqueued_count_redis_name)
@@ -130,12 +130,12 @@ class RedisInterface(object):
 
     def get_list_of_values_based_upon_a_key(self, name, key):
         logging.debug("Trying to get_list_of_values_based_upon_a_key name={}, key={}."
-                     .format(name, key))
+                      .format(name, key))
         return self.redis_instance.get_list_of_values_based_upon_a_key(name, key)
 
     def set_key_to_value_within_name(self, name, key, value):
         logging.debug("Trying to set_key_to_value_within_name name={}, key={}, value={}."
-                     .format(name, key, value))
+                      .format(name, key, value))
         return self.redis_instance.set_key_to_value_within_name(name, key, value)
 
     def get_value_based_upon_the_key(self, key):

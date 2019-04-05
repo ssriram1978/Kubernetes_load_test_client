@@ -36,7 +36,7 @@ class RedisClient(object):
         return RedisClient.__instance
 
     def __init__(self):
-        logging.info("Instantiating RedisClient.")
+        logging.debug("Instantiating RedisClient.")
         self.redis_instance = None
         self.redis_server_hostname = None
         self.redis_server_port = 0
@@ -50,27 +50,27 @@ class RedisClient(object):
         while not self.redis_server_hostname or \
                 self.redis_server_port == 0:
             time.sleep(2)
-            logging.info("Redis Client: Trying to read "
-                         "the environment variables...")
+            logging.debug("Redis Client: Trying to read "
+                          "the environment variables...")
             self.redis_server_hostname = os.getenv("redis_server_hostname_key",
                                                    default=None)
             self.redis_server_port = int(os.getenv("redis_server_port_key",
                                                    default=0))
 
-        logging.info("redis_server_hostname={}"
-                     .format(self.redis_server_hostname))
-        logging.info("redis_server_port={}"
-                     .format(self.redis_server_port))
+        logging.debug("redis_server_hostname={}"
+                      .format(self.redis_server_hostname))
+        logging.debug("redis_server_port={}"
+                      .format(self.redis_server_port))
 
     def connect_to_redis_server(self):
         while self.redis_instance is None:
             self.redis_instance = redis.StrictRedis(host=self.redis_server_hostname,
                                                     port=self.redis_server_port,
                                                     db=0)
-        logging.info("Successfully connected "
-                     "to redisClient server {},port {}"
-                     .format(self.redis_server_hostname,
-                             self.redis_server_port))
+        logging.debug("Successfully connected "
+                      "to redisClient server {},port {}"
+                      .format(self.redis_server_hostname,
+                              self.redis_server_port))
 
     def write_an_event_on_redis_db(self, event, key=None):
         return_value = False
@@ -98,7 +98,7 @@ class RedisClient(object):
                                   "{} to {}".format(event_string, key_name))
                     return_value = True
             except redis.exceptions.ConnectionError:
-                logging.error("Unable to connect to Redis server.")
+                logging.debug("Unable to connect to Redis server.")
             except BaseException:
                 logging.error("Base Except: Unable to connect to Redis server.")
         return return_value
@@ -110,7 +110,7 @@ class RedisClient(object):
                 if self.redis_instance.exists(key):
                     return_value = True
             except redis.exceptions.ConnectionError:
-                logging.error("Unable to connect to Redis server.")
+                logging.debug("Unable to connect to Redis server.")
             except BaseException:
                 logging.error("Base Except: Unable to connect to Redis server.")
         return return_value
@@ -122,7 +122,7 @@ class RedisClient(object):
                 self.redis_instance.set(key, value)
                 return_value = True
             except redis.exceptions.ConnectionError:
-                logging.error("Unable to connect to Redis server.")
+                logging.debug("Unable to connect to Redis server.")
             except BaseException:
                 logging.error("Base Except: Unable to connect to Redis server.")
         return return_value
@@ -135,7 +135,7 @@ class RedisClient(object):
                     if self.redis_instance.delete(key):
                         return_value = True
             except redis.exceptions.ConnectionError:
-                logging.error("Unable to connect to Redis server.")
+                logging.debug("Unable to connect to Redis server.")
             except BaseException:
                 logging.error("Base Except: Unable to connect to Redis server.")
         return return_value
@@ -147,7 +147,7 @@ class RedisClient(object):
                 self.redis_instance.incr(key)
                 return_value = True
             except redis.exceptions.ConnectionError:
-                logging.error("Unable to connect to Redis server.")
+                logging.debug("Unable to connect to Redis server.")
             except BaseException:
                 logging.error("Base Except: Unable to connect to Redis server.")
         return return_value
@@ -159,7 +159,7 @@ class RedisClient(object):
                 if self.redis_instance.exists(key):
                     return_value = self.redis_instance.get(key)
             except redis.exceptions.ConnectionError:
-                logging.error("Unable to connect to Redis server.")
+                logging.debug("Unable to connect to Redis server.")
             except BaseException:
                 logging.error("Base Except: Unable to connect to Redis server.")
         return return_value
@@ -175,7 +175,7 @@ class RedisClient(object):
 
     def get_list_of_values_based_upon_a_key(self, name, key):
         logging.debug("Trying to get_list_of_values_based_upon_a_key name={}, key={}."
-                     .format(name, key))
+                      .format(name, key))
         return_value = None
         try:
             return_value = self.redis_instance.hmget(name, key)
@@ -185,7 +185,7 @@ class RedisClient(object):
 
     def set_key_to_value_within_name(self, name, key, value):
         logging.debug("Trying to set_key_to_value_within_name name={}, key={}, value={}."
-                     .format(name, key, value))
+                      .format(name, key, value))
         return_value = None
         try:
             return_value = self.redis_instance.hset(name, key, value)
