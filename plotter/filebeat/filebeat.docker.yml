@@ -11,4 +11,3 @@ filebeat.autodiscover:
 output.elasticsearch:
   hosts: '${ELASTICSEARCH_HOSTS:elasticsearch:9200}'
 
-

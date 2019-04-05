@@ -74,8 +74,8 @@ services:
       restart_policy:
         condition: none
     environment:
-      broker_hostname_key: 'rabbitmq'
-      broker_port_key: "1883"
+      broker_hostname_key: "68.128.155.233"
+      broker_port_key: "1889"
       topic_key: "ThingspaceSDK/12344444444444555/UNITOnBoard"
       average_latency_for_n_sec_key: "1"
       test_duration_in_sec_key: "100"
@@ -136,7 +136,6 @@ services:
     command: -H unix:///var/run/docker.sock
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /home/mec-poc/portainer_data:/data
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
 
@@ -149,19 +148,19 @@ services:
 #      - '/var/run/docker.sock:/var/run/docker.sock'
 
   filebeat:
-    image: docker.elastic.co/beats/filebeat:6.6.1
+    image: docker.elastic.co/beats/filebeat:6.5.4
     user: root
     depends_on:
+      - elasticsearch 
       - logstash
       - kibana
     volumes:
-      - /plotter/filebeat/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /home/sriram/git/load_test_3/plotter/filebeat/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
     environment:
       - output.elasticsearch.hosts=["elasticsearch:9200"]
       - strict.perms=false
-
   logstash:
     image: docker.elastic.co/logstash/logstash-oss:6.6.1
     ports:
@@ -206,4 +205,4 @@ configs:
   kibana_config:
     file: ./plotter/kibana/config/kibana.yml
   filebeat_config:
-    file: ./plotter/filebeat/filebeat.yml
+    file: ./plotter/filebeat/filebeat.docker.yml
