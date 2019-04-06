@@ -74,8 +74,8 @@ services:
       restart_policy:
         condition: none
     environment:
-      broker_hostname_key: "68.128.155.233"
-      broker_port_key: "1889"
+      broker_hostname_key: "rabbitmq"
+      broker_port_key: "1883"
       topic_key: "ThingspaceSDK/12344444444444555/UNITOnBoard"
       average_latency_for_n_sec_key: "1"
       test_duration_in_sec_key: "100"
@@ -155,7 +155,7 @@ services:
       - logstash
       - kibana
     volumes:
-      - /home/sriramsridhar/git/load_test_client/plotter/filebeat/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro
+      - ./plotter/filebeat/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
     environment:
