@@ -138,6 +138,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
+      - ./infrastructure_components/portainer/data:/data
 
 #  logspout:
 #    image: gliderlabs/logspout:latest
