@@ -5,7 +5,7 @@ import os
 import sys
 import time
 import traceback
-
+import json
 import dateutil.parser
 
 logging.basicConfig(format='%(message)s',
@@ -108,9 +108,8 @@ class Plotter:
                         continue
                 else:
                     current_retry_attempts = 0
-                    latency_list = eval(latency_list[0].decode('utf-8'))
-                    for latency in latency_list:
-                        logging.info("{} : {}".format(dt, latency))
+                    dict_data = {'originated_timestamp': dt, 'latency' : eval(latency_list[0].decode('utf-8'))}
+                    logging.info("{}".format(json.dumps(dict_data, ensure_ascii=False)))
 
                 year = ts.year
                 month = ts.month
