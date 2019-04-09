@@ -1,24 +1,39 @@
 version: '3.3'
 services:
-  rabbitmq:
-    image: rabbitmq:3.8-rc-management
-    environment:
-      RABBITMQ_DEFAULT_USER: "guest"
-      RABBITMQ_DEFAULT_PASS: "guest"
+  zookeeper:
+    image: confluentinc/cp-zookeeper
     ports:
-      - "15672:15672"
-      - "5672:5672"
-      - "1889:1883"
-    volumes:
-      - "./infrastructure_components/publisher_subscriber/rabbit_msgq_api/rabbitmq_conf_plugins/enabled_plugins:/etc/rabbitmq/enabled_plugins"
-      - "./infrastructure_components/publisher_subscriber/rabbit_msgq_api/rabbitmq_conf_plugins/rabbitmq-env.conf:/etc/rabbitmq/rabbitmq-env.conf"
-      - "./infrastructure_components/publisher_subscriber/rabbit_msgq_api/rabbitmq_conf_plugins/rabbitmq-modified.conf:/etc/rabbitmq/rabbitmq-modified.conf"
-      - "./infrastructure_components/publisher_subscriber/rabbit_msgq_api/rabbitmq_conf_plugins/rabbitmq-definitions.json:/etc/rabbitmq/rabbitmq-definitions.json"
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka_broker:
+    image: confluentinc/cp-enterprise-kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_CREATE_TOPICS: 'ThingspaceSDK/12344444444444555/UNITOnBoard:1:1'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_METRIC_REPORTERS: io.confluent.metrics.reporter.ConfluentMetricsReporter
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: kafka_broker:9092
+      CONFLUENT_METRICS_REPORTER_ZOOKEEPER_CONNECT: zookeeper:2181
+      CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
+      CONFLUENT_METRICS_ENABLE: 'true'
+      CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
   publisher:
     image: ssriram1978/publisher:latest
     depends_on:
       - redis-commander
-      - rabbitmq
+      - kafka_broker
     deploy:
       replicas: 1
       #      resources:
@@ -28,7 +43,7 @@ services:
       restart_policy:
         condition: none
     environment:
-      broker_hostname_key: 'rabbitmq'
+      broker_hostname_key: 'kafka_broker'
       broker_port_key: "1883"
       topic_key: "ThingspaceSDK/12344444444444555/UNITOnBoard"
       message_key: "{\
@@ -56,12 +71,12 @@ services:
       redis_log_keyname_key: 'produce_load_test_events'
       total_job_enqueued_count_redis_name_key: 'total_produced_count'
       total_job_dequeued_count_redis_name_key: 'total_consumed_count'
-      type_of_messaging_queue_key: 'RabbitMQ'
+      type_of_messaging_queue_key: 'ConfluentKafka'
   subscriber:
     image: ssriram1978/subscriber:latest
     depends_on:
       - redis-commander
-      - rabbitmq
+      - kafka_broker
     deploy:
       replicas: 1
       #      resources:
@@ -71,7 +86,7 @@ services:
       restart_policy:
         condition: none
     environment:
-      broker_hostname_key: "rabbitmq"
+      broker_hostname_key: "kafka_broker"
       broker_port_key: "1883"
       topic_key: "ThingspaceSDK/12344444444444555/UNITOnBoard"
       average_latency_for_n_sec_key: "1"
@@ -85,7 +100,7 @@ services:
       total_job_enqueued_count_redis_name_key: 'total_produced_count'
       total_job_dequeued_count_redis_name_key: 'total_consumed_count'
       latency_compute_start_key_name_key: 'latency_compute_start_key_name'
-      type_of_messaging_queue_key: 'RabbitMQ'
+      type_of_messaging_queue_key: 'ConfluentKafka'
   plotter:
     image: ssriram1978/plotter:latest
     depends_on:
@@ -122,15 +137,6 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./infrastructure_components/portainer/data:/data
-
-#  logspout:
-#    image: gliderlabs/logspout:latest
-#    command: 'syslog://:5000'
-#    depends_on:
-#      - logstash
-#    volumes:
-#      - '/var/run/docker.sock:/var/run/docker.sock'
-
   filebeat:
     image: docker.elastic.co/beats/filebeat:6.5.4
     user: root

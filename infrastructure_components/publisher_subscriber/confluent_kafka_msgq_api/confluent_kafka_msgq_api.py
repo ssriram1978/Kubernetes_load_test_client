@@ -31,6 +31,8 @@ def import_all_paths():
 
 import_all_paths()
 
+from infrastructure_components.redis_client.redis_interface import RedisInterface
+
 
 def stats_cb(stats_json_str):
     stats_json = json.loads(stats_json_str)
@@ -106,12 +108,7 @@ class ConfluentKafkaMsgQAPI(object):
     @staticmethod
     def enable_logging(logger_name):
         # Create logger for consumer (logs will be emitted when poll() is called)
-
-        logger = logging.getLogger(logger_name)
-        logger.setLevel(logging.DEBUG)
-        handler = logging.StreamHandler()
-        handler.setFormatter(logging.Formatter('%(asctime)-15s %(levelname)-8s %(message)s'))
-        logger.addHandler(handler)
+        pass
 
     # Optional per-message delivery callback (triggered by poll() or flush())
     # when a message has been successfully delivered or permanently
@@ -122,7 +119,7 @@ class ConfluentKafkaMsgQAPI(object):
             logging.error('%% Message failed delivery: %s\n' % err)
         else:
             logging.error('%% Message delivered to %s [%d] @ %s\n' %
-                         (msg.topic(), msg.partition(), str(msg.offset())))
+                          (msg.topic(), msg.partition(), str(msg.offset())))
 
     def __producer_connect(self):
         """
@@ -169,7 +166,7 @@ class ConfluentKafkaMsgQAPI(object):
                                                        operation_timeout=1.0)
                 logging.info("ret = {}".format(ret))
 
-    def enqueue(self, message):
+    def publish(self, message):
         """
         This method tries to post a message to the pre-defined kafka topic.
         :param message:
@@ -228,7 +225,7 @@ class ConfluentKafkaMsgQAPI(object):
 
             return status
 
-    def __consumer_connect_subscribe_to_broker(self):
+    def consumer_connect(self):
         """
         This method tries to connect to the kafka broker.
         :return:
@@ -264,32 +261,20 @@ class ConfluentKafkaMsgQAPI(object):
                                          on_assign=ConfluentKafkaMsgQAPI.subscription_partition_assignment_cb,
                                          on_revoke=ConfluentKafkaMsgQAPI.subscription_partition_revoke_cb)
 
-    def create_consumer_thread(self):
-        self.consumer_thread = threading.Thread(name="",
-                                                target=ConfluentKafkaMsgQAPI.dequeue_thread)
-        self.consumer_thread.do_run = True
-        self.consumer_thread.name = "consumer_thread"
-        self.consumer_thread.start()
-
     @staticmethod
-    def subscription_partition_assignment_cb(consumer, partitions):
-        logging.info('subscription_partition_assignment_cb: '
-                     'consumer = {}, Assignment {}:'.format(consumer, partitions))
-
-    @staticmethod
-    def subscription_partition_revoke_cb(consumer, partitions):
-        logging.info('subscription_partition_revoke_cb: '
-                     'consumer = {}, Assignment {}:'.format(consumer, partitions))
-
-    @staticmethod
-    def dequeue_thread():
-        logging.info("Starting {}".format(threading.current_thread().getName()))
+    def run_consumer_thread(*args, **kwargs):
+        logging.debug("Starting {}".format(threading.current_thread().getName()))
+        consumer_instance = None
+        for name, value in kwargs.items():
+            logging.debug("name={},value={}".format(name, value))
+            if name == 'consumer_instance':
+                consumer_instance = value
         t = threading.currentThread()
-        kafka_msgq_api = ConfluentKafkaMsgQAPI()
+        consumer_instance.consumer_connect()
         while getattr(t, "do_run", True):
             t = threading.currentThread()
             try:
-                msg = kafka_msgq_api.consumer_instance.poll(timeout=1.0)
+                msg = consumer_instance.poll(timeout=1.0)
                 if msg is None or msg.error():
                     return None
                 else:
@@ -301,8 +286,28 @@ class ConfluentKafkaMsgQAPI(object):
                     return msg
             except:
                 logging.info("Exception occured when trying to poll a kafka topic.")
-        logging.info("Consumer {}: Exiting"
-                     .format(threading.current_thread().getName()))
+        logging.debug("Consumer {}: Exiting"
+                      .format(threading.current_thread().getName()))
+    def create_consumer_thread(self):
+        self.consumer_thread = None
+        self.consumer_thread = threading.Thread(name="consumer_thread",
+                                                target=ConfluentKafkaMsgQAPI.run_consumer_thread,
+                                                args=(),
+                                                kwargs={'consumer_instance':
+                                                            self})
+        self.consumer_thread.do_run = True
+        self.consumer_thread.name = "consumer"
+        self.consumer_thread.start()
+
+    @staticmethod
+    def subscription_partition_assignment_cb(consumer, partitions):
+        logging.info('subscription_partition_assignment_cb: '
+                     'consumer = {}, Assignment {}:'.format(consumer, partitions))
+
+    @staticmethod
+    def subscription_partition_revoke_cb(consumer, partitions):
+        logging.info('subscription_partition_revoke_cb: '
+                     'consumer = {}, Assignment {}:'.format(consumer, partitions))
 
     def cleanup(self):
         if self.consumer_instance:

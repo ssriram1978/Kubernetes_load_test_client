@@ -6,28 +6,31 @@ import unittest
 import subprocess
 import threading
 
-#sys.path.append("..")  # Adds higher directory to python modules path.
+
+# sys.path.append("..")  # Adds higher directory to python modules path.
 
 def import_all_packages():
-    realpath=os.path.realpath(__file__)
-    #print("os.path.realpath({})={}".format(__file__,realpath))
-    dirname=os.path.dirname(realpath)
-    #print("os.path.dirname({})={}".format(realpath,dirname))
-    dirname_list=dirname.split('/')
-    #print(dirname_list)
+    realpath = os.path.realpath(__file__)
+    # print("os.path.realpath({})={}".format(__file__,realpath))
+    dirname = os.path.dirname(realpath)
+    # print("os.path.dirname({})={}".format(realpath,dirname))
+    dirname_list = dirname.split('/')
+    # print(dirname_list)
     for index in range(len(dirname_list)):
-        module_path='/'.join(dirname_list[:index])
-        #print("module_path={}".format(module_path))
+        module_path = '/'.join(dirname_list[:index])
+        # print("module_path={}".format(module_path))
         try:
             sys.path.append(module_path)
         except:
-            #print("Invalid module path {}".format(module_path))
+            # print("Invalid module path {}".format(module_path))
             pass
+
 
 import_all_packages()
 
 from infrastructure_components.log.log_file import logging_to_console_and_syslog
-from infrastructure_components.producer_consumer.confluent_kafka_msgq_api.confluent_kafka_msgq_api import ConfluentKafkaMsgQAPI
+from infrastructure_components.producer_consumer.confluent_kafka_msgq_api.confluent_kafka_msgq_api import \
+    ConfluentKafkaMsgQAPI
 from infrastructure_components.redis_client.redis_interface import RedisInterface
 from infrastructure_components.build_ut_push_docker_image.docker_api_interface import DockerAPIInterface
 from confluent_kafka import Consumer
@@ -83,7 +86,7 @@ class TestProducerConsumer(unittest.TestCase):
             self.consumer_threads[index] = threading.Thread(name="{}{}".format("thread", index),
                                                             target=TestProducerConsumer.run_consumer_instance)
             self.consumer_threads[index].do_run = True
-            self.consumer_threads[index].name = "{}_{}".format("consumer",index)
+            self.consumer_threads[index].name = "{}_{}".format("consumer", index)
             self.consumer_threads[index].start()
 
     def create_consumers(self):
@@ -128,12 +131,12 @@ class TestProducerConsumer(unittest.TestCase):
                 continue
             else:
                 logging_to_console_and_syslog('%% %s [%d] at offset %d with key %s:\n' %
-                                 (msg.topic(), msg.partition(), msg.offset(),
-                                  str(msg.key())))
+                                              (msg.topic(), msg.partition(), msg.offset(),
+                                               str(msg.key())))
                 logging_to_console_and_syslog("msg.value()={}".format(msg.value()))
                 redis_instance.increment_dequeue_count()
                 c.close()
-                c=None
+                c = None
                 time.sleep(5)
 
     def create_producer_and_produce_jobs(self):
@@ -145,8 +148,8 @@ class TestProducerConsumer(unittest.TestCase):
     def test_run(self):
         logging_to_console_and_syslog("Creating producer instance and producing jobs.")
         self.create_producer_and_produce_jobs()
-        #logging_to_console_and_syslog("creating local consumer.")
-        #self.create_local_consumer()
+        # logging_to_console_and_syslog("creating local consumer.")
+        # self.create_local_consumer()
         logging_to_console_and_syslog("Creating consumer threads to consume jobs.")
         self.create_consumers()
         time.sleep(10)
