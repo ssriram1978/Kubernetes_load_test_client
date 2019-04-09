@@ -4,7 +4,7 @@
 gzip_infrastructure_components() {
    echo "rm -f infrastructure_components.tar.gz"
    rm -f infrastructure_components.tar.gz
-   
+
    echo "tar -czvf infrastructure_components.tar.gz infrastructure_components"
    tar -czvf infrastructure_components.tar.gz infrastructure_components
 }
@@ -15,17 +15,17 @@ build_push_directory() {
    tag=$2
 
    echo "rm -f $1/infrastructure_components.tar.gz "
-   rm -f $1/infrastructure_components.tar.gz 
+   rm -f $1/infrastructure_components.tar.gz
 
    echo "cp infrastructure_components.tar.gz $directory_name/"
    cp infrastructure_components.tar.gz $directory_name
 
    echo "docker build $directory_name -t $tag/$directory_name:latest"
    docker build $directory_name -t $tag/$directory_name:latest
-   
+
    echo "rm -f $directory_name/infrastructure_components.tar.gz"
    rm -f $directory_name/infrastructure_components.tar.gz
-  
+
    echo "docker push $tag/$directory_name:latest"
    docker push $tag/$directory_name:latest
 
@@ -52,21 +52,15 @@ create_infrastructure() {
     build_push_directory \
       plotter \
       $tag
-    elif [ "$2" == "publisher" ]; then
-    echo "build_push_directory publisher $tag"
+    echo "build_push_directory subscriber $tag"
     build_push_directory \
-      publisher \
-      $tag
-    elif [ "$2" == "subscriber" ]; then
-    echo "build_push_directory publisher $tag"
-    build_push_directory \
-      subscriber \
-      $tag
-    elif [ "$2" == "plotter" ]; then
-    echo "build_push_directory plotter $tag"
-    build_push_directory \
-      plotter \
-      $tag
+        plotter/logstash \
+        $tag
+    else
+      echo "build_push_directory publisher $tag"
+      build_push_directory \
+        $2 \
+        $tag
     fi
 }
 

@@ -152,7 +152,7 @@ services:
     image: docker.elastic.co/beats/filebeat:6.5.4
     user: root
     depends_on:
-      - elasticsearch 
+      - elasticsearch
       - logstash
       - kibana
     volumes:
@@ -163,22 +163,14 @@ services:
       - output.elasticsearch.hosts=["elasticsearch:9200"]
       - strict.perms=false
   logstash:
-    image: docker.elastic.co/logstash/logstash-oss:6.6.1
+    image: ssriram1978/logstash:latest
     ports:
       - "5044:5044"
       - "9600:9600"
-    configs:
-      - source: logstash_config
-        target: /usr/share/logstash/config/logstash.yml
-      - source: logstash_pipeline
-        target: /usr/share/logstash/pipeline/logstash.conf
-    environment:
-      - DROP_NON_JSON=false
-      - STDOUT=true
     depends_on:
       - elasticsearch
   kibana:
-    image: docker.elastic.co/kibana/kibana-oss:6.6.1
+    image: docker.elastic.co/kibana/kibana-oss:6.7.1
     depends_on:
       - elasticsearch
     ports:
@@ -188,7 +180,7 @@ services:
         target: /usr/share/kibana/config/kibana.yml
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.6.1
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.7.1
     ports:
       - "9200:9200"
       - "9300:9300"
