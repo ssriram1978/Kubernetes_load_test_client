@@ -120,7 +120,7 @@ class TestProducerConsumer(unittest.TestCase):
         time.sleep(10)
         logging.debug("Creating producer instance and producing jobs.")
         self.create_producer_and_produce_jobs(msg_q_type)
-        time.sleep(10)
+        time.sleep(300)
         logging.debug("Validating if the consumer successfully dequeued messages.")
         redis_instance = RedisInterface(threading.current_thread().getName())
         self.assertEqual(redis_instance.get_current_enqueue_count(),
