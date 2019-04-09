@@ -110,7 +110,7 @@ class Plotter:
                     current_retry_attempts = 0
                     latency_list = eval(latency_list[0].decode('utf-8'))
                     for latency in latency_list:
-                        logging.info("{} : {}".format(dt, latency))
+                        logging.info("Sent_timestamp:{},Latency_in_milliseconds:{}".format(dt, latency))
 
                 year = ts.year
                 month = ts.month
