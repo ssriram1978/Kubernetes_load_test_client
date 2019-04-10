@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.7'
 services:
   rabbitmq:
     image: rabbitmq:3.8-rc-management
@@ -15,7 +15,8 @@ services:
       - "./infrastructure_components/publisher_subscriber/rabbit_msgq_api/rabbitmq_conf_plugins/rabbitmq-modified.conf:/etc/rabbitmq/rabbitmq-modified.conf"
       - "./infrastructure_components/publisher_subscriber/rabbit_msgq_api/rabbitmq_conf_plugins/rabbitmq-definitions.json:/etc/rabbitmq/rabbitmq-definitions.json"
   publisher:
-    image: ssriram1978/publisher:latest
+    build: ./publisher
+    image: publisher:latest
     depends_on:
       - redis-commander
       - rabbitmq
@@ -58,7 +59,8 @@ services:
       total_job_dequeued_count_redis_name_key: 'total_consumed_count'
       type_of_messaging_queue_key: 'RabbitMQ'
   subscriber:
-    image: ssriram1978/subscriber:latest
+    build: ./subscriber
+    image: subscriber:latest
     depends_on:
       - redis-commander
       - rabbitmq
@@ -87,7 +89,8 @@ services:
       latency_compute_start_key_name_key: 'latency_compute_start_key_name'
       type_of_messaging_queue_key: 'RabbitMQ'
   plotter:
-    image: ssriram1978/plotter:latest
+    build: ./plotter
+    image: plotter:latest
     depends_on:
       - redis-commander
     deploy:
@@ -146,7 +149,10 @@ services:
       - output.elasticsearch.hosts=["elasticsearch:9200"]
       - strict.perms=false
   logstash:
-    image: ssriram1978/logstash:latest
+    build:
+      context: ./plotter/logstash
+      dockerfile: Dockerfile
+    image: logstash:latest
     ports:
       - "5044:5044"
       - "9600:9600"

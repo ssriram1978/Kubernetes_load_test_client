@@ -20,26 +20,29 @@ build_push_directory() {
    echo "cp infrastructure_components.tar.gz $directory_name/"
    cp infrastructure_components.tar.gz $directory_name
 
-   echo "docker build $directory_name -t $tag/$directory_name:latest"
-   docker build $directory_name -t $tag/$directory_name:latest
+   if [ "$2" != "" ]; then
+      echo "docker build $directory_name -t $tag/$directory_name:latest"
+      docker build $directory_name -t $tag/$directory_name:latest
+     echo "docker push $tag/$directory_name:latest"
+     docker push $tag/$directory_name:latest
+   else
+      echo "docker build $directory_name -t $directory_name:latest"
+      docker build $directory_name -t $directory_name:latest
+   fi
 
    echo "rm -f $directory_name/infrastructure_components.tar.gz"
    rm -f $directory_name/infrastructure_components.tar.gz
-
-   echo "docker push $tag/$directory_name:latest"
-   docker push $tag/$directory_name:latest
-
 }
 
 
 create_infrastructure() {
-   tag =$1
-   directory_name =$2
+   directory_name=$1
+   tag=$2
 
    echo "gzip_infrastructure_components"
    gzip_infrastructure_components
 
-   if [ "$2" == "all" ]; then
+   if [ "$1" == "all" ]; then
     echo "build_push_directory publisher $tag"
     build_push_directory \
       publisher \
@@ -59,7 +62,7 @@ create_infrastructure() {
     else
       echo "build_push_directory publisher $tag"
       build_push_directory \
-        $2 \
+        $1 \
         $tag
     fi
 }
@@ -75,24 +78,24 @@ teardown_infrastructure() {
 }
 
 create_deploy_infrastructure() {
-   tag=$1
-   directory_name=$2
+   directory_name=$1
+   tag=$2
 
    echo "create_infrastructure "
    create_infrastructure \
-     $tag \
-     $directory_name
+     $directory_name \
+     $tag
 
    echo "deploy_infrastructure"
    deploy_infrastructure
 }
 
 case "$1" in
-  build) create_infrastructure $2 ;;
+  build) create_infrastructure $2 $3 ;;
   deploy) deploy_infrastructure ;;
   build_and_deploy) create_deploy_infrastructure $2 $3 ;;
   stop) teardown_infrastructure ;;
-  *) echo "usage: $0 build <tag> |deploy|build_and_deploy <tag> <all|directory_name> |stop"
+  *) echo "usage: $0 <build <all|directory_name> <tag>> | <deploy> | <build_and_deploy <all|directory_name> <tag>> |stop"
      exit 1
      ;;
 esac
