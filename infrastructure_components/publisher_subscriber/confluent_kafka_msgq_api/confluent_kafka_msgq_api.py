@@ -78,7 +78,7 @@ class ConfluentKafkaMsgQAPI(object):
         self.__read_environment_variables()
         if is_producer:
             self.__producer_connect()
-            self.__create_topic()
+            # self.__create_topic()
         elif is_consumer:
             self.subscription_cb = subscription_cb
             self.create_consumer_thread()
@@ -125,10 +125,9 @@ class ConfluentKafkaMsgQAPI(object):
         if self.producer_instance is None:
             try:
                 ConfluentKafkaMsgQAPI.enable_logging('ConfluentKafkaMsgQAPI:producer')
-                self.producer_conf = {'bootstrap.servers': '{}:{}'
-                    .format(self.broker_hostname, self.broker_port)}
                 # Create Producer instance
-                self.producer_instance = Producer(**self.producer_conf)
+                self.producer_instance = Producer({'bootstrap.servers': '{}:{}'
+                    .format(self.broker_hostname, self.broker_port)})
                 is_connected = True
             except:
                 print("Exception in user code:")
@@ -188,7 +187,8 @@ class ConfluentKafkaMsgQAPI(object):
             # Produce line (without newline)
             self.redis_instance.write_an_event_in_redis_db(event_message)
             self.producer_instance.produce(self.topic,
-                                           value)
+                                           value,
+                                           callback=ConfluentKafkaMsgQAPI.delivery_callback)
             self.redis_instance.increment_enqueue_count()
             status = True
         except BufferError:
@@ -215,10 +215,10 @@ class ConfluentKafkaMsgQAPI(object):
             # NOTE: Since produce() is an asynchronous API this poll() call
             #       will most likely not serve the delivery callback for the
             #       last produce()d message.
-            # self.producer_instance.poll(timeout=0.1)
+            self.producer_instance.poll(timeout=0.1)
             # Wait until all messages have been delivered
             # sys.stderr.write('%% Waiting for %d deliveries\n' % len(self.producer_instance))
-            # self.producer_instance.flush(timeout=0.1)
+            self.producer_instance.flush(timeout=0.1)
 
             return status
 
@@ -238,8 +238,8 @@ class ConfluentKafkaMsgQAPI(object):
                 # Hint: try debug='fetch' to generate some log messages
                 consumer_conf = {'bootstrap.servers': '{}:{}'.format(self.broker_hostname,
                                                                      self.broker_port),
-                                 'group.id': self.topic,
-                                 'session.timeout.ms': 6000,
+                                 'group.id':"group" ,
+                                 'session.timeout.ms': 100,
                                  'auto.offset.reset': 'earliest'}
 
                 self.consumer_instance = Consumer(consumer_conf)
@@ -283,8 +283,11 @@ class ConfluentKafkaMsgQAPI(object):
         while getattr(t, "do_run", True):
             t = threading.currentThread()
             try:
-                msg = consumer_instance.consumer_instance.consume(timeout=1)
-                if msg and not msg.error():
+                msg = consumer_instance.consumer_instance.poll(1.0)
+                if msg:
+                    if msg.error():
+                        logging.error("Consumer error: {}".format(msg.error()))
+                        continue
                     msg = msg.value().decode('utf8')
                     logging.info("msg.value()={}".format(msg))
                     consumer_instance.redis_instance.increment_dequeue_count()
