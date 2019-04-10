@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.3'
 services:
   rabbitmq:
     image: rabbitmq:3.8-rc-management
@@ -15,7 +15,6 @@ services:
       - "./infrastructure_components/publisher_subscriber/rabbit_msgq_api/rabbitmq_conf_plugins/rabbitmq-modified.conf:/etc/rabbitmq/rabbitmq-modified.conf"
       - "./infrastructure_components/publisher_subscriber/rabbit_msgq_api/rabbitmq_conf_plugins/rabbitmq-definitions.json:/etc/rabbitmq/rabbitmq-definitions.json"
   publisher:
-    build: ./publisher
     image: publisher:latest
     depends_on:
       - redis-commander
@@ -59,7 +58,6 @@ services:
       total_job_dequeued_count_redis_name_key: 'total_consumed_count'
       type_of_messaging_queue_key: 'RabbitMQ'
   subscriber:
-    build: ./subscriber
     image: subscriber:latest
     depends_on:
       - redis-commander
@@ -89,7 +87,6 @@ services:
       latency_compute_start_key_name_key: 'latency_compute_start_key_name'
       type_of_messaging_queue_key: 'RabbitMQ'
   plotter:
-    build: ./plotter
     image: plotter:latest
     depends_on:
       - redis-commander
