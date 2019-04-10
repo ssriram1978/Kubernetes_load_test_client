@@ -5,6 +5,7 @@ import sys
 import threading
 import time
 import unittest
+import traceback
 
 logging.basicConfig(format='%(levelname)s:%(asctime)s:%(message)s',
                     level=logging.INFO,
@@ -43,13 +44,13 @@ class TestProducerConsumer(unittest.TestCase):
     redis_instance = None
 
     def setUp(self):
-        os.environ["broker_hostname_key"] = "68.128.155.93"
+        os.environ["broker_hostname_key"] = "68.128.155.233"
         os.environ["broker_port_key"] = "9092"
-        os.environ["topic_key"] = "ThingspaceSDK"
+        os.environ["topic_key"] = "topic"
         os.environ["redis_log_keyname_key"] = "producer_consumer"
         os.environ["total_job_enqueued_count_redis_name_key"] = "produced"
         os.environ["total_job_dequeued_count_redis_name_key"] = "consumed"
-        os.environ["redis_server_hostname_key"] = "68.128.155.93"
+        os.environ["redis_server_hostname_key"] = "68.128.155.233"
         os.environ["redis_server_port_key"] = "6379"
         os.environ["type_of_messaging_queue_key"] = PublisherSubscriberAPI.confluentKafkaMsgQType
         self.dirname = os.path.dirname(os.path.realpath(__file__))
@@ -124,13 +125,16 @@ class TestProducerConsumer(unittest.TestCase):
         logging.debug("Creating producer instance and producing jobs.")
         self.create_producer_and_produce_jobs(msg_q_type)
         time.sleep(10)
-        logging.debug("Validating if the consumer successfully dequeued messages.")
-        redis_instance = RedisInterface(threading.current_thread().getName())
-        self.assertEqual(redis_instance.get_current_enqueue_count(),
+        try:
+            logging.debug("Validating if the consumer successfully dequeued messages.")
+            redis_instance = RedisInterface(threading.current_thread().getName())
+            self.assertEqual(redis_instance.get_current_enqueue_count(),
                          redis_instance.get_current_dequeue_count())
-        logging.debug("enqueue_count={},dequeue_count={}"
+            logging.debug("enqueue_count={},dequeue_count={}"
                       .format(redis_instance.get_current_enqueue_count(),
-                              redis_instance.get_current_dequeue_count()))
+                          redis_instance.get_current_dequeue_count()))
+        except:
+            print("caught an exception")
 
     def test_run(self):
         logging.debug("Validating **************** KAFKA MQ *****************.")
@@ -183,4 +187,10 @@ class TestProducerConsumer(unittest.TestCase):
 
 if __name__ == "__main__":
     # To avoid the end of execution traceback adding exit=False
-    unittest.main(exit=False)
+    try:
+        unittest.main(exit=False)
+    except:
+        print("unittest_kafka: Exception in user code:")
+        print("-" * 60)
+        traceback.print_exc(file=sys.stdout)
+        print("-" * 60)
