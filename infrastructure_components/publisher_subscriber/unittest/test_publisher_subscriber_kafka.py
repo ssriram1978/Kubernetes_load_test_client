@@ -124,7 +124,7 @@ class TestProducerConsumer(unittest.TestCase):
         time.sleep(10)
         logging.debug("Creating producer instance and producing jobs.")
         self.create_producer_and_produce_jobs(msg_q_type)
-        time.sleep(10)
+        time.sleep(60)
         try:
             logging.debug("Validating if the consumer successfully dequeued messages.")
             redis_instance = RedisInterface(threading.current_thread().getName())
@@ -135,13 +135,16 @@ class TestProducerConsumer(unittest.TestCase):
                           redis_instance.get_current_dequeue_count()))
         except:
             print("caught an exception")
+            print("-" * 60)
+            traceback.print_exc(file=sys.stdout)
+            print("-" * 60)
 
     def test_run(self):
         logging.debug("Validating **************** KAFKA MQ *****************.")
         self.start_produce_consume_activity(PublisherSubscriberAPI.confluentKafkaMsgQType)
 
     def post_messages(self):
-        messages = [str(x) for x in range(1, 2)]
+        messages = [str(x) for x in range(1, 10)]
         for message in messages:
             self.producer_instance.publish(message)
         self.producer_instance.cleanup()
