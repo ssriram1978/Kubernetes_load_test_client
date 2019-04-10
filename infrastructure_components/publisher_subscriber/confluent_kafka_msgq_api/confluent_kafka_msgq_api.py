@@ -73,6 +73,8 @@ class ConfluentKafkaMsgQAPI(object):
         self.is_topic_created = False
         self.subscription_cb = None
         self.consumer_thread = None
+        self.is_producer_connected = False
+        self.is_consumer_connected = False
         self.thread_identifier = thread_identifier
         self.redis_instance = RedisInterface(self.thread_identifier)
         self.__read_environment_variables()
@@ -128,7 +130,7 @@ class ConfluentKafkaMsgQAPI(object):
                 # Create Producer instance
                 self.producer_instance = Producer({'bootstrap.servers': '{}:{}'
                     .format(self.broker_hostname, self.broker_port)})
-                is_connected = True
+                self.is_producer_connected = True
             except:
                 print("Exception in user code:")
                 print("-" * 60)
@@ -139,7 +141,6 @@ class ConfluentKafkaMsgQAPI(object):
                 logging.info("ConfluentKafkaMsgQAPI: Successfully "
                              "connected to broker={}:{}"
                              .format(self.broker_hostname, self.broker_port))
-        return is_connected
 
     def __create_topic(self):
         if not self.is_topic_created:
@@ -172,6 +173,9 @@ class ConfluentKafkaMsgQAPI(object):
             logging.info("ConfluentKafkaMsgQAPI: filename is None or invalid")
             return status
 
+        if not self.is_producer_connected:
+            self.__producer_connect()
+
         # Asynchronously produce a message, the delivery report callback
         # will be triggered from poll() above, or flush() below, when the message has
         # been successfully delivered or failed permanently.
@@ -182,12 +186,12 @@ class ConfluentKafkaMsgQAPI(object):
                     self.topic)
         logging.info(event_message)
 
-        value = message.encode('utf-8')
+        # value = message.encode('utf-8')
         try:
             # Produce line (without newline)
             self.redis_instance.write_an_event_in_redis_db(event_message)
             self.producer_instance.produce(self.topic,
-                                           value,
+                                           message,
                                            callback=ConfluentKafkaMsgQAPI.delivery_callback)
             self.redis_instance.increment_enqueue_count()
             status = True
@@ -255,6 +259,7 @@ class ConfluentKafkaMsgQAPI(object):
                      "connected to broker_hostname={}"
                      .format(self.thread_identifier,
                              self.broker_hostname))
+        self.is_consumer_connected = True
         try:
             self.consumer_instance.subscribe([self.topic])
             logging.info("Consumer:{}:Successfully "
