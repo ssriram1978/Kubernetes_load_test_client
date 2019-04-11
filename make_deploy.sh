@@ -60,8 +60,8 @@ create_infrastructure() {
         plotter \
         $tag
 
-        echo "docker-compose -f $3 build"
-        docker-compose -f $3 build
+        echo "docker-compose -f $2 build"
+        docker-compose -f $2 build
     else
         echo "build_push_directory publisher $tag"
         build_push_directory \
