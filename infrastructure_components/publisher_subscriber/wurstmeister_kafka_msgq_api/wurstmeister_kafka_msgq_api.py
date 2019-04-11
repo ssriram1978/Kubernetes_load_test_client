@@ -262,8 +262,8 @@ class WurstMeisterKafkaMsgQAPI(object):
         while getattr(t, "do_run", True):
             t = threading.currentThread()
             try:
-                msgs = consumer_instance.consumer_instance.poll(timeout_ms=1,
-                                                                max_records=1
+                msgs = consumer_instance.consumer_instance.poll(timeout_ms=10,
+                                                                max_records=100
                                                                 )
                 for msg in msgs.values():
                     msg = msg[0].value.decode('utf-8')

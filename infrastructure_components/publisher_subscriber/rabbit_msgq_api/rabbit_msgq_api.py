@@ -109,8 +109,8 @@ class RabbitMsgQAPI:
                     self.client_instance.on_connect = self.on_connect
                     self.client_instance.on_message = self.on_message
                     self.client_instance.connect(self.broker_hostname, self.broker_port, 60)
-                    self.client_instance.loop_forever(timeout=1.0,
-                                                      max_packets=1,
+                    self.client_instance.loop_forever(timeout=0.01,
+                                                      max_packets=100,
                                                       retry_first_connection=False)
                     while not self.is_connected:
                         logging.info("{}: Trying to connect to {}:{}."
