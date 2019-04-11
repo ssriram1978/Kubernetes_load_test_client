@@ -146,7 +146,7 @@ class Publisher:
         :return:
         """
         for index in range(self.messages_per_second):
-            self.json_parsed_data['lastUpdated'] = datetime.now().isoformat(timespec='microseconds')
+            self.json_parsed_data['lastUpdated'] = datetime.now().isoformat()
             io = StringIO()
             json.dump(self.json_parsed_data, io)
             logging.debug("enqueuing message {}."

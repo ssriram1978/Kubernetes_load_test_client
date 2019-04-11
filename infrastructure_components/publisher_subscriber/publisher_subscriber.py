@@ -31,6 +31,8 @@ from infrastructure_components.publisher_subscriber.confluent_kafka_msgq_api.con
     ConfluentKafkaMsgQAPI
 from infrastructure_components.publisher_subscriber.wurstmeister_kafka_msgq_api.wurstmeister_kafka_msgq_api import \
     WurstMeisterKafkaMsgQAPI
+from infrastructure_components.publisher_subscriber.pulsar_msgq_api.pulsar_msgq_api import \
+    PulsarMsgQAPI
 
 
 class PublisherSubscriberAPI:
@@ -39,10 +41,12 @@ class PublisherSubscriberAPI:
     This class produces messages into
     1. Kafka Queue.
     2. Rabbit Message Queue.
+    3. Pulsar Message Queue.
     """
     rabbitMsgQType = "RabbitMQ"
     confluentKafkaMsgQType = "ConfluentKafka"
     wurstmeisterKafakMsqQType = "WurstMeisterKafka"
+    pulsarMsgQType = "Pulsar"
 
     def __init__(self,
                  is_producer=False,
@@ -97,6 +101,11 @@ class PublisherSubscriberAPI:
                                                                            is_consumer=self.is_consumer,
                                                                            thread_identifier=self.thread_identifier,
                                                                            subscription_cb=self.subscription_cb)
+                elif self.type_of_messaging_queue == PublisherSubscriberAPI.pulsarMsgQType:
+                    self.message_queue_instance = PulsarMsgQAPI(is_producer=self.is_producer,
+                                                                is_consumer=self.is_consumer,
+                                                                thread_identifier=self.thread_identifier,
+                                                                subscription_cb=self.subscription_cb)
 
             except:
                 print("Exception in user code:")
