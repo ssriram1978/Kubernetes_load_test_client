@@ -60,7 +60,7 @@ services:
     environment:
       broker_hostname_key: "broker"
       broker_port_key: "9094"
-      publisher_topic_key: "ThingspaceSDK/12344444444444555/UNITOnBoard"
+      publisher_topic_key: "ThingspaceSDK-publisher"
       message_key: "{\
                      \"lastUpdated\": \"2018-11-19T18:21:03Z\",\
                      \"unitName\": \"VZW_LH_UNIT_01\",\
@@ -103,7 +103,7 @@ services:
     environment:
       broker_hostname_key: "broker"
       broker_port_key: "9094"
-      subscriber_topic_key: "ThingspaceSDK/12344444444444555/UNITOnBoard"
+      subscriber_topic_key: "ThingspaceSDK-subscriber"
       average_latency_for_n_sec_key: "1"
       test_duration_in_sec_key: "100"
       log_level_key: "info"
@@ -132,8 +132,8 @@ services:
     environment:
       broker_hostname_key: "broker"
       broker_port_key: "9094"
-      publisher_topic_key: "ThingspaceSDK/Publisher"
-      subscriber_topic_key: "ThingspaceSDK/Subscriber"
+      publisher_topic_key: "ThingspaceSDK-subscriber"
+      subscriber_topic_key: "ThingspaceSDK-publisher"
       test_duration_in_sec_key: "100"
       log_level_key: "info"
       redis_server_hostname_key: 'redis'
@@ -158,7 +158,7 @@ services:
       redis_server_hostname_key: 'redis'
       redis_server_port_key:  '6379'
       redis_log_keyname_key: 'plotter_load_test_events'
-      latency_redis_key: 'ThingspaceSDK_latency_results'
+      latency_redis_key: 'ThingspaceSDK-subscriber_latency_results'
       latency_compute_start_key_name_key: 'latency_compute_start_key_name'
   portainer:
     image: portainer/portainer

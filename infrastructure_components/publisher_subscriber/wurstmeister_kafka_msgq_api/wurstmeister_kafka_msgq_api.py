@@ -264,7 +264,7 @@ class WurstMeisterKafkaMsgQAPI(object):
                 consumer_instance = value
         t = threading.currentThread()
         consumer_instance.consumer_connect()
-        logging.info("Trying to consume messages from {}.".format(consumer_instance.topic))
+        logging.info("Trying to consume messages from {}.".format(consumer_instance.subscriber_topic))
         while getattr(t, "do_run", True):
             t = threading.currentThread()
             try:
