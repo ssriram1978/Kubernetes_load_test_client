@@ -165,7 +165,7 @@ class WurstMeisterKafkaMsgQAPI(object):
             .format(message,
                     self.broker_hostname,
                     self.topic)
-        logging.info(event_message)
+        logging.debug(event_message)
 
         value = message.encode('utf-8')
         try:
@@ -262,13 +262,13 @@ class WurstMeisterKafkaMsgQAPI(object):
         while getattr(t, "do_run", True):
             t = threading.currentThread()
             try:
-                msgs = consumer_instance.consumer_instance.poll(timeout_ms=100,
+                msgs = consumer_instance.consumer_instance.poll(timeout_ms=1,
                                                                 max_records=1
                                                                 )
                 for msg in msgs.values():
                     msg = msg[0].value.decode('utf-8')
                     if msg:
-                        logging.info("msg.value()={}".format(msg))
+                        logging.debug("msg.value()={}".format(msg))
                         consumer_instance.redis_instance.increment_dequeue_count()
                         consumer_instance.subscription_cb(msg)
             except:
