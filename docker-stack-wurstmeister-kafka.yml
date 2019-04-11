@@ -60,7 +60,7 @@ services:
     environment:
       broker_hostname_key: "broker"
       broker_port_key: "9094"
-      topic_key: "ThingspaceSDK"
+      publisher_topic_key: "ThingspaceSDK/12344444444444555/UNITOnBoard"
       message_key: "{\
                      \"lastUpdated\": \"2018-11-19T18:21:03Z\",\
                      \"unitName\": \"VZW_LH_UNIT_01\",\
@@ -103,7 +103,7 @@ services:
     environment:
       broker_hostname_key: "broker"
       broker_port_key: "9094"
-      topic_key: "ThingspaceSDK"
+      subscriber_topic_key: "ThingspaceSDK/12344444444444555/UNITOnBoard"
       average_latency_for_n_sec_key: "1"
       test_duration_in_sec_key: "100"
       log_level_key: "info"
@@ -115,6 +115,32 @@ services:
       total_job_enqueued_count_redis_name_key: 'total_produced_count'
       total_job_dequeued_count_redis_name_key: 'total_consumed_count'
       latency_compute_start_key_name_key: 'latency_compute_start_key_name'
+      type_of_messaging_queue_key: 'WurstMeisterKafka'
+  transformer:
+    image: transformer:latest
+    depends_on:
+      - redis-commander
+      - broker
+    deploy:
+      replicas: 1
+      #      resources:
+      #        limits:
+      #          cpus: "0.8"
+      #          memory: 2000M
+      restart_policy:
+        condition: none
+    environment:
+      broker_hostname_key: "broker"
+      broker_port_key: "9094"
+      publisher_topic_key: "ThingspaceSDK/Publisher"
+      subscriber_topic_key: "ThingspaceSDK/Subscriber"
+      test_duration_in_sec_key: "100"
+      log_level_key: "info"
+      redis_server_hostname_key: 'redis'
+      redis_server_port_key:  '6379'
+      redis_log_keyname_key: 'transformer_load_test_events'
+      total_job_enqueued_count_redis_name_key: 'total_produced_count'
+      total_job_dequeued_count_redis_name_key: 'total_consumed_count'
       type_of_messaging_queue_key: 'WurstMeisterKafka'
   plotter:
     image: plotter:latest

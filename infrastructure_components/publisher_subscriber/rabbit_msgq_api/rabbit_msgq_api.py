@@ -47,10 +47,11 @@ class RabbitMsgQAPI:
         self.is_consumer = is_consumer
         self.consumer_thread = None
         self.is_connected = False
+        self.publisher_topic = None
+        self.subscriber_topic = None
         self.redis_instance = None
         self.client_instance = None
         self.broker_hostname = None
-        self.topic = None
         self.cont_id = os.popen("cat /proc/self/cgroup | head -n 1 | cut -d '/' -f3").read()
         self.thread_identifier = thread_identifier
         self.__read_environment_variables()
@@ -65,23 +66,26 @@ class RabbitMsgQAPI:
         This method is used to read the environment variables defined in the OS.
         :return:
         """
-        while self.broker_hostname is None or \
-                self.topic is None:
+        while not self.broker_hostname:
             time.sleep(2)
             logging.info("RabbitMsgQAPI:{} "
                          "Trying to read the environment variables..."
                          .format(self.thread_identifier))
             self.broker_hostname = os.getenv("broker_hostname_key", default=None)
             self.broker_port = int(os.getenv("broker_port_key", default="1883"))
-            self.topic = os.getenv("topic_key", default=None)
+            self.publisher_topic = os.getenv("publisher_topic_key", default=None)
+            self.subscriber_topic = os.getenv("subscriber_topic_key", default=None)
         # if self.cont_id and len(self.cont_id) >= 12:
         #    self.topic += '_' + self.cont_id[:12]
         logging.info("RabbitMsgQAPI:{} broker_hostname={}"
                      .format(self.thread_identifier,
                              self.broker_hostname))
-        logging.info("RabbitMsgQAPI:{} topic={}"
+        logging.info("RabbitMsgQAPI:{} publisher_topic={}"
                      .format(self.thread_identifier,
-                             self.topic))
+                             self.publisher_topic))
+        logging.info("RabbitMsgQAPI:{} subscriber_topic={}"
+                     .format(self.thread_identifier,
+                             self.subscriber_topic))
         logging.info("RabbitMsgQAPI:{} broker_port={}"
                      .format(self.thread_identifier,
                              self.broker_port))
@@ -97,10 +101,10 @@ class RabbitMsgQAPI:
         """
         if self.is_producer:
             self.redis_instance = RedisInterface(self.thread_identifier)
-            self.publish_topic_in_redis_db(self.topic)
+            self.publish_topic_in_redis_db(self.publisher_topic)
         elif self.is_consumer:
             self.redis_instance = RedisInterface(self.thread_identifier)
-            self.publish_topic_in_redis_db(self.topic)
+            self.publish_topic_in_redis_db(self.subscriber_topic)
 
         self.client_instance = mqtt.Client()
         if self.is_consumer:
@@ -172,10 +176,16 @@ class RabbitMsgQAPI:
 
     def publish_topic_in_redis_db(self, key_prefix):
         if self.cont_id and len(self.cont_id) >= 12:
-            self.redis_instance.set_the_key_in_redis_db(key_prefix, self.topic)
+            if self.is_producer:
+                self.redis_instance.set_the_key_in_redis_db(key_prefix, self.publisher_topic)
+            elif self.is_consumer:
+                self.redis_instance.set_the_key_in_redis_db(key_prefix, self.subscriber_topic)
         else:
             key = key_prefix + '_' + self.cont_id[:12]
-            self.redis_instance.set_the_key_in_redis_db(key, self.topic)
+            if self.is_producer:
+                self.redis_instance.set_the_key_in_redis_db(key, self.publisher_topic)
+            elif self.is_consumer:
+                self.redis_instance.set_the_key_in_redis_db(key, self.subscriber_topic)
 
     def disconnect(self):
         if self.client_instance:
@@ -198,12 +208,12 @@ class RabbitMsgQAPI:
 
         if self.is_consumer:
             logging.info("Trying to subscribe to topic {} at broker {}:{}."
-                         .format(self.topic,
+                         .format(self.subscriber_topic,
                                  self.broker_hostname,
                                  self.broker_port))
             self.client_instance.on_message = self.on_message
             self.client_instance.on_subscribe = self.on_subscribe
-            client.subscribe(self.topic)
+            client.subscribe(self.subscriber_topic)
 
     def on_message(self, client, userdata, message):
         event_message = "\n \n Received message from topic: {},payload={}." \
@@ -215,7 +225,12 @@ class RabbitMsgQAPI:
         self.client_instance.on_message = self.on_message
 
     def get_topic_name(self):
-        return self.topic
+        if self.is_producer:
+            return self.publisher_topic
+        elif self.is_consumer:
+            return self.subscriber_topic
+        else:
+            return None
 
     def cleanup(self):
         if self.consumer_thread:
@@ -237,8 +252,8 @@ class RabbitMsgQAPI:
         event_message = "\n \n {}: Publishing a message {} to topic {}." \
             .format(self.thread_identifier,
                     message,
-                    self.topic)
+                    self.publisher_topic)
         logging.debug(event_message)
         self.redis_instance.write_an_event_in_redis_db(event_message)
-        self.client_instance.publish(self.topic, message)
+        self.client_instance.publish(self.publisher_topic, message)
         self.redis_instance.increment_enqueue_count()

@@ -55,6 +55,11 @@ create_infrastructure() {
         subscriber \
         $tag
 
+        echo "build_push_directory transformer $tag"
+        build_push_directory \
+        transformer \
+        $tag
+
         echo "build_push_directory plotter $tag"
         build_push_directory \
         plotter \
@@ -73,13 +78,13 @@ create_infrastructure() {
 deploy_infrastructure() {
    yaml_file=$1
 
-   echo "docker stack deploy -c $1 load_test"
-   docker stack deploy -c $1 load_test
+   echo "docker stack deploy -c $1 load_test2"
+   docker stack deploy -c $1 load_test2
 }
 
 teardown_infrastructure() {
-   echo "docker stack rm load_test"
-   docker stack rm load_test
+   echo "docker stack rm load_test2"
+   docker stack rm load_test2
 }
 
 create_deploy_infrastructure() {

@@ -42,7 +42,8 @@ class TestProducerConsumer(unittest.TestCase):
     def setUp(self):
         os.environ["broker_hostname_key"] = "68.128.155.233"
         os.environ["broker_port_key"] = "1888"
-        os.environ["topic_key"] = "ThingspaceSDK/12344444444444555/UNITOnBoard"
+        os.environ["publisher_topic_key"] = "ThingspaceSDK/12344444444444555/UNITOnBoard"
+        os.environ["subscriber_topic_key"] = "ThingspaceSDK/12344444444444555/UNITOnBoard"
         os.environ["redis_log_keyname_key"] = "producer_consumer"
         os.environ["total_job_enqueued_count_redis_name_key"] = "produced"
         os.environ["total_job_dequeued_count_redis_name_key"] = "consumed"
