@@ -1,4 +1,4 @@
-FROM python
+FROM python:3.6
 RUN  apt-get update
 RUN mkdir /parent_directory
 RUN mkdir /parent_directory/subscriber

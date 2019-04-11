@@ -123,8 +123,7 @@ class WurstMeisterKafkaMsgQAPI(object):
         This method tries to connect to the kafka broker based upon the type of kafka.
         :return:
         """
-        is_connected = False
-        if self.producer_instance is None:
+        while not self.is_producer_connected:
             try:
                 # Create Producer instance
                 self.producer_instance = KafkaProducer(
@@ -211,7 +210,7 @@ class WurstMeisterKafkaMsgQAPI(object):
         This method tries to connect to the kafka broker.
         :return:
         """
-        while self.consumer_instance is None:
+        while not self.is_consumer_connected:
             try:
                 logging.info("Consumer:{}:Trying to connect to broker_hostname={}:{}"
                              .format(self.thread_identifier,
@@ -222,6 +221,11 @@ class WurstMeisterKafkaMsgQAPI(object):
                     bootstrap_servers='{}:{}'.format(self.broker_hostname, self.broker_port),
                     group_id="kafka-consumer")
 
+                logging.info("Consumer:{}:Consumer Successfully "
+                     "connected to broker_hostname={}"
+                     .format(self.thread_identifier,
+                             self.broker_hostname))
+                self.is_consumer_connected = True
             except:
                 logging.info("Consumer:{}:Exception in user code:"
                              .format(self.thread_identifier))
@@ -230,11 +234,6 @@ class WurstMeisterKafkaMsgQAPI(object):
                 logging.info("-" * 60)
                 time.sleep(5)
 
-        logging.info("Consumer:{}:Consumer Successfully "
-                     "connected to broker_hostname={}"
-                     .format(self.thread_identifier,
-                             self.broker_hostname))
-        self.is_consumer_connected = True
         try:
             self.consumer_instance.subscribe([self.topic])
             logging.info("Consumer:{}:Successfully "
