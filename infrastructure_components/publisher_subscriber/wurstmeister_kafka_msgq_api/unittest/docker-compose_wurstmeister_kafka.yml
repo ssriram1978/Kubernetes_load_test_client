@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.2'
 services:
   zookeeper:
     image: wurstmeister/zookeeper
@@ -21,7 +21,8 @@ services:
       KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://_{HOSTNAME_COMMAND}:9094
       KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9094
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
-      KAFKA_CREATE_TOPICS: "ThingspaceSDK:10:1"
+      #KAFKA_CREATE_TOPICS: "video-file-name:10:1,split-video-file:5:1"
+      KAFKA_CREATE_TOPICS: "video-file-name:1:1"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - "/etc/timezone:/etc/timezone:ro"
@@ -40,7 +41,7 @@ services:
     environment:
       - REDIS_HOSTS=redis:redis:6379
     ports:
-      - 8082:8081
+      - 8081:8081
     volumes:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"

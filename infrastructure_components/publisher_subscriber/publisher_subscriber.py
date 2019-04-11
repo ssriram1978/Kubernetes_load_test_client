@@ -29,6 +29,8 @@ import_all_modules()
 from infrastructure_components.publisher_subscriber.rabbit_msgq_api.rabbit_msgq_api import RabbitMsgQAPI
 from infrastructure_components.publisher_subscriber.confluent_kafka_msgq_api.confluent_kafka_msgq_api import \
     ConfluentKafkaMsgQAPI
+from infrastructure_components.publisher_subscriber.wurstmeister_kafka_msgq_api.wurstmeister_kafka_msgq_api import \
+    WurstMeisterKafkaMsgQAPI
 
 
 class PublisherSubscriberAPI:
@@ -40,6 +42,7 @@ class PublisherSubscriberAPI:
     """
     rabbitMsgQType = "RabbitMQ"
     confluentKafkaMsgQType = "ConfluentKafka"
+    wurstmeisterKafakMsqQType = "WurstMeisterKafka"
 
     def __init__(self,
                  is_producer=False,
@@ -89,6 +92,12 @@ class PublisherSubscriberAPI:
                                                                         is_consumer=self.is_consumer,
                                                                         thread_identifier=self.thread_identifier,
                                                                         subscription_cb=self.subscription_cb)
+                elif self.type_of_messaging_queue == PublisherSubscriberAPI.wurstmeisterKafakMsqQType:
+                    self.message_queue_instance = WurstMeisterKafkaMsgQAPI(is_producer=self.is_producer,
+                                                                           is_consumer=self.is_consumer,
+                                                                           thread_identifier=self.thread_identifier,
+                                                                           subscription_cb=self.subscription_cb)
+
             except:
                 print("Exception in user code:")
                 print("-" * 60)
