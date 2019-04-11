@@ -7,4 +7,4 @@ COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 COPY . /parent_directory/transformer
 ADD  infrastructure_components.tar.gz /parent_directory
-CMD python3 /parent_directory/transformer/subscriber.py
+CMD python3 /parent_directory/transformer/transformer.py
