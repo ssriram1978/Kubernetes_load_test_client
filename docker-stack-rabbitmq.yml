@@ -90,7 +90,7 @@ services:
     image: transformer:latest
     depends_on:
       - redis-commander
-      - broker
+      - rabbitmq
     deploy:
       replicas: 1
       #      resources:

@@ -88,7 +88,7 @@ class Subscriber:
             if os.getenv("is_loopback_key", default="false") == "true":
                 self.is_loopback = True
 
-            self.topic = os.getenv("topic_key", default=None)
+            self.topic = os.getenv("subscriber_topic_key", default=None)
 
         logging.info(("test_duration_in_sec={},\n"
                       "log_level={},\n"

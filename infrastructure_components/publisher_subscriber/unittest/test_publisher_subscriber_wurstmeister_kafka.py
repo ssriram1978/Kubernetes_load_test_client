@@ -45,14 +45,14 @@ class TestProducerConsumer(unittest.TestCase):
     redis_instance = None
 
     def setUp(self):
-        os.environ["broker_hostname_key"] = "172.17.0.1"
-        os.environ["broker_port_key"] = "9094"
-        os.environ["publisher_topic_key"] = "ThingspaceSDK/12344444444444555/UNITOnBoard"
-        os.environ["subscriber_topic_key"] = "ThingspaceSDK/12344444444444555/UNITOnBoard"
+        os.environ["broker_hostname_key"] = "192.168.1.87"
+        os.environ["broker_port_key"] = "9092"
+        os.environ["publisher_topic_key"] = "ThingspaceSDK"
+        os.environ["subscriber_topic_key"] = "ThingspaceSDK"
         os.environ["redis_log_keyname_key"] = "producer_consumer"
         os.environ["total_job_enqueued_count_redis_name_key"] = "produced"
         os.environ["total_job_dequeued_count_redis_name_key"] = "consumed"
-        os.environ["redis_server_hostname_key"] = "172.17.0.1"
+        os.environ["redis_server_hostname_key"] = "192.168.1.87"
         os.environ["redis_server_port_key"] = "6379"
         os.environ["type_of_messaging_queue_key"] = PublisherSubscriberAPI.wurstmeisterKafakMsqQType
         self.dirname = os.path.dirname(os.path.realpath(__file__))
