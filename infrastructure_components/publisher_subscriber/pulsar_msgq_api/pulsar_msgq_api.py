@@ -96,42 +96,63 @@ class PulsarMsgQAPI:
         Connect to a broker.
         :return:
         """
+        time.sleep(20)
         if self.is_producer:
             self.redis_instance = RedisInterface(self.thread_identifier)
             self.publish_topic_in_redis_db(self.publisher_topic)
         elif self.is_consumer:
             self.redis_instance = RedisInterface(self.thread_identifier)
             self.publish_topic_in_redis_db(self.subscriber_topic)
+        if self.is_producer:
+            time.sleep(10)
+            while not self.is_connected:
+                try:
+                    self.client_instance = pulsar.Client('pulsar://{}:{}'
+                                                     .format(self.broker_hostname,
+                                                             self.broker_port))
+                    logging.info("{}: Successfully connected to {}:{}."
+                                 .format(self.thread_identifier,
+                                         self.broker_hostname,
+                                         self.broker_port))
+                    if self.is_producer:
+                        self.producer_instance = \
+                            self.client_instance.create_producer(self.publisher_topic)
+                        logging.info("{}: Successfully created producer for topic {}."
+                                     .format(self.thread_identifier,
+                                             self.publisher_topic))
+                    self.is_connected = True
+                except:
+                    logging.info("{}: Trying to connect to {}:{}."
+                                 .format(self.thread_identifier,
+                                         self.broker_hostname,
+                                         self.broker_port))
+                    time.sleep(5)
 
+    def subscriber_connect_subscribe(self):
         while not self.is_connected:
             try:
                 self.client_instance = pulsar.Client('pulsar://{}:{}'
-                                                     .format(self.broker_hostname,
-                                                             self.broker_port))
+                                                .format(self.broker_hostname,
+                                                        self.broker_port))
                 logging.info("{}: Successfully connected to {}:{}."
-                             .format(self.thread_identifier,
-                                     self.broker_hostname,
-                                     self.broker_port))
-                if self.is_producer:
-                    self.producer_instance = \
-                        self.client_instance.create_producer(self.publisher_topic)
-                    logging.info("{}: Successfully created producer for topic {}."
-                                 .format(self.thread_identifier,
-                                         self.publisher_topic))
-
+                        .format(self.thread_identifier,
+                                self.broker_hostname,
+                                self.broker_port))
                 self.is_connected = True
-
+                time.sleep(10)
             except:
-                logging.info("{}: Trying to connect to {}:{}."
+                logging.info("{}: Unable to connect to {}:{}."
                              .format(self.thread_identifier,
                                      self.broker_hostname,
                                      self.broker_port))
-                time.sleep(5)
-
-    def subscribe(self):
-        self.consumer_instance = \
-            self.client_instance.subscribe(self.subscriber_topic,
-                                           'my-subscription')
+        if self.client_instance:
+            logging.info("Trying to subscribe to topic {}."
+                    .format(self.subscriber_topic));
+            self.consumer_instance = \
+                self.client_instance.subscribe(self.subscriber_topic,
+                                               'my-subscription')
+        else:
+            logging.error("No client instance found. Unable to subscribe")
 
     @staticmethod
     def run_consumer_thread(*args, **kwargs):
@@ -142,7 +163,7 @@ class PulsarMsgQAPI:
             if name == 'consumer_instance':
                 consumer_instance = value
         t = threading.currentThread()
-        consumer_instance.subscribe()
+        consumer_instance.subscriber_connect_subscribe()
         while getattr(t, "do_run", True):
             consumer_instance.consume_message()
         logging.debug("Consumer {}: Exiting"
@@ -180,11 +201,11 @@ class PulsarMsgQAPI:
     def consume_message(self):
         message = self.consumer_instance.receive()
         event_message = "\n \n Received message from topic: {},payload={}." \
-            .format(self.subscriber_topic, message.data())
+            .format(self.subscriber_topic, message.data().decode('utf-8'))
         logging.debug(event_message)
         self.redis_instance.write_an_event_in_redis_db(event_message)
         self.redis_instance.increment_dequeue_count()
-        self.subscription_cb(message.data())
+        self.subscription_cb(message.data().decode('utf-8'))
         self.consumer_instance.acknowledge(message)
 
     def get_topic_name(self):

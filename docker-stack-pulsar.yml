@@ -5,11 +5,11 @@ services:
     ports:
       - "6650:6650"
       - "8089:8080"
-    #environment:
-    #  - PULSAR_MEM=" -Xms512m -Xmx512m -XX:MaxDirectMemorySize=1g"
+        # environment:
+        #- PULSAR_MEM=" -Xms512m -Xmx512m -XX:MaxDirectMemorySize=1g"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./infrastructure_components/publisher_subscriber/pulsar_msgq_api/data:/pulsar/data
+        #- ./infrastructure_components/publisher_subscriber/pulsar_msgq_api/data:/pulsar/data
       # - "/etc/timezone:/etc/timezone:ro"
       # - "/etc/localtime:/etc/localtime:ro"
     command: ["bin/pulsar", "standalone"]
@@ -34,6 +34,7 @@ services:
     depends_on:
       - redis-commander
       - broker
+      - transformer
     deploy:
       replicas: 1
       #      resources:
@@ -44,7 +45,7 @@ services:
         condition: none
     environment:
       broker_hostname_key: "broker"
-      broker_port_key: "9094"
+      broker_port_key: "6650"
       publisher_topic_key: "ThingspaceSDK-publisher"
       message_key: "{\
                      \"lastUpdated\": \"2018-11-19T18:21:03Z\",\
@@ -87,7 +88,7 @@ services:
         condition: none
     environment:
       broker_hostname_key: "broker"
-      broker_port_key: "9094"
+      broker_port_key: "6650"
       subscriber_topic_key: "ThingspaceSDK-subscriber"
       average_latency_for_n_sec_key: "1"
       test_duration_in_sec_key: "100"
@@ -106,6 +107,7 @@ services:
     depends_on:
       - redis-commander
       - broker
+      - subscriber
     deploy:
       replicas: 1
       #      resources:
@@ -116,7 +118,7 @@ services:
         condition: none
     environment:
       broker_hostname_key: "broker"
-      broker_port_key: "9094"
+      broker_port_key: "6650"
       publisher_topic_key: "ThingspaceSDK-subscriber"
       subscriber_topic_key: "ThingspaceSDK-publisher"
       test_duration_in_sec_key: "100"
