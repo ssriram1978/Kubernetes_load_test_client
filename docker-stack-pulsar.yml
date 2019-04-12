@@ -165,7 +165,7 @@ services:
 #      - '/var/run/docker.sock:/var/run/docker.sock'
 
   filebeat:
-    image: docker.elastic.co/beats/filebeat:7.0.0
+    image: docker.elastic.co/beats/filebeat:6.5.4
     user: root
     depends_on:
       - elasticsearch
@@ -190,7 +190,7 @@ services:
       - elasticsearch
       - kibana
   kibana:
-    image: docker.elastic.co/kibana/kibana-oss:7.0.0
+    image: docker.elastic.co/kibana/kibana-oss:6.7.1
     depends_on:
       - elasticsearch
     ports:
@@ -200,7 +200,7 @@ services:
         target: /usr/share/kibana/config/kibana.yml
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.0.0
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.7.1
     ports:
       - "9200:9200"
       - "9300:9300"
