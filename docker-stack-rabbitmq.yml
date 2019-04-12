@@ -139,7 +139,7 @@ services:
     environment:
       - REDIS_HOSTS=redis:redis:6379
     ports:
-      - 9010:8081
+      - 8082:8081
   portainer:
     image: portainer/portainer
     ports:
