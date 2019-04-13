@@ -23,7 +23,7 @@ services:
     image: publisher:latest
     depends_on:
       - redis-commander
-      - rabbitmq
+      - artemis
     deploy:
       replicas: 1
       #      resources:
@@ -33,7 +33,7 @@ services:
       restart_policy:
         condition: none
     environment:
-      broker_hostname_key: 'rabbitmq'
+      broker_hostname_key: 'artemis'
       broker_port_key: "1883"
       publisher_topic_key: "ThingspaceSDK/12344444444444555/UNITOnBoard-publisher"
       message_key: "{\
@@ -66,7 +66,7 @@ services:
     image: subscriber:latest
     depends_on:
       - redis-commander
-      - rabbitmq
+      - artemis
     deploy:
       replicas: 1
       #      resources:
@@ -76,7 +76,7 @@ services:
       restart_policy:
         condition: none
     environment:
-      broker_hostname_key: "rabbitmq"
+      broker_hostname_key: "artemis"
       broker_port_key: "1883"
       subscriber_topic_key: "ThingspaceSDK/12344444444444555/UNITOnBoard-subscriber"
       average_latency_for_n_sec_key: "1"
@@ -95,7 +95,7 @@ services:
     image: transformer:latest
     depends_on:
       - redis-commander
-      - rabbitmq
+      - artemis
     deploy:
       replicas: 1
       #      resources:
@@ -105,7 +105,7 @@ services:
       restart_policy:
         condition: none
     environment:
-      broker_hostname_key: "rabbitmq"
+      broker_hostname_key: "artemis"
       broker_port_key: "1883"
       subscriber_topic_key: "ThingspaceSDK/12344444444444555/UNITOnBoard-publisher"
       publisher_topic_key: "ThingspaceSDK/12344444444444555/UNITOnBoard-subscriber"
