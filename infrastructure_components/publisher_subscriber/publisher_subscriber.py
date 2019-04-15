@@ -33,6 +33,8 @@ from infrastructure_components.publisher_subscriber.wurstmeister_kafka_msgq_api.
     WurstMeisterKafkaMsgQAPI
 from infrastructure_components.publisher_subscriber.pulsar_msgq_api.pulsar_msgq_api import \
     PulsarMsgQAPI
+from infrastructure_components.publisher_subscriber.nats_msgq_api.nats_msgq_api import \
+    NatsMsgQAPI
 
 
 class PublisherSubscriberAPI:
@@ -47,6 +49,7 @@ class PublisherSubscriberAPI:
     confluentKafkaMsgQType = "ConfluentKafka"
     wurstmeisterKafakMsqQType = "WurstMeisterKafka"
     pulsarMsgQType = "Pulsar"
+    natsMsgQType = "NATS"
 
     def __init__(self,
                  is_producer=False,
@@ -106,6 +109,11 @@ class PublisherSubscriberAPI:
                                                                 is_consumer=self.is_consumer,
                                                                 thread_identifier=self.thread_identifier,
                                                                 subscription_cb=self.subscription_cb)
+                elif self.type_of_messaging_queue == PublisherSubscriberAPI.natsMsgQType:
+                    self.message_queue_instance = NatsMsgQAPI(is_producer=self.is_producer,
+                                                              is_consumer=self.is_consumer,
+                                                              thread_identifier=self.thread_identifier,
+                                                              subscription_cb=self.subscription_cb)
 
             except:
                 print("Exception in user code:")

@@ -1,32 +1,15 @@
 version: '3.3'
 services:
-  artemis:
-    image: vromero/activemq-artemis
+  nats:
+    image: 'nats'
     ports:
-      - "8161:8161"
-      - "61616:61616"
-      - "5445:5445"
-      - "5672:5672"
-      - "1889:1883"
-      - "61613:61613"
-    deploy:
-      replicas: 1
-      #update_config:
-      #  parallelism: 2
-      #  delay: 10s
-      restart_policy:
-        condition: on-failure
-    environment:
-       ARTEMIS_USERNAME: "guest"
-       ARTEMIS_PASSWORD: "guest"
-    #volumes:
-    #   - "./infrastructure_components/publisher_subscriber/activemq_artemis/data:/var/lib/artemis/data"
-    #   - "./infrastructure_components/publisher_subscriber/activemq_artemis/etc:/var/lib/artemis/etc"
+      - "8222:8222"
+      - "4222:4222"
   publisher:
     image: publisher:latest
     depends_on:
       - redis-commander
-      - artemis
+      - nats
     deploy:
       replicas: 1
       #      resources:
@@ -36,9 +19,9 @@ services:
       restart_policy:
         condition: none
     environment:
-      broker_hostname_key: 'artemis'
-      broker_port_key: "1883"
-      publisher_topic_key: "ThingspaceSDK/12344444444444555/UNITOnBoard-publisher"
+      broker_hostname_key: 'nats'
+      broker_port_key: "4222"
+      publisher_topic_key: "ThingspaceSDK-UNITOnBoard-publisher"
       message_key: "{\
                      \"lastUpdated\": \"2018-11-19T18:21:03Z\",\
                      \"unitName\": \"VZW_LH_UNIT_01\",\
@@ -64,12 +47,12 @@ services:
       redis_log_keyname_key: 'produce_load_test_events'
       total_job_enqueued_count_redis_name_key: 'total_produced_count'
       total_job_dequeued_count_redis_name_key: 'total_consumed_count'
-      type_of_messaging_queue_key: 'RabbitMQ'
+      type_of_messaging_queue_key: 'NATS'
   subscriber:
     image: subscriber:latest
     depends_on:
       - redis-commander
-      - artemis
+      - nats
     deploy:
       replicas: 1
       #      resources:
@@ -79,9 +62,9 @@ services:
       restart_policy:
         condition: none
     environment:
-      broker_hostname_key: "artemis"
-      broker_port_key: "1883"
-      subscriber_topic_key: "ThingspaceSDK/12344444444444555/UNITOnBoard-subscriber"
+      broker_hostname_key: "nats"
+      broker_port_key: "4222"
+      subscriber_topic_key: "ThingspaceSDK-UNITOnBoard-subscriber"
       average_latency_for_n_sec_key: "1"
       test_duration_in_sec_key: "100"
       log_level_key: "info"
@@ -93,12 +76,12 @@ services:
       total_job_enqueued_count_redis_name_key: 'total_produced_count'
       total_job_dequeued_count_redis_name_key: 'total_consumed_count'
       latency_compute_start_key_name_key: 'latency_compute_start_key_name'
-      type_of_messaging_queue_key: 'RabbitMQ'
+      type_of_messaging_queue_key: 'NATS'
   transformer:
     image: transformer:latest
     depends_on:
       - redis-commander
-      - artemis
+      - nats
     deploy:
       replicas: 1
       #      resources:
@@ -108,10 +91,10 @@ services:
       restart_policy:
         condition: none
     environment:
-      broker_hostname_key: "artemis"
-      broker_port_key: "1883"
-      subscriber_topic_key: "ThingspaceSDK/12344444444444555/UNITOnBoard-publisher"
-      publisher_topic_key: "ThingspaceSDK/12344444444444555/UNITOnBoard-subscriber"
+      broker_hostname_key: "nats"
+      broker_port_key: "4222"
+      subscriber_topic_key: "ThingspaceSDK-UNITOnBoard-publisher"
+      publisher_topic_key: "ThingspaceSDK-UNITOnBoard-subscriber"
       test_duration_in_sec_key: "100"
       log_level_key: "info"
       redis_server_hostname_key: 'redis'
@@ -119,7 +102,7 @@ services:
       redis_log_keyname_key: 'transformer_load_test_events'
       total_job_enqueued_count_redis_name_key: 'total_produced_count'
       total_job_dequeued_count_redis_name_key: 'total_consumed_count'
-      type_of_messaging_queue_key: 'RabbitMQ'
+      type_of_messaging_queue_key: 'NATS'
   plotter:
     image: plotter:latest
     depends_on:
@@ -136,7 +119,7 @@ services:
       redis_server_hostname_key: 'redis'
       redis_server_port_key:  '6379'
       redis_log_keyname_key: 'plotter_load_test_events'
-      latency_redis_key: 'ThingspaceSDK/12344444444444555/UNITOnBoard-subscriber_latency_results'
+      latency_redis_key: 'ThingspaceSDK-UNITOnBoard-subscriber_latency_results'
       latency_compute_start_key_name_key: 'latency_compute_start_key_name'
   redis:
     image: redis:latest
