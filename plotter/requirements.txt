@@ -1,3 +1,6 @@
 datetime
 python-dateutil
 redis
+jinja2
+mpld3
+matplotlib

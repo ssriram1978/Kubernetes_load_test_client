@@ -7,6 +7,8 @@ import time
 import traceback
 import json
 import dateutil.parser
+import matplotlib.pyplot as plt, mpld3
+from matplotlib import dates
 
 logging.basicConfig(format='%(message)s',
                     level=logging.INFO)
@@ -46,6 +48,8 @@ class Plotter:
         self.redis_instance = RedisInterface("Plotter")
         self.latency_redis_key = None
         self.latency_compute_start_key_name = None
+        self.ip_address_of_host = None
+        self.port_number_of_host = 0
         self.load_environment_variables()
 
     def load_environment_variables(self):
@@ -54,21 +58,32 @@ class Plotter:
         :return:
         """
         while not self.latency_redis_key or \
+                not self.ip_address_of_host or \
+                not self.port_number_of_host or \
                 not self.latency_compute_start_key_name:
             time.sleep(1)
             self.latency_redis_key = os.getenv("latency_redis_key",
                                                default=None)
+            self.ip_address_of_host = os.getenv("ip_address_of_host_key",
+                                                default='0.0.0.0')
+            self.port_number_of_host = int(os.getenv("port_number_of_host_key",
+                                                     default='8888'))
+
             self.latency_compute_start_key_name = os.getenv("latency_compute_start_key_name_key",
                                                             default=None)
         logging.debug(("latency_redis_key={},\n"
-                      "latency_compute_start_key_name={}."
-                      .format(self.latency_redis_key,
-                              self.latency_compute_start_key_name)))
+                       "ip_address_of_host={},\n"
+                       "port_number_of_host={},\n"
+                       "latency_compute_start_key_name={}."
+                       .format(self.latency_redis_key,
+                               self.ip_address_of_host,
+                               self.port_number_of_host,
+                               self.latency_compute_start_key_name)))
 
     def perform_job(self):
         is_first_timestamp_obtained = False
         timestamp = None
-
+        ts = None
         if self.redis_instance:
             while not is_first_timestamp_obtained:
                 try:
@@ -76,7 +91,7 @@ class Plotter:
                         self.latency_compute_start_key_name).decode('utf-8')
                     if timestamp:
                         logging.debug("Obtained the first starting time as {}"
-                                     .format(timestamp))
+                                      .format(timestamp))
                         is_first_timestamp_obtained = True
                 except:
                     logging.debug("Unable to find a key {} in redis."
@@ -98,18 +113,19 @@ class Plotter:
                 if not latency_list[0]:
                     if current_retry_attempts >= null_data_retry_attempts:
                         logging.debug("Giving up...Breaking from the loop because there is no value for the key{}"
-                                     .format(dt))
+                                      .format(dt))
                         break
                     else:
                         current_retry_attempts += 1
                         logging.debug("There is no value for the key{}, waiting for a second to fetch new data."
-                                     .format(dt))
+                                      .format(dt))
                         time.sleep(1)
                         continue
                 else:
                     current_retry_attempts = 0
-                    dict_data = {'originated_timestamp': dt, 'latency' : eval(latency_list[0].decode('utf-8'))}
+                    dict_data = {'originated_timestamp': dt, 'latency': eval(latency_list[0].decode('utf-8'))}
                     logging.info("{}".format(json.dumps(dict_data, ensure_ascii=False)))
+                    self.pyplot_mpld3(ts, eval(latency_list[0].decode('utf-8')))
 
                 year = ts.year
                 month = ts.month
@@ -143,9 +159,22 @@ class Plotter:
                                        minute=minute,
                                        second=second)
                 dt = str(ts.isoformat(timespec='seconds'))
+        mpld3.show(ip=self.ip_address_of_host,
+                   port=self.port_number_of_host,
+                   open_browser=False)
 
     def cleanup(self):
         pass
+
+    def pyplot_mpld3(self, timestamp, list_of_latencies):
+        plt.xlabel("timestamp", style='normal', fontsize='24')
+        plt.ylabel("latency", style='normal', fontsize='24')
+        plt.title("Latency vs time", style='normal', fontsize='24')
+        matplot_date = dates.date2num(timestamp)
+        for value in list_of_latencies:
+            plt.plot_date(xdate=True, x=matplot_date, y=value, tz='America/New_York')
+        plt.legend()
+        plt.autoscale()
 
 
 if __name__ == '__main__':
