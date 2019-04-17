@@ -39,7 +39,7 @@ services:
       restart_policy:
         condition: none
     environment:
-      broker_hostname_key: '192.168.1.87'
+      broker_hostname_key: 'emq'
       broker_port_key: "1883"
       publisher_topic_key: "ThingspaceSDK/12344444444444555/UNITOnBoard-publisher"
       message_key: "{\
@@ -82,7 +82,7 @@ services:
       restart_policy:
         condition: none
     environment:
-      broker_hostname_key: "192.168.1.87"
+      broker_hostname_key: "emq"
       broker_port_key: "1883"
       subscriber_topic_key: "ThingspaceSDK/12344444444444555/UNITOnBoard-subscriber"
       average_latency_for_n_sec_key: "1"
@@ -111,7 +111,7 @@ services:
       restart_policy:
         condition: none
     environment:
-      broker_hostname_key: "192.168.1.87"
+      broker_hostname_key: "emq"
       broker_port_key: "1883"
       subscriber_topic_key: "ThingspaceSDK/12344444444444555/UNITOnBoard-publisher"
       publisher_topic_key: "ThingspaceSDK/12344444444444555/UNITOnBoard-subscriber"
