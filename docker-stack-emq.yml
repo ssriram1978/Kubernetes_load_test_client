@@ -1,0 +1,227 @@
+version: '3.7'
+services:
+  emq:
+    image: emqx/emqx:latest
+    ports:
+        - "18083:18083"
+        - "1883:1883"
+        - "4369:4369"
+    environment:
+        EMQX_LOADED_PLUGINS: "emqx_auth_redis,emqx_recon,emqx_retainer,emqx_management,emqx_dashboard"
+        EMQX_AUTH__REDIS__SERVER: "redis:6379"
+    sysctls:
+        - fs.file-max=2097152
+        - fs.nr_open=2097152
+        - net.core.somaxconn=32768
+        - net.ipv4.tcp_max_syn_backlog=16384
+        - net.core.netdev_max_backlog=16384
+        - net.ipv4.ip_local_port_range=1000 65535
+        - net.core.rmem_default=262144
+        - net.core.wmem_default=262144
+        - net.core.rmem_max=16777216
+        - net.core.wmem_max=16777216
+        - net.core.optmem_max=16777216
+        - net.ipv4.tcp_rmem=1024 4096 16777216
+        - net.ipv4.tcp_wmem=1024 4096 16777216
+        - net.ipv4.tcp_max_tw_buckets=1048576
+        - net.ipv4.tcp_fin_timeout=15
+  publisher:
+    image: publisher:latest
+    depends_on:
+      - redis-commander
+      - emq
+    deploy:
+      replicas: 1
+      #      resources:
+      #        limits:
+      #          cpus: "0.8"
+      #          memory: 2000M
+      restart_policy:
+        condition: none
+    environment:
+      broker_hostname_key: '192.168.1.87'
+      broker_port_key: "1883"
+      publisher_topic_key: "ThingspaceSDK/12344444444444555/UNITOnBoard-publisher"
+      message_key: "{\
+                     \"lastUpdated\": \"2018-11-19T18:21:03Z\",\
+                     \"unitName\": \"VZW_LH_UNIT_01\",\
+                     \"unitMacId\": \"864508030027459\",\
+                     \"sensor\": {\
+                       \"name\": \"cHe_AssetTracker\",\
+                       \"characteristics\": [\
+                         {\
+                           \"characteristicsName\": \"temperature\",\
+                           \"currentValue\": \"30.2999\",\
+                           \"readLevel\": \"R\",\
+                           \"parameterType\": \"Number\",\
+                           \"measurementUnit\": \"Celcius\"\
+                         }\
+                       ]\
+                     }\
+                   }"
+      messages_per_second_key: "100"
+      test_duration_in_sec_key: "100"
+      log_level_key: "info"
+      redis_server_hostname_key: 'redis'
+      redis_server_port_key:  '6379'
+      redis_log_keyname_key: 'produce_load_test_events'
+      total_job_enqueued_count_redis_name_key: 'total_produced_count'
+      total_job_dequeued_count_redis_name_key: 'total_consumed_count'
+      type_of_messaging_queue_key: 'RabbitMQ'
+  subscriber:
+    image: subscriber:latest
+    depends_on:
+      - redis-commander
+      - emq
+    deploy:
+      replicas: 1
+      #      resources:
+      #        limits:
+      #          cpus: "0.8"
+      #          memory: 2000M
+      restart_policy:
+        condition: none
+    environment:
+      broker_hostname_key: "192.168.1.87"
+      broker_port_key: "1883"
+      subscriber_topic_key: "ThingspaceSDK/12344444444444555/UNITOnBoard-subscriber"
+      average_latency_for_n_sec_key: "1"
+      test_duration_in_sec_key: "100"
+      log_level_key: "info"
+      max_consumer_threads_key: "1"
+      redis_server_hostname_key: 'redis'
+      redis_server_port_key:  '6379'
+      redis_log_keyname_key: 'consume_load_test_events'
+      latency_publish_key: 'latency_results'
+      total_job_enqueued_count_redis_name_key: 'total_produced_count'
+      total_job_dequeued_count_redis_name_key: 'total_consumed_count'
+      latency_compute_start_key_name_key: 'latency_compute_start_key_name'
+      type_of_messaging_queue_key: 'RabbitMQ'
+  transformer:
+    image: transformer:latest
+    depends_on:
+      - redis-commander
+      - emq
+    deploy:
+      replicas: 1
+      #      resources:
+      #        limits:
+      #          cpus: "0.8"
+      #          memory: 2000M
+      restart_policy:
+        condition: none
+    environment:
+      broker_hostname_key: "192.168.1.87"
+      broker_port_key: "1883"
+      subscriber_topic_key: "ThingspaceSDK/12344444444444555/UNITOnBoard-publisher"
+      publisher_topic_key: "ThingspaceSDK/12344444444444555/UNITOnBoard-subscriber"
+      test_duration_in_sec_key: "100"
+      log_level_key: "info"
+      redis_server_hostname_key: 'redis'
+      redis_server_port_key:  '6379'
+      redis_log_keyname_key: 'transformer_load_test_events'
+      total_job_enqueued_count_redis_name_key: 'total_produced_count'
+      total_job_dequeued_count_redis_name_key: 'total_consumed_count'
+      type_of_messaging_queue_key: 'RabbitMQ'
+  plotter:
+    image: plotter:latest
+    ports:
+      - "8889:8888"
+    depends_on:
+      - redis-commander
+    deploy:
+      replicas: 1
+      #      resources:
+      #        limits:
+      #          cpus: "0.8"
+      #          memory: 2000M
+      restart_policy:
+        condition: none
+    environment:
+      redis_server_hostname_key: 'redis'
+      redis_server_port_key:  '6379'
+      redis_log_keyname_key: 'plotter_load_test_events'
+      latency_redis_key: 'ThingspaceSDK/12344444444444555/UNITOnBoard-subscriber_latency_results'
+      latency_compute_start_key_name_key: 'latency_compute_start_key_name'
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    environment:
+      - REDIS_HOSTS=redis:redis:6379
+    ports:
+      - 8082:8081
+  portainer:
+    image: portainer/portainer
+    ports:
+      - "9000:9000"
+    command: -H unix:///var/run/docker.sock
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./infrastructure_components/portainer/data:/data
+
+#  logspout:
+#    image: gliderlabs/logspout:latest
+#    command: 'syslog://:5000'
+#    depends_on:
+#      - logstash
+#    volumes:
+#      - '/var/run/docker.sock:/var/run/docker.sock'
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:6.5.4
+    user: root
+    depends_on:
+      - elasticsearch
+      - logstash
+      - kibana
+    volumes:
+      - ./plotter/filebeat/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - output.elasticsearch.hosts=["elasticsearch:9200"]
+      - strict.perms=false
+  logstash:
+    build:
+      context: ./plotter/logstash
+      dockerfile: Dockerfile
+    image: logstash:latest
+    ports:
+      - "5044:5044"
+      - "9600:9600"
+    depends_on:
+      - elasticsearch
+      - kibana
+  kibana:
+    image: docker.elastic.co/kibana/kibana-oss:6.7.1
+    depends_on:
+      - elasticsearch
+    ports:
+      - '5601:5601'
+    configs:
+      - source: kibana_config
+        target: /usr/share/kibana/config/kibana.yml
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.7.1
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    configs:
+      - source: elastic_config
+        target: /usr/share/elasticsearch/config/elasticsearch.yml
+
+configs:
+  elastic_config:
+    file: ./plotter/elasticsearch/config/elasticsearch.yml
+  logstash_config:
+    file: ./plotter/logstash/config/logstash.yml
+  logstash_pipeline:
+    file: ./plotter/logstash/pipeline/logstash.conf
+  kibana_config:
+    file: ./plotter/kibana/config/kibana.yml
+  filebeat_config:
+    file: ./plotter/filebeat/filebeat.docker.yml
