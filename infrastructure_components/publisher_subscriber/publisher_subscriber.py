@@ -69,7 +69,6 @@ class PublisherSubscriberAPI:
         self.dict_of_queue_names = None
         self.redis_instance = RedisInterface("Publisher_Subscriber")
         self.read_environment_variables()
-        self.fetch_queue_name_from_redis()
         self.__connect()
 
     def read_environment_variables(self):
@@ -87,9 +86,9 @@ class PublisherSubscriberAPI:
                                                      default=None)
             self.hash_table_name = os.getenv("hash_table_name",
                                              default=None)
-        logging.info("PublisherSubscriberAPI:{}"
-                     "hash_table_name:{}"
-                     "type_of_messaging_queue={}"
+        logging.info("PublisherSubscriberAPI:{}\n"
+                     "hash_table_name:{}\n"
+                     "type_of_messaging_queue={}.\n"
                      .format(self.thread_identifier,
                              self.hash_table_name,
                              self.type_of_messaging_queue))
@@ -122,6 +121,7 @@ class PublisherSubscriberAPI:
         """
         if self.message_queue_instance is None:
             queue_name = None
+            self.fetch_queue_name_from_redis()
             if self.is_producer:
                 queue_name = self.dict_of_queue_names["publisher"]
                 logging.info("Found publisher queue name {}.".format(queue_name))

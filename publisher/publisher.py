@@ -32,9 +32,8 @@ def import_all_paths():
 
 
 import_all_paths()
-
-from infrastructure_components.publisher_subscriber.publisher_subscriber import PublisherSubscriberAPI
 from infrastructure_components.redis_client.redis_interface import RedisInterface
+from infrastructure_components.publisher_subscriber.publisher_subscriber import PublisherSubscriberAPI
 
 
 class Publisher:
@@ -54,14 +53,14 @@ class Publisher:
         self.publisher_key_name = None
         self.container_id = os.popen("cat /proc/self/cgroup | head -n 1 | cut -d '/' -f3").read()
         self.container_id = self.container_id[:12]
-        self.redis_instance = RedisInterface()
-        self.producer_consumer_instance = PublisherSubscriberAPI(is_producer=True,
-                                                                 thread_identifier='Producer')
+        self.redis_instance = RedisInterface('Publisher')
         self.broker_type = None
         self.load_environment_variables()
         self.set_log_level()
         self.publish_container_id_to_redis()
         self.parse_message_into_json()
+        self.producer_consumer_instance = PublisherSubscriberAPI(is_producer=True,
+                                                                 thread_identifier='Producer')
 
     def load_environment_variables(self):
         """
@@ -104,6 +103,9 @@ class Publisher:
 
     def publish_container_id_to_redis(self):
         if self.redis_instance:
+            logging.info("Publishing key = {}, value = {} in redis."
+                         .format(self.publisher_key_name,
+                                 self.container_id + ' '))
             self.redis_instance.append_value_to_a_key(self.publisher_key_name,
                                                       self.container_id + ' ')
 

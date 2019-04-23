@@ -73,7 +73,7 @@ class WurstMeisterKafkaMsgQAPI(object):
             self.publisher_topic = queue_name
         self.subscriber_topic = None
         if self.is_consumer:
-        self.subscriber_topic = queue_name
+            self.subscriber_topic = queue_name
         self.producer_conf = None
         self.consumer_conf = None
         self.is_topic_created = False

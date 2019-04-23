@@ -32,12 +32,13 @@ class RedisInterface(object):
     """
 
     def __init__(self, thread_identifer=None):
-        logging.debug("Instantiating RedisInterface.")
+        logging.info("Instantiating RedisInterface for {}.".format(thread_identifer))
         self.total_job_enqueued_count_redis_name = None
         self.total_job_dequeued_count_redis_name = None
         self.redis_log_keyname = None
         self.thread_identifer = thread_identifer
         self.read_environment_variables()
+        time.sleep(10)
         self.redis_instance = RedisClient()
 
     def read_environment_variables(self):
@@ -46,8 +47,7 @@ class RedisInterface(object):
         defined in the OS.
         :return:
         """
-        while not self.redis_log_keyname or \
-                not self.total_job_dequeued_count_redis_name:
+        while not self.redis_log_keyname:
             time.sleep(2)
             logging.debug("RedisInterface:{} "
                           "Trying to read the "

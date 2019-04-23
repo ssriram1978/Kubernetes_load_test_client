@@ -34,8 +34,8 @@ def import_all_paths():
 
 import_all_paths()
 
-from infrastructure_components.publisher_subscriber.publisher_subscriber import PublisherSubscriberAPI
 from infrastructure_components.redis_client.redis_interface import RedisInterface
+from infrastructure_components.publisher_subscriber.publisher_subscriber import PublisherSubscriberAPI
 
 
 class Transformer:
@@ -122,6 +122,9 @@ class Transformer:
 
     def publish_container_id_to_redis(self):
         if self.redis_instance:
+            logging.info("Publishing key = {}, value = {} in redis."
+                         .format(self.transformer_key_name,
+                                 self.container_id + ' '))
             self.redis_instance.append_value_to_a_key(self.transformer_key_name,
                                                       self.container_id + ' ')
 

@@ -52,7 +52,7 @@ class RabbitMsgQAPI:
             self.publisher_topic = queue_name
         self.subscriber_topic = None
         if self.is_consumer:
-        self.subscriber_topic = queue_name
+            self.subscriber_topic = queue_name
         self.redis_instance = None
         self.client_instance = None
         self.broker_hostname = None

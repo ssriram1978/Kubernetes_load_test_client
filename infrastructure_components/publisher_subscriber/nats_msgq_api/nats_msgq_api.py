@@ -58,7 +58,7 @@ class NatsMsgQAPI:
             self.publisher_topic = queue_name
         self.subscriber_topic = None
         if self.is_consumer:
-        self.subscriber_topic = queue_name
+            self.subscriber_topic = queue_name
         self.redis_instance = None
         self.broker_hostname = None
         self.cont_id = os.popen("cat /proc/self/cgroup | head -n 1 | cut -d '/' -f3").read()

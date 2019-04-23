@@ -75,20 +75,20 @@ class Orchestrator:
                 not self.publisher_hash_table_name or \
                 not self.subscriber_hash_table_name or \
                 not self.transformer_hash_table_name:
-            self.is_loopback = os.getenv("is_loopback",
+            self.is_loopback = os.getenv("is_loopback_key",
                                          default=None)
             self.publisher_key_name = os.getenv("publisher_key_name",
-                                                defffault=None)
+                                                default=None)
             self.subscriber_key_name = os.getenv("subscriber_key_name",
-                                                 defffault=None)
+                                                 default=None)
             self.transformer_key_name = os.getenv("transformer_key_name",
-                                                  defffault=None)
+                                                  default=None)
             self.publisher_hash_table_name = os.getenv("publisher_hash_table_name",
-                                                       defffault=None)
+                                                       default=None)
             self.subscriber_hash_table_name = os.getenv("subscriber_hash_table_name",
-                                                        defffault=None)
+                                                        default=None)
             self.transformer_hash_table_name = os.getenv("transformer_hash_table_name",
-                                                         defffault=None)
+                                                         default=None)
             time.sleep(1)
         logging.info("is_loopback={},\n"
                      "publisher_key_name={},\n"
@@ -149,20 +149,16 @@ class Orchestrator:
                                                                             self.transformer_hash_table_name):
                     self.redis_instance.set_key_to_value_within_name(self.publisher_hash_table_name,
                                                                      pub_container_id,
-                                                                     "{publisher : pub_{}}"
-                                                                     .format(pub_container_id))
+                                                                     str({"publisher" : "pub_" + pub_container_id }))
 
                     self.redis_instance.set_key_to_value_within_name(self.subscriber_hash_table_name,
                                                                      sub_container_id,
-                                                                     "{subscriber : sub_{}}"
-                                                                     .format(sub_container_id))
+                                                                     str({"subscriber": "sub_" + sub_container_id}))
 
                     self.redis_instance.set_key_to_value_within_name(self.transformer_hash_table_name,
                                                                      trans_container_id,
-                                                                     "{subscriber : pub_{},"
-                                                                     "publisher : sub_{}}"
-                                                                     .format(pub_container_id,
-                                                                             sub_container_id))
+                                                                     str({"subscriber": "pub_" + pub_container_id,
+                                                                          "publisher": "sub_" + sub_container_id}))
 
     def perform_job(self):
         while True:
@@ -177,7 +173,7 @@ class Orchestrator:
                                                                                   subscribers,
                                                                                   transformers)
 
-            time.sleep(60)
+            time.sleep(5)
 
 
 if __name__ == '__main__':

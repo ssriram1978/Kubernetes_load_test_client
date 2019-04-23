@@ -61,7 +61,7 @@ services:
       broker_hostname_key: "broker"
       broker_port_key: "9094"
       publisher_key_name : "publisher"
-      publisher_hash_table_name: "publisher_hash_table"
+      hash_table_name: "publisher_hash_table"
       message_key: "{\
                      \"lastUpdated\": \"2018-11-19T18:21:03Z\",\
                      \"unitName\": \"VZW_LH_UNIT_01\",\
@@ -109,7 +109,7 @@ services:
       broker_hostname_key: "broker"
       broker_port_key: "9094"
       subscriber_key_name : "subscriber"
-      subscriber_hash_table_name: "subscriber_hash_table"
+      hash_table_name: "subscriber_hash_table"
       average_latency_for_n_sec_key: "1"
       test_duration_in_sec_key: "100"
       log_level_key: "info"
@@ -143,7 +143,7 @@ services:
       broker_hostname_key: "broker"
       broker_port_key: "9094"
       transformer_key_name: "transformer"
-      transformer_hash_table_name: "transformer_hash_table"
+      hash_table_name: "transformer_hash_table"
       test_duration_in_sec_key: "100"
       log_level_key: "info"
       redis_server_hostname_key: 'redis'
