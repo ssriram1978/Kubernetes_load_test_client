@@ -1,15 +1,54 @@
 version: '3.3'
 services:
-  nats:
-    image: 'nats'
+  zookeeper:
+    image: wurstmeister/zookeeper
     ports:
-      - "8222:8222"
-      - "4222:4222"
+    - "2181:2181"
+    # volumes:
+    # - "/etc/timezone:/etc/timezone:ro"
+    # - "/etc/localtime:/etc/localtime:ro"
+  broker:
+    image: wurstmeister/kafka:latest
+    ports:
+      - target: 9094
+        published: 9094
+        protocol: tcp
+        mode: host
+    environment:
+      HOSTNAME_COMMAND: "docker info | grep ^Name: | cut -d' ' -f 2"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://:9094
+      KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9094
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_CREATE_TOPICS: "ThingspaceSDK:10:1"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      # - "/etc/timezone:/etc/timezone:ro"
+      # - "/etc/localtime:/etc/localtime:ro"
+    depends_on:
+      - zookeeper
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    # volumes:
+    #   - "/etc/timezone:/etc/timezone:ro"
+    #   - "/etc/localtime:/etc/localtime:ro"
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    environment:
+      - REDIS_HOSTS=redis:redis:6379
+    ports:
+      - 8082:8081
+    # volumes:
+    #   - "/etc/timezone:/etc/timezone:ro"
+    #   - "/etc/localtime:/etc/localtime:ro"
   publisher:
     image: publisher:latest
     depends_on:
       - redis-commander
-      - nats
+      - broker
     deploy:
       replicas: 1
       #      resources:
@@ -19,9 +58,9 @@ services:
       restart_policy:
         condition: none
     environment:
-      broker_hostname_key: 'nats'
-      broker_port_key: "4222"
-      publisher_topic_key: "ThingspaceSDK-UNITOnBoard-publisher"
+      broker_hostname_key: "broker"
+      broker_port_key: "9094"
+      publisher_topic_key: "publisher_topic"
       message_key: "{\
                      \"lastUpdated\": \"2018-11-19T18:21:03Z\",\
                      \"unitName\": \"VZW_LH_UNIT_01\",\
@@ -47,12 +86,12 @@ services:
       redis_log_keyname_key: 'produce_load_test_events'
       total_job_enqueued_count_redis_name_key: 'total_produced_count'
       total_job_dequeued_count_redis_name_key: 'total_consumed_count'
-      type_of_messaging_queue_key: 'NATS'
+      type_of_messaging_queue_key: 'WurstMeisterKafka'
   subscriber:
     image: subscriber:latest
     depends_on:
       - redis-commander
-      - nats
+      - broker
     deploy:
       replicas: 1
       #      resources:
@@ -62,9 +101,9 @@ services:
       restart_policy:
         condition: none
     environment:
-      broker_hostname_key: "nats"
-      broker_port_key: "4222"
-      subscriber_topic_key: "ThingspaceSDK-UNITOnBoard-subscriber"
+      broker_hostname_key: "broker"
+      broker_port_key: "9094"
+      subscriber_topic_key: "subscriber_topic"
       average_latency_for_n_sec_key: "1"
       test_duration_in_sec_key: "100"
       log_level_key: "info"
@@ -76,12 +115,12 @@ services:
       total_job_enqueued_count_redis_name_key: 'total_produced_count'
       total_job_dequeued_count_redis_name_key: 'total_consumed_count'
       latency_compute_start_key_name_key: 'start_time'
-      type_of_messaging_queue_key: 'NATS'
+      type_of_messaging_queue_key: 'WurstMeisterKafka'
   transformer:
     image: transformer:latest
     depends_on:
       - redis-commander
-      - nats
+      - broker
     deploy:
       replicas: 1
       #      resources:
@@ -91,10 +130,8 @@ services:
       restart_policy:
         condition: none
     environment:
-      broker_hostname_key: "nats"
-      broker_port_key: "4222"
-      subscriber_topic_key: "ThingspaceSDK-UNITOnBoard-publisher"
-      publisher_topic_key: "ThingspaceSDK-UNITOnBoard-subscriber"
+      broker_hostname_key: "broker"
+      broker_port_key: "9094"
       test_duration_in_sec_key: "100"
       log_level_key: "info"
       redis_server_hostname_key: 'redis'
@@ -102,7 +139,31 @@ services:
       redis_log_keyname_key: 'transformer_load_test_events'
       total_job_enqueued_count_redis_name_key: 'total_produced_count'
       total_job_dequeued_count_redis_name_key: 'total_consumed_count'
-      type_of_messaging_queue_key: 'NATS'
+      type_of_messaging_queue_key: 'WurstMeisterKafka'
+  orchestrator:
+    image: orchestrator:latest
+    depends_on:
+      - redis-commander
+    deploy:
+      replicas: 1
+      #      resources:
+      #        limits:
+      #          cpus: "0.8"
+      #          memory: 2000M
+      restart_policy:
+        condition: none
+    environment:
+      broker_hostname_key: "broker"
+      broker_port_key: "9094"
+      orchesrator_topic_key: "orchestrator_topic"
+      test_duration_in_sec_key: "100"
+      log_level_key: "info"
+      redis_server_hostname_key: 'redis'
+      redis_server_port_key:  '6379'
+      redis_log_keyname_key: 'transformer_load_test_events'
+      total_job_enqueued_count_redis_name_key: 'total_produced_count'
+      total_job_dequeued_count_redis_name_key: 'total_consumed_count'
+      type_of_messaging_queue_key: 'WurstMeisterKafka'
   plotter:
     image: plotter:latest
     depends_on:
@@ -123,16 +184,6 @@ services:
       redis_log_keyname_key: 'plotter_load_test_events'
       latency_redis_key: 'latency_results'
       latency_compute_start_key_name_key: 'start_time'
-  redis:
-    image: redis:latest
-    ports:
-      - "6379:6379"
-  redis-commander:
-    image: rediscommander/redis-commander:latest
-    environment:
-      - REDIS_HOSTS=redis:redis:6379
-    ports:
-      - 8082:8081
   portainer:
     image: portainer/portainer
     ports:

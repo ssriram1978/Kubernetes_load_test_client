@@ -127,6 +127,21 @@ class RedisClient(object):
                 logging.error("Base Except: Unable to connect to Redis server.")
         return return_value
 
+    def append_value_to_a_key_in_redis_db(self, key, value):
+        return_value = False
+        if self.redis_instance:
+            try:
+                if self.redis_instance.exists(key):
+                    self.redis_instance.append(key, value)
+                else:
+                    self.redis_instance.set(key, value)
+                return_value = True
+            except redis.exceptions.ConnectionError:
+                logging.debug("Unable to connect to Redis server.")
+            except BaseException:
+                logging.error("Base Except: Unable to connect to Redis server.")
+        return return_value
+
     def delete_key_from_redis_db(self, key):
         return_value = False
         if self.redis_instance:

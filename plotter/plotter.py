@@ -47,6 +47,7 @@ class Plotter:
         """
         self.redis_instance = RedisInterface("Plotter")
         self.latency_redis_key = None
+        self.latency_redis_start_key = None
         self.latency_compute_start_key_name = None
         self.ip_address_of_host = None
         self.port_number_of_host = 0
@@ -64,6 +65,8 @@ class Plotter:
             time.sleep(1)
             self.latency_redis_key = os.getenv("latency_redis_key",
                                                default=None)
+            self.latency_redis_start_key = os.getenv("latency_redis_start_key",
+                                                     default="start_time")
             self.ip_address_of_host = os.getenv("ip_address_of_host_key",
                                                 default='0.0.0.0')
             self.port_number_of_host = int(os.getenv("port_number_of_host_key",
@@ -74,91 +77,131 @@ class Plotter:
         logging.debug(("latency_redis_key={},\n"
                        "ip_address_of_host={},\n"
                        "port_number_of_host={},\n"
+                       "latency_redis_start_key={},\n"
                        "latency_compute_start_key_name={}."
                        .format(self.latency_redis_key,
                                self.ip_address_of_host,
                                self.port_number_of_host,
+                               self.latency_redis_start_key,
                                self.latency_compute_start_key_name)))
 
-    def perform_job(self):
+    def convert_timestamp_from_string_to_obj(self, timestamp_in_string_format):
+        timestamp_obj = None
+        try:
+            timestamp_obj = dateutil.parser.parse(timestamp_in_string_format)
+        except:
+            logging.debug("Unable to decode {} into a timestamp object.".format(timestamp_in_string_format))
+        return timestamp_obj
+
+    def go_to_the_next_second(self, timestamp_in_string_format):
+
+        timestamp_obj = self.convert_timestamp_from_string_to_obj(timestamp_in_string_format)
+
+        year = timestamp_obj.year
+        month = timestamp_obj.month
+        day = timestamp_obj.day
+        hour = timestamp_obj.hour
+        minute = timestamp_obj.minute
+        second = timestamp_obj.second
+
+        if second == 59:
+            second = 0
+            minute += 1
+        else:
+            second += 1
+        if minute == 60:
+            minute = 0
+            hour += 1
+        if hour == 24:
+            hour = 0
+            day += 1
+        if day == 28:
+            day = 0
+            month += 1
+        if month == 12:
+            month = 1
+            year += 1
+
+        ts_obj = datetime.datetime(year=year,
+                                   month=month,
+                                   day=day,
+                                   hour=hour,
+                                   minute=minute,
+                                   second=second)
+        return str(ts_obj.isoformat(timespec='seconds'))
+
+    def obtain_starting_timestamp(self, hash_table_name):
         is_first_timestamp_obtained = False
         timestamp = None
-        ts = None
-        if self.redis_instance:
-            while not is_first_timestamp_obtained:
-                try:
-                    timestamp = self.redis_instance.get_value_based_upon_the_key(
-                        self.latency_compute_start_key_name).decode('utf-8')
-                    if timestamp:
-                        logging.debug("Obtained the first starting time as {}"
-                                      .format(timestamp))
-                        is_first_timestamp_obtained = True
-                except:
-                    logging.debug("Unable to find a key {} in redis."
-                                  .format(self.latency_compute_start_key_name))
+        while not is_first_timestamp_obtained:
+            try:
+                timestamp = self.redis_instance.get_list_of_values_based_upon_a_key(
+                    hash_table_name, self.latency_redis_start_key)[0].decode('utf-8')
+                if timestamp:
+                    logging.info("Obtained the first starting time as {}."
+                                  .format(timestamp))
+                    is_first_timestamp_obtained = True
+            except:
+                logging.info("Unable to find {} in hash table {} in redis."
+                             .format(self.latency_redis_start_key, hash_table_name))
+                time.sleep(1)
+                continue
+        return timestamp
+
+    def read_latency_from_redis(self, hash_table_name):
+        null_data_retry_attempts = 10
+        current_retry_attempts = 0
+        starting_ts = self.obtain_starting_timestamp(hash_table_name)
+
+        ts_obj = self.convert_timestamp_from_string_to_obj(starting_ts)
+
+        date_time = str(ts_obj.isoformat(timespec='seconds'))
+
+        while True:
+            latency_list = self.redis_instance. \
+                get_list_of_values_based_upon_a_key(hash_table_name, date_time)
+            if not latency_list[0]:
+                if current_retry_attempts >= null_data_retry_attempts:
+                    logging.debug("Giving up...Breaking from the loop because there is no value for the key{}"
+                                  .format(date_time))
+                    break
+                else:
+                    current_retry_attempts += 1
+                    logging.debug("There is no value for the key{}, waiting for a second to fetch new data."
+                                  .format(date_time))
                     time.sleep(1)
                     continue
-            try:
-                ts = dateutil.parser.parse(timestamp)
-            except:
-                logging.debug("Unable to parse {}.".format(timestamp))
-                return
-            dt = str(ts.isoformat(timespec='seconds'))
+            else:
+                current_retry_attempts = 0
+                dict_data = {'originated_timestamp': date_time, 'latency': eval(latency_list[0].decode('utf-8'))}
+                logging.info("{}".format(json.dumps(dict_data, ensure_ascii=False)))
+                self.pyplot_mpld3(ts_obj, eval(latency_list[0].decode('utf-8')))
+                date_time = self.go_to_the_next_second(date_time)
+                ts_obj = self.convert_timestamp_from_string_to_obj(date_time)
 
-            null_data_retry_attempts = 60
-            current_retry_attempts = 0
-            while True:
-                latency_list = self.redis_instance. \
-                    get_list_of_values_based_upon_a_key(self.latency_redis_key, dt)
-                if not latency_list[0]:
-                    if current_retry_attempts >= null_data_retry_attempts:
-                        logging.debug("Giving up...Breaking from the loop because there is no value for the key{}"
-                                      .format(dt))
-                        break
-                    else:
-                        current_retry_attempts += 1
-                        logging.debug("There is no value for the key{}, waiting for a second to fetch new data."
-                                      .format(dt))
-                        time.sleep(1)
-                        continue
+    def perform_job(self):
+        if self.redis_instance:
+            key_found = False
+            list_of_keys_with_latency_compute_name = None
+            while not key_found:
+                list_of_keys_with_latency_compute_name = \
+                    self.redis_instance.get_value_based_upon_the_key(self.latency_redis_key)
+                if not list_of_keys_with_latency_compute_name or \
+                        list_of_keys_with_latency_compute_name == -1:
+                    logging.info("Unable to find any keys matching {} in redis.{}" \
+                                 .format(self.latency_redis_key, list_of_keys_with_latency_compute_name))
+                    time.sleep(1)
                 else:
-                    current_retry_attempts = 0
-                    dict_data = {'originated_timestamp': dt, 'latency': eval(latency_list[0].decode('utf-8'))}
-                    logging.info("{}".format(json.dumps(dict_data, ensure_ascii=False)))
-                    self.pyplot_mpld3(ts, eval(latency_list[0].decode('utf-8')))
+                    logging.info("Found a key:{}, value:{}.".format(self.latency_redis_key,
+                                                                    list_of_keys_with_latency_compute_name))
+                    key_found = True
+            list_of_keys_with_latency_compute_name = list_of_keys_with_latency_compute_name.decode('utf-8').split(' ')
+            for latency_compute_key in list_of_keys_with_latency_compute_name:
+                if not len(latency_compute_key) or latency_compute_key == ' ':
+                    continue
+                logging.info("Trying to fetch the hashtable {}.".format(latency_compute_key))
+                self.read_latency_from_redis(latency_compute_key)
 
-                year = ts.year
-                month = ts.month
-                day = ts.day
-                hour = ts.hour
-                minute = ts.minute
-                second = ts.second
-
-                if second == 59:
-                    second = 0
-                    minute += 1
-                else:
-                    second += 1
-                if minute == 60:
-                    minute = 0
-                    hour += 1
-                if hour == 24:
-                    hour = 0
-                    day += 1
-                if day == 28:
-                    day = 0
-                    month += 1
-                if month == 12:
-                    month = 1
-                    year += 1
-
-                ts = datetime.datetime(year=year,
-                                       month=month,
-                                       day=day,
-                                       hour=hour,
-                                       minute=minute,
-                                       second=second)
-                dt = str(ts.isoformat(timespec='seconds'))
         mpld3.show(ip=self.ip_address_of_host,
                    port=self.port_number_of_host,
                    open_browser=False)

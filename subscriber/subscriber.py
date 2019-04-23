@@ -54,7 +54,8 @@ class Subscriber:
         self.average_latency_for_n_sec = 0
         self.test_duration_in_sec = 0
         self.log_level = None
-        self.topic = None
+        self.container_id = os.popen("cat /proc/self/cgroup | head -n 1 | cut -d '/' -f3").read()
+        self.container_id = self.container_id[:12]
         self.latency_publish_name = None
         self.max_consumer_threads = 1
         self.producer_consumer_instance = None
@@ -72,8 +73,7 @@ class Subscriber:
         :return:
         """
         while not self.test_duration_in_sec or \
-                not Subscriber.latency_compute_start_key_name or \
-                not self.topic:
+                not Subscriber.latency_compute_start_key_name:
             time.sleep(1)
             self.test_duration_in_sec = int(os.getenv("test_duration_in_sec_key",
                                                       default='0'))
@@ -88,20 +88,18 @@ class Subscriber:
             if os.getenv("is_loopback_key", default="false") == "true":
                 self.is_loopback = True
 
-            self.topic = os.getenv("subscriber_topic_key", default=None)
-
         logging.info(("test_duration_in_sec={},\n"
                       "log_level={},\n"
                       "is_loopback={},\n"
                       "latency_publish_name={},\n"
-                      "topic={},\n"
+                      "container_id={},\n"
                       "latency_compute_start_key_name={},\n"
                       "max_consumer_threads={}."
                       .format(self.test_duration_in_sec,
                               self.log_level,
                               self.is_loopback,
                               self.latency_publish_name,
-                              self.topic,
+                              self.container_id,
                               Subscriber.latency_compute_start_key_name,
                               self.max_consumer_threads)))
 
@@ -133,7 +131,7 @@ class Subscriber:
                                                                           index),
                                                                   target=Subscriber.run_latency_compute_thread,
                                                                   args=(),
-                                                                  kwargs={'topic': self.topic,
+                                                                  kwargs={'container_id': self.container_id,
                                                                           'latency_name': self.latency_publish_name}
                                                                   )
             self.latency_compute_thread[index].do_run = True
@@ -143,12 +141,12 @@ class Subscriber:
     @staticmethod
     def run_latency_compute_thread(*args, **kwargs):
         logging.info("Starting {}".format(threading.current_thread().getName()))
-        topic = None
+        container_id = None
         latency_name = None
         for name, value in kwargs.items():
             logging.debug("name={},value={}".format(name, value))
-            if name == 'topic':
-                topic = value
+            if name == 'container_id':
+                container_id = value
             elif name == 'latency_name':
                 latency_name = value
         t = threading.currentThread()
@@ -162,11 +160,16 @@ class Subscriber:
                 if not is_first_key_published_in_redis:
                     if Subscriber.latency_compute_start_key_name:
                         json_parsed_data = json.loads(msg)
-                        Subscriber.redis_instance.set_the_key_in_redis_db(
-                            key=Subscriber.latency_compute_start_key_name,
-                            value=json_parsed_data['lastUpdated'])
+                        Subscriber.redis_instance.append_value_to_a_key(latency_name,
+                                                                        latency_name + '_' + container_id + ' ')
+                        Subscriber.redis_instance.set_key_to_value_within_name(
+                            latency_name + '_' + container_id,
+                            Subscriber.latency_compute_start_key_name,
+                            json_parsed_data['lastUpdated'])
                         is_first_key_published_in_redis = True
-                Subscriber.parse_message_and_compute_latency(msg, msg_rcvd_timestamp, topic + '_' + latency_name)
+                Subscriber.parse_message_and_compute_latency(msg,
+                                                             msg_rcvd_timestamp,
+                                                             latency_name + '_' + container_id)
                 current_index += 1
                 if current_index >= Subscriber.max_queue_size:
                     del Subscriber.message_queue

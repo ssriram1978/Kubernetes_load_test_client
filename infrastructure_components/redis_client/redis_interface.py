@@ -138,6 +138,11 @@ class RedisInterface(object):
                       .format(name, key, value))
         return self.redis_instance.set_key_to_value_within_name(name, key, value)
 
+    def append_value_to_a_key(self, key, value):
+        logging.debug("Trying to append_value_to_a_key key={}, value={}."
+                      .format(key, value))
+        return self.redis_instance.append_value_to_a_key_in_redis_db(key, value)
+
     def get_value_based_upon_the_key(self, key):
         value = self.redis_instance.read_key_value_from_redis_db(key)
         logging.debug("RedisInterface:{}."

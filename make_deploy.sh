@@ -65,10 +65,15 @@ create_infrastructure() {
         plotter \
         $tag
 
+        echo "build_push_directory orchestrator $tag"
+        build_push_directory \
+        orchestrator \
+        $tag
+
         echo "docker-compose -f $2 build"
         docker-compose -f $2 build
     else
-        echo "build_push_directory publisher $tag"
+        echo "build_push_directory $tag"
         build_push_directory \
         $1 \
         $tag
