@@ -56,23 +56,32 @@ class Transformer:
         self.log_level = None
         self.redis_server_hostname = None
         self.redis_server_port = None
+        self.container_id = os.popen("cat /proc/self/cgroup | head -n 1 | cut -d '/' -f3").read()
+        self.container_id = self.container_id[:12]
+        self.transformer_key_name = None
         self.load_environment_variables()
         self.redis_instance = RedisInterface("Transformer")
+        self.publish_container_id_to_redis()
 
     def load_environment_variables(self):
         """
         Load environment variables.
         :return:
         """
-        while not self.test_duration_in_sec:
+        while not self.test_duration_in_sec or \
+                not self.transformer_key_name:
             time.sleep(1)
             self.test_duration_in_sec = int(os.getenv("test_duration_in_sec_key",
                                                       default='0'))
             self.log_level = os.getenv("log_level_key",
                                        default="info")
+            self.transformer_key_name = os.getenv("transformer_key_name",
+                                                  default=None)
         logging.info("test_duration_in_sec={},\n"
+                     "transformer_key_name={},\n"
                      "log_level={},\n"
                      .format(self.test_duration_in_sec,
+                             self.transformer_key_name,
                              self.log_level))
 
     @staticmethod
@@ -110,6 +119,11 @@ class Transformer:
     def cleanup(self):
         Transformer.producer_instance.cleanup()
         Transformer.consumer_instance.cleanup()
+
+    def publish_container_id_to_redis(self):
+        if self.redis_instance:
+            self.redis_instance.append_value_to_a_key(self.transformer_key_name,
+                                                      self.container_id + ' ')
 
 
 if __name__ == '__main__':

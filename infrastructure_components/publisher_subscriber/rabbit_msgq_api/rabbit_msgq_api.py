@@ -34,7 +34,8 @@ class RabbitMsgQAPI:
                  is_producer=False,
                  is_consumer=False,
                  thread_identifier=None,
-                 subscription_cb=None):
+                 subscription_cb=None,
+                 queue_name=None):
         if not is_producer and not is_consumer:
             logging.info("RabbitMsgQAPI{}: You need to pick either producer or consumer."
                          .format(thread_identifier))
@@ -47,8 +48,11 @@ class RabbitMsgQAPI:
         self.is_consumer = is_consumer
         self.consumer_thread = None
         self.is_connected = False
-        self.publisher_topic = None
+        if self.is_producer:
+            self.publisher_topic = queue_name
         self.subscriber_topic = None
+        if self.is_consumer:
+        self.subscriber_topic = queue_name
         self.redis_instance = None
         self.client_instance = None
         self.broker_hostname = None
@@ -73,8 +77,7 @@ class RabbitMsgQAPI:
                          .format(self.thread_identifier))
             self.broker_hostname = os.getenv("broker_hostname_key", default=None)
             self.broker_port = int(os.getenv("broker_port_key", default="1883"))
-            self.publisher_topic = os.getenv("publisher_topic_key", default=None)
-            self.subscriber_topic = os.getenv("subscriber_topic_key", default=None)
+
         # if self.cont_id and len(self.cont_id) >= 12:
         #    self.topic += '_' + self.cont_id[:12]
         logging.info("RabbitMsgQAPI:{} broker_hostname={}"

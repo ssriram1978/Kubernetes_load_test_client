@@ -52,7 +52,8 @@ class WurstMeisterKafkaMsgQAPI(object):
                  is_producer=False,
                  is_consumer=False,
                  thread_identifier=None,
-                 subscription_cb=None):
+                 subscription_cb=None,
+                 queue_name=None):
         if not is_producer and not is_consumer:
             logging.error("WurstMeisterKafkaMsgQAPI: You need to pick either producer or consumer.")
             pass
@@ -68,8 +69,11 @@ class WurstMeisterKafkaMsgQAPI(object):
         # self.cont_id = os.popen("cat /proc/self/cgroup | head -n 1 | cut -d '/' -f3").read()
         self.cont_id = None
         self.redis_instance = None
-        self.publisher_topic = None
+        if self.is_producer:
+            self.publisher_topic = queue_name
         self.subscriber_topic = None
+        if self.is_consumer:
+        self.subscriber_topic = queue_name
         self.producer_conf = None
         self.consumer_conf = None
         self.is_topic_created = False
@@ -98,8 +102,7 @@ class WurstMeisterKafkaMsgQAPI(object):
                          "Trying to read the environment variables...")
             self.broker_hostname = os.getenv("broker_hostname_key", default=None)
             self.broker_port = int(os.getenv("broker_port_key", default="9092"))
-            self.publisher_topic = os.getenv("publisher_topic_key", default=None)
-            self.subscriber_topic = os.getenv("subscriber_topic_key", default=None)
+
         logging.info("WurstMeisterKafkaMsgQAPI: broker_hostname={}".format(self.broker_hostname))
         logging.info("WurstMeisterKafkaMsgQAPI: broker_port={}".format(self.broker_port))
         logging.info("WurstMeisterKafkaMsgQAPI: publisher_topic={}".format(self.publisher_topic))

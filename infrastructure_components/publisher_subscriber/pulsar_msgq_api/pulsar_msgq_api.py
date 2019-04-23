@@ -34,7 +34,8 @@ class PulsarMsgQAPI:
                  is_producer=False,
                  is_consumer=False,
                  thread_identifier=None,
-                 subscription_cb=None):
+                 subscription_cb=None,
+                 queue_name=None):
         if not is_producer and not is_consumer:
             logging.info("PulsarMsgQAPI{}: You need to pick either producer or consumer."
                          .format(thread_identifier))
@@ -49,8 +50,11 @@ class PulsarMsgQAPI:
         self.is_connected = False
         self.producer_instance = None
         self.consumer_instance = None
-        self.publisher_topic = None
+        if self.is_producer:
+            self.publisher_topic = queue_name
         self.subscriber_topic = None
+        if self.is_consumer:
+        self.subscriber_topic = queue_name
         self.redis_instance = None
         self.client_instance = None
         self.broker_hostname = None
@@ -74,8 +78,7 @@ class PulsarMsgQAPI:
                          .format(self.thread_identifier))
             self.broker_hostname = os.getenv("broker_hostname_key", default=None)
             self.broker_port = int(os.getenv("broker_port_key", default="6650"))
-            self.publisher_topic = os.getenv("publisher_topic_key", default=None)
-            self.subscriber_topic = os.getenv("subscriber_topic_key", default=None)
+
         # if self.cont_id and len(self.cont_id) >= 12:
         #    self.topic += '_' + self.cont_id[:12]
         logging.info("PulsarMsgQAPI:{} broker_hostname={}"

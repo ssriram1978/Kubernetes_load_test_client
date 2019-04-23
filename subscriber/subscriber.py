@@ -59,12 +59,14 @@ class Subscriber:
         self.latency_publish_name = None
         self.max_consumer_threads = 1
         self.producer_consumer_instance = None
+        self.subscriber_key_name = None
         self.is_loopback = False
         self.redis_server_hostname = None
         self.redis_server_port = None
         self.load_environment_variables()
         self.create_logger()
         Subscriber.redis_instance = RedisInterface("Subscriber")
+        self.publish_container_id_to_redis()
         self.create_latency_compute_thread()
 
     def load_environment_variables(self):
@@ -79,6 +81,8 @@ class Subscriber:
                                                       default='0'))
             self.log_level = os.getenv("log_level_key",
                                        default="info")
+            self.subscriber_key_name = os.getenv("subscriber_key_name",
+                                                 default=None)
             self.latency_publish_name = os.getenv("latency_publish_key",
                                                   default="latency")
             Subscriber.latency_compute_start_key_name = os.getenv("latency_compute_start_key_name_key",
@@ -94,6 +98,7 @@ class Subscriber:
                       "latency_publish_name={},\n"
                       "container_id={},\n"
                       "latency_compute_start_key_name={},\n"
+                      "subscriber_key_name={},\n"
                       "max_consumer_threads={}."
                       .format(self.test_duration_in_sec,
                               self.log_level,
@@ -101,6 +106,7 @@ class Subscriber:
                               self.latency_publish_name,
                               self.container_id,
                               Subscriber.latency_compute_start_key_name,
+                              self.subscriber_key_name,
                               self.max_consumer_threads)))
 
     def create_logger(self):
@@ -109,6 +115,11 @@ class Subscriber:
         :return:
         """
         pass
+
+    def publish_container_id_to_redis(self):
+        if Subscriber.redis_instance:
+            Subscriber.redis_instance.append_value_to_a_key(self.subscriber_key_name,
+                                                            self.container_id + ' ')
 
     @staticmethod
     def on_message(msg):

@@ -35,6 +35,7 @@ from infrastructure_components.publisher_subscriber.pulsar_msgq_api.pulsar_msgq_
     PulsarMsgQAPI
 from infrastructure_components.publisher_subscriber.nats_msgq_api.nats_msgq_api import \
     NatsMsgQAPI
+from infrastructure_components.redis_client.redis_interface import RedisInterface
 
 
 class PublisherSubscriberAPI:
@@ -57,12 +58,18 @@ class PublisherSubscriberAPI:
                  thread_identifier=None,
                  subscription_cb=None):
         self.message_queue_instance = None
+        self.hash_table_name = None
         self.is_producer = is_producer
         self.is_consumer = is_consumer
         self.subscription_cb = subscription_cb
         self.type_of_messaging_queue = None
+        self.container_id = os.popen("cat /proc/self/cgroup | head -n 1 | cut -d '/' -f3").read()
+        self.container_id = self.container_id[:12]
         self.thread_identifier = thread_identifier
+        self.dict_of_queue_names = None
+        self.redis_instance = RedisInterface("Publisher_Subscriber")
         self.read_environment_variables()
+        self.fetch_queue_name_from_redis()
         self.__connect()
 
     def read_environment_variables(self):
@@ -70,17 +77,43 @@ class PublisherSubscriberAPI:
         This method is used to read the environment variables defined in the OS.
         :return:
         """
-        while self.type_of_messaging_queue is None:
+        while not self.type_of_messaging_queue or \
+                not self.hash_table_name:
             time.sleep(2)
             logging.info("PublisherSubscriberAPI:{} "
                          "Trying to read the environment variables..."
                          .format(self.thread_identifier))
             self.type_of_messaging_queue = os.getenv("type_of_messaging_queue_key",
                                                      default=None)
+            self.hash_table_name = os.getenv("hash_table_name",
+                                             default=None)
         logging.info("PublisherSubscriberAPI:{}"
+                     "hash_table_name:{}"
                      "type_of_messaging_queue={}"
                      .format(self.thread_identifier,
+                             self.hash_table_name,
                              self.type_of_messaging_queue))
+
+    def fetch_queue_name_from_redis(self):
+        queue_name_fetched = False
+        while not queue_name_fetched:
+            if self.redis_instance:
+                try:
+                    dict_str = self.redis_instance.get_list_of_values_based_upon_a_key(
+                        self.hash_table_name,
+                        self.container_id)[0].decode('utf-8')
+                    if dict_str:
+                        logging.info("Found value = {} for key {} in hash table {}."
+                                     .format(dict_str,
+                                             self.container_id,
+                                             self.hash_table_name))
+                        self.dict_of_queue_names = eval(dict_str)
+                        queue_name_fetched = True
+                except:
+                    logging.info("Unable to find a key {} in hash table {}."
+                                 .format(self.container_id,
+                                         self.hash_table_name))
+                    time.sleep(1)
 
     def __connect(self):
         """
@@ -88,12 +121,20 @@ class PublisherSubscriberAPI:
         :return:
         """
         if self.message_queue_instance is None:
+            queue_name = None
+            if self.is_producer:
+                queue_name = self.dict_of_queue_names["publisher"]
+                logging.info("Found publisher queue name {}.".format(queue_name))
+            elif self.is_consumer:
+                queue_name = self.dict_of_queue_names["subscriber"]
+                logging.info("Found subscriber queue name {}.".format(queue_name))
             try:
                 if self.type_of_messaging_queue == PublisherSubscriberAPI.rabbitMsgQType:
                     self.message_queue_instance = RabbitMsgQAPI(is_producer=self.is_producer,
                                                                 is_consumer=self.is_consumer,
                                                                 thread_identifier=self.thread_identifier,
-                                                                subscription_cb=self.subscription_cb)
+                                                                subscription_cb=self.subscription_cb,
+                                                                queue_name=queue_name)
                 elif self.type_of_messaging_queue == PublisherSubscriberAPI.confluentKafkaMsgQType:
                     self.message_queue_instance = ConfluentKafkaMsgQAPI(is_producer=self.is_producer,
                                                                         is_consumer=self.is_consumer,
@@ -103,17 +144,20 @@ class PublisherSubscriberAPI:
                     self.message_queue_instance = WurstMeisterKafkaMsgQAPI(is_producer=self.is_producer,
                                                                            is_consumer=self.is_consumer,
                                                                            thread_identifier=self.thread_identifier,
-                                                                           subscription_cb=self.subscription_cb)
+                                                                           subscription_cb=self.subscription_cb,
+                                                                           queue_name=queue_name)
                 elif self.type_of_messaging_queue == PublisherSubscriberAPI.pulsarMsgQType:
                     self.message_queue_instance = PulsarMsgQAPI(is_producer=self.is_producer,
                                                                 is_consumer=self.is_consumer,
                                                                 thread_identifier=self.thread_identifier,
-                                                                subscription_cb=self.subscription_cb)
+                                                                subscription_cb=self.subscription_cb,
+                                                                queue_name=queue_name)
                 elif self.type_of_messaging_queue == PublisherSubscriberAPI.natsMsgQType:
                     self.message_queue_instance = NatsMsgQAPI(is_producer=self.is_producer,
                                                               is_consumer=self.is_consumer,
                                                               thread_identifier=self.thread_identifier,
-                                                              subscription_cb=self.subscription_cb)
+                                                              subscription_cb=self.subscription_cb,
+                                                              queue_name=queue_name)
 
             except:
                 print("Exception in user code:")

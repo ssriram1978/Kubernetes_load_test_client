@@ -41,26 +41,143 @@ class Orchestrator:
         """
         Initialize the class instance variables.
         """
+        self.container_id = os.popen("cat /proc/self/cgroup | head -n 1 | cut -d '/' -f3").read()
+        self.container_id = self.container_id[:12]
+        self.is_loopback = None
+        self.publisher_container_ids = None
+        self.subscriber_container_ids = None
+        self.transformer_container_ids = None
+        self.publisher_hash_table_name = None
+        self.subscriber_hash_table_name = None
+        self.transformer_hash_table_name = None
+        self.publisher_key_name = None
+        self.subscriber_key_name = None
+        self.transformer_key_name = None
         self.redis_instance = RedisInterface("Orchestrator")
         self.load_environment_variables()
+
+    def set_log_level(self):
+        """
+        Create Logger.
+        :return:
+        """
+        pass
 
     def load_environment_variables(self):
         """
         Load environment variables.
         :return:
         """
-        pass
-        """
-        while not :
+        while not self.is_loopback or \
+                not self.publisher_key_name or \
+                not self.subscriber_key_name or \
+                not self.transformer_key_name or \
+                not self.publisher_hash_table_name or \
+                not self.subscriber_hash_table_name or \
+                not self.transformer_hash_table_name:
+            self.is_loopback = os.getenv("is_loopback",
+                                         default=None)
+            self.publisher_key_name = os.getenv("publisher_key_name",
+                                                defffault=None)
+            self.subscriber_key_name = os.getenv("subscriber_key_name",
+                                                 defffault=None)
+            self.transformer_key_name = os.getenv("transformer_key_name",
+                                                  defffault=None)
+            self.publisher_hash_table_name = os.getenv("publisher_hash_table_name",
+                                                       defffault=None)
+            self.subscriber_hash_table_name = os.getenv("subscriber_hash_table_name",
+                                                        defffault=None)
+            self.transformer_hash_table_name = os.getenv("transformer_hash_table_name",
+                                                         defffault=None)
             time.sleep(1)
-        logging.debug(("={},\n"                       
-                       .format()))
-                               
-        """
+        logging.info("is_loopback={},\n"
+                     "publisher_key_name={},\n"
+                     "subscriber_key_name={},\n"
+                     "transformer_key_name={},\n"
+                     "publisher_hash_table_name={},\n"
+                     "subscriber_hash_table_name={},\n"
+                     "transformer_hash_table_name={},\n"
+                     .format(self.is_loopback,
+                             self.publisher_key_name,
+                             self.subscriber_key_name,
+                             self.transformer_key_name,
+                             self.publisher_hash_table_name,
+                             self.subscriber_hash_table_name,
+                             self.transformer_hash_table_name))
+
+    def read_all_containers_from_redis(self, key):
+        container_list = []
+        containers_str = self.redis_instance.get_value_based_upon_the_key(key)
+        if not containers_str or containers_str == -1:
+            logging.info("Unable to fetch value for key  {}."
+                         .format(key))
+            return container_list
+        container_list = containers_str.decode('utf-8').split()
+        return container_list
+
+    def yield_non_assigned_container(self, container_list, hash_table_name):
+        for container_id in container_list:
+            if not self.redis_instance. \
+                    get_list_of_values_based_upon_a_key(hash_table_name,
+                                                        container_id)[0]:
+                yield container_id
+
+    def populate_publishers_subscribers_hash_tables_with_loopback(self,
+                                                                  pub_list,
+                                                                  sub_list):
+        for pub_container_id in self.yield_non_assigned_container(pub_list,
+                                                                  self.publisher_hash_table_name):
+            for sub_container_id in self.yield_non_assigned_container(sub_list,
+                                                                      self.subscriber_hash_table_name):
+                self.redis_instance.set_key_to_value_within_name(self.publisher_hash_table_name,
+                                                                 pub_container_id,
+                                                                 "{publisher : loop_{}}".format(pub_container_id))
+
+                self.redis_instance.set_key_to_value_within_name(self.subscriber_hash_table_name,
+                                                                 sub_container_id,
+                                                                 "{subscriber : loop_{}}".format(pub_container_id))
+
+    def populate_publishers_subscribers_and_transformers_hash_tables(self,
+                                                                     pub_list,
+                                                                     sub_list,
+                                                                     trans_list):
+        for pub_container_id in self.yield_non_assigned_container(pub_list,
+                                                                  self.publisher_hash_table_name):
+            for sub_container_id in self.yield_non_assigned_container(sub_list,
+                                                                      self.subscriber_hash_table_name):
+                for trans_container_id in self.yield_non_assigned_container(trans_list,
+                                                                            self.transformer_hash_table_name):
+                    self.redis_instance.set_key_to_value_within_name(self.publisher_hash_table_name,
+                                                                     pub_container_id,
+                                                                     "{publisher : pub_{}}"
+                                                                     .format(pub_container_id))
+
+                    self.redis_instance.set_key_to_value_within_name(self.subscriber_hash_table_name,
+                                                                     sub_container_id,
+                                                                     "{subscriber : sub_{}}"
+                                                                     .format(sub_container_id))
+
+                    self.redis_instance.set_key_to_value_within_name(self.transformer_hash_table_name,
+                                                                     trans_container_id,
+                                                                     "{subscriber : pub_{},"
+                                                                     "publisher : sub_{}}"
+                                                                     .format(pub_container_id,
+                                                                             sub_container_id))
 
     def perform_job(self):
         while True:
-            time.sleep(1)
+            publishers = self.read_all_containers_from_redis(self.publisher_key_name)
+            subscribers = self.read_all_containers_from_redis(self.subscriber_key_name)
+            if self.is_loopback == "true":
+                self.populate_publishers_subscribers_hash_tables_with_loopback(publishers,
+                                                                               subscribers)
+            else:
+                transformers = self.read_all_containers_from_redis(self.transformer_key_name)
+                self.populate_publishers_subscribers_and_transformers_hash_tables(publishers,
+                                                                                  subscribers,
+                                                                                  transformers)
+
+            time.sleep(60)
 
 
 if __name__ == '__main__':

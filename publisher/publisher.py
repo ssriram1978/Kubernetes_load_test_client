@@ -33,7 +33,6 @@ def import_all_paths():
 
 import_all_paths()
 
-
 from infrastructure_components.publisher_subscriber.publisher_subscriber import PublisherSubscriberAPI
 from infrastructure_components.redis_client.redis_interface import RedisInterface
 
@@ -52,12 +51,16 @@ class Publisher:
         self.test_duration_in_sec = 0
         self.log_level = None
         self.json_parsed_data = None
+        self.publisher_key_name = None
+        self.container_id = os.popen("cat /proc/self/cgroup | head -n 1 | cut -d '/' -f3").read()
+        self.container_id = self.container_id[:12]
         self.redis_instance = RedisInterface()
         self.producer_consumer_instance = PublisherSubscriberAPI(is_producer=True,
                                                                  thread_identifier='Producer')
         self.broker_type = None
         self.load_environment_variables()
         self.set_log_level()
+        self.publish_container_id_to_redis()
         self.parse_message_into_json()
 
     def load_environment_variables(self):
@@ -67,7 +70,8 @@ class Publisher:
         """
         while not self.message or \
                 not self.messages_per_second or \
-                not self.test_duration_in_sec:
+                not self.test_duration_in_sec or \
+                not self.publisher_key_name:
             time.sleep(1)
             self.message = os.getenv("message_key",
                                      default=None)
@@ -75,16 +79,20 @@ class Publisher:
                                                      default='0'))
             self.test_duration_in_sec = int(os.getenv("test_duration_in_sec_key",
                                                       default='0'))
+            self.publisher_key_name = os.getenv("publisher_key_name",
+                                                default=None)
             self.log_level = os.getenv("log_level_key",
                                        default="info")
 
         logging.info(("message={},\n"
                       "messages_per_second={},\n"
                       "test_duration_in_sec={},\n"
+                      "publisher_key_name={},\n"
                       "self.log_level={}.\n"
                       .format(self.message,
                               self.messages_per_second,
                               self.test_duration_in_sec,
+                              self.publisher_key_name,
                               self.log_level)))
 
     def set_log_level(self):
@@ -93,6 +101,11 @@ class Publisher:
         :return:
         """
         pass
+
+    def publish_container_id_to_redis(self):
+        if self.redis_instance:
+            self.redis_instance.append_value_to_a_key(self.publisher_key_name,
+                                                      self.container_id + ' ')
 
     def parse_message_into_json(self):
         """

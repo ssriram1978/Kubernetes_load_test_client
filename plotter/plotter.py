@@ -195,7 +195,7 @@ class Plotter:
                     logging.info("Found a key:{}, value:{}.".format(self.latency_redis_key,
                                                                     list_of_keys_with_latency_compute_name))
                     key_found = True
-            list_of_keys_with_latency_compute_name = list_of_keys_with_latency_compute_name.decode('utf-8').split(' ')
+            list_of_keys_with_latency_compute_name = list_of_keys_with_latency_compute_name.decode('utf-8').split()
             for latency_compute_key in list_of_keys_with_latency_compute_name:
                 if not len(latency_compute_key) or latency_compute_key == ' ':
                     continue
