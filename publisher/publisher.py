@@ -129,8 +129,10 @@ class Publisher:
         logging.debug("timestamp = {}".format(self.json_parsed_data['lastUpdated']))
 
     def perform_job(self):
+        time.sleep(60)
         self.exec_every_one_second(self.enqueue_message)
-        raise KeyboardInterrupt
+        while True:
+            time.sleep(60)
 
     def exec_every_one_second(self, function_to_be_executed):
         """

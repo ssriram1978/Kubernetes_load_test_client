@@ -106,15 +106,11 @@ class Transformer:
         Transformer.consumer_instance = PublisherSubscriberAPI(is_consumer=True,
                                                                thread_identifier='Consumer',
                                                                subscription_cb=Transformer.on_message)
-        start_time = time.time()
-        time.sleep(1)
-        end_time = time.time()
-        while end_time - start_time < self.test_duration_in_sec:
-            logging.debug("total test duration = {},current_test_duration = {}."
-                          .format(self.test_duration_in_sec, (end_time - start_time)))
-            time.sleep(1)
-            end_time = time.time()
-        self.cleanup()
+        while True:
+            try:
+                time.sleep(60)
+            except:
+                self.cleanup()
 
     def cleanup(self):
         Transformer.producer_instance.cleanup()

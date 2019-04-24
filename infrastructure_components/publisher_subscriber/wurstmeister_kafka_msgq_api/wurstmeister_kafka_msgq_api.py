@@ -210,7 +210,7 @@ class WurstMeisterKafkaMsgQAPI(object):
             # self.producer_instance.poll(timeout=0.1)
             # Wait until all messages have been delivered
             # sys.stderr.write('%% Waiting for %d deliveries\n' % len(self.producer_instance))
-            # self.producer_instance.flush(timeout=0.1)
+            self.producer_instance.flush(timeout=0.1)
 
             return status
 
