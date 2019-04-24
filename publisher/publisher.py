@@ -49,6 +49,7 @@ class Publisher:
         self.message = None
         self.messages_per_second = 0
         self.test_duration_in_sec = 0
+        self.current_test_duration_in_sec = 0
         self.log_level = None
         self.json_parsed_data = None
         self.publisher_key_name = None
@@ -176,7 +177,7 @@ class Publisher:
         :return:
         """
         logging.info("Publishing {} messages at time {}".format(self.messages_per_second,
-                                                           datetime.now()))
+                                                                datetime.now()))
         for index in range(self.messages_per_second):
             self.json_parsed_data['lastUpdated'] = datetime.now().isoformat()
             io = StringIO()
@@ -184,10 +185,12 @@ class Publisher:
             logging.debug("enqueuing message {}."
                           .format(io.getvalue()))
             self.producer_consumer_instance.publish(io.getvalue())
-        if not self.next_call:
-            self.next_call = time.time()
-        self.next_call = self.next_call + 1
-        threading.Timer(self.next_call - time.time(), self.enqueue_message).start()
+        if self.current_test_duration_in_sec < self.test_duration_in_sec:
+            if not self.next_call:
+                self.next_call = time.time()
+            self.next_call = self.next_call + 1
+            self.current_test_duration_in_sec += 1
+            threading.Timer(self.next_call - time.time(), self.enqueue_message).start()
 
     def cleanup(self):
         pass
