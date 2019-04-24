@@ -2,14 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a412cb8e-0925-41a1-9e4d-6db89dfd400b" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/docker-stack-activemq-artemis.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-stack-activemq-artemis.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-stack-emq.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-stack-emq.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-stack-nats.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-stack-nats.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-stack-pulsar.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-stack-pulsar.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-stack-rabbitmq.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-stack-rabbitmq.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-stack-wurstmeister-kafka.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-stack-wurstmeister-kafka.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/infrastructure_components/portainer/data/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/infrastructure_components/portainer/data/config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/infrastructure_components/portainer/data/portainer.db" beforeDir="false" afterPath="$PROJECT_DIR$/infrastructure_components/portainer/data/portainer.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/publisher/publisher.py" beforeDir="false" afterPath="$PROJECT_DIR$/publisher/publisher.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/subscriber/subscriber.py" beforeDir="false" afterPath="$PROJECT_DIR$/subscriber/subscriber.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/transformer/transformer.py" beforeDir="false" afterPath="$PROJECT_DIR$/transformer/transformer.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -35,7 +30,7 @@
         <entry file="file://$PROJECT_DIR$/infrastructure_components/redis_client/redis_client.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="512">
-              <caret line="179" column="27" lean-forward="true" selection-start-line="179" selection-start-column="27" selection-end-line="179" selection-end-column="27" />
+              <caret line="179" column="27" selection-start-line="179" selection-start-column="27" selection-end-line="179" selection-end-column="27" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -52,11 +47,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/docker-stack-rabbitmq.yml">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="198">
-              <caret line="9" column="19" lean-forward="true" selection-start-line="9" selection-start-column="19" selection-end-line="9" selection-end-column="19" />
+              <caret line="9" column="19" selection-start-line="9" selection-start-column="19" selection-end-line="9" selection-end-column="19" />
             </state>
           </provider>
         </entry>
@@ -64,8 +59,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/publisher/publisher.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="636">
-              <caret line="119" selection-start-line="103" selection-end-line="119" />
+            <state relative-caret-position="504">
+              <caret line="113" column="83" lean-forward="true" selection-start-line="113" selection-start-column="16" selection-end-line="113" selection-end-column="83" />
             </state>
           </provider>
         </entry>
@@ -73,17 +68,17 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/subscriber/subscriber.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="441">
-              <caret line="135" selection-start-line="118" selection-end-line="135" />
+            <state relative-caret-position="265">
+              <caret line="127" column="98" lean-forward="true" selection-start-line="127" selection-start-column="16" selection-end-line="127" selection-end-column="98" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/transformer/transformer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="504">
-              <caret line="138" lean-forward="true" selection-start-line="138" selection-end-line="138" />
+            <state relative-caret-position="548">
+              <caret line="140" lean-forward="true" selection-start-line="140" selection-end-line="140" />
             </state>
           </provider>
         </entry>
@@ -92,7 +87,7 @@
         <entry file="file://$PROJECT_DIR$/orchestrator/orchestrator.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="331">
-              <caret line="143" column="41" lean-forward="true" selection-start-line="143" selection-start-column="41" selection-end-line="143" selection-end-column="41" />
+              <caret line="143" column="41" selection-start-line="143" selection-start-column="41" selection-end-line="143" selection-end-column="41" />
               <folding>
                 <element signature="e#24#39#0" expanded="true" />
               </folding>
@@ -113,7 +108,7 @@
         <entry file="file://$PROJECT_DIR$/infrastructure_components/publisher_subscriber/wurstmeister_kafka_msgq_api/wurstmeister_kafka_msgq_api.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="286">
-              <caret line="70" column="35" lean-forward="true" selection-start-line="70" selection-start-column="35" selection-end-line="70" selection-end-column="35" />
+              <caret line="70" column="35" selection-start-line="70" selection-start-column="35" selection-end-line="70" selection-end-column="35" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -175,13 +170,13 @@
         <option value="$PROJECT_DIR$/infrastructure_components/publisher_subscriber/rabbit_msgq_api/rabbit_msgq_api.py" />
         <option value="$PROJECT_DIR$/infrastructure_components/publisher_subscriber/pulsar_msgq_api/pulsar_msgq_api.py" />
         <option value="$PROJECT_DIR$/infrastructure_components/redis_client/redis_client.py" />
-        <option value="$PROJECT_DIR$/publisher/publisher.py" />
-        <option value="$PROJECT_DIR$/subscriber/subscriber.py" />
-        <option value="$PROJECT_DIR$/transformer/transformer.py" />
         <option value="$PROJECT_DIR$/orchestrator/orchestrator.py" />
         <option value="$PROJECT_DIR$/plotter/plotter.py" />
         <option value="$PROJECT_DIR$/docker-stack-wurstmeister-kafka.yml" />
         <option value="$PROJECT_DIR$/docker-stack-rabbitmq.yml" />
+        <option value="$PROJECT_DIR$/publisher/publisher.py" />
+        <option value="$PROJECT_DIR$/subscriber/subscriber.py" />
+        <option value="$PROJECT_DIR$/transformer/transformer.py" />
       </list>
     </option>
   </component>
@@ -337,12 +332,12 @@
       <workItem from="1555945318423" duration="1868000" />
       <workItem from="1555951756365" duration="19849000" />
       <workItem from="1556039498645" duration="15621000" />
-      <workItem from="1556113863926" duration="8030000" />
+      <workItem from="1556113863926" duration="8836000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="55574000" />
+    <option name="totallyTimeSpent" value="56380000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1920" y="190" width="1920" height="1059" extended-state="6" />
@@ -566,38 +561,17 @@
     <entry file="file://$PROJECT_DIR$/infrastructure_components/publisher_subscriber/wurstmeister_kafka_msgq_api/wurstmeister_kafka_msgq_api.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="286">
-          <caret line="70" column="35" lean-forward="true" selection-start-line="70" selection-start-column="35" selection-end-line="70" selection-end-column="35" />
+          <caret line="70" column="35" selection-start-line="70" selection-start-column="35" selection-end-line="70" selection-end-column="35" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/publisher/publisher.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="636">
-          <caret line="119" selection-start-line="103" selection-end-line="119" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/subscriber/subscriber.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="441">
-          <caret line="135" selection-start-line="118" selection-end-line="135" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/transformer/transformer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="504">
-          <caret line="138" lean-forward="true" selection-start-line="138" selection-end-line="138" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/infrastructure_components/redis_client/redis_client.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="512">
-          <caret line="179" column="27" lean-forward="true" selection-start-line="179" selection-start-column="27" selection-end-line="179" selection-end-column="27" />
+          <caret line="179" column="27" selection-start-line="179" selection-start-column="27" selection-end-line="179" selection-end-column="27" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
           </folding>
@@ -617,7 +591,7 @@
     <entry file="file://$PROJECT_DIR$/orchestrator/orchestrator.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="331">
-          <caret line="143" column="41" lean-forward="true" selection-start-line="143" selection-start-column="41" selection-end-line="143" selection-end-column="41" />
+          <caret line="143" column="41" selection-start-line="143" selection-start-column="41" selection-end-line="143" selection-end-column="41" />
           <folding>
             <element signature="e#24#39#0" expanded="true" />
           </folding>
@@ -641,7 +615,28 @@
     <entry file="file://$PROJECT_DIR$/docker-stack-rabbitmq.yml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="198">
-          <caret line="9" column="19" lean-forward="true" selection-start-line="9" selection-start-column="19" selection-end-line="9" selection-end-column="19" />
+          <caret line="9" column="19" selection-start-line="9" selection-start-column="19" selection-end-line="9" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/publisher/publisher.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="504">
+          <caret line="113" column="83" lean-forward="true" selection-start-line="113" selection-start-column="16" selection-end-line="113" selection-end-column="83" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/subscriber/subscriber.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="265">
+          <caret line="127" column="98" lean-forward="true" selection-start-line="127" selection-start-column="16" selection-end-line="127" selection-end-column="98" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/transformer/transformer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="548">
+          <caret line="140" lean-forward="true" selection-start-line="140" selection-end-line="140" />
         </state>
       </provider>
     </entry>

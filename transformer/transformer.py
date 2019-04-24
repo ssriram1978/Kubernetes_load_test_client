@@ -129,7 +129,8 @@ class Transformer:
                                      self.container_id + ' '))
                 self.redis_instance.append_value_to_a_key(self.transformer_key_name,
                                                           self.container_id + ' ')
-                if not self.redis_instance.get_value_based_upon_the_key(self.transformer_key_name):
+                value = self.redis_instance.get_value_based_upon_the_key(self.transformer_key_name)
+                if not value or value.decode('utf-8').find(self.container_id) == -1:
                     logging.info("Unable to publish key = {}, value = {} in redis. Sleeping for 1 second."
                                  .format(self.transformer_key_name,
                                          self.container_id + ' '))
