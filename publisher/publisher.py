@@ -132,17 +132,10 @@ class Publisher:
 
     def perform_job(self):
         time.sleep(60)
-        self.exec_every_one_second2(self.enqueue_message)
+        self.enqueue_message()
+        # self.exec_every_one_second(self.enqueue_message)
         while True:
             time.sleep(60)
-
-    def exec_every_one_second2(self, function_to_be_executed):
-        logging.info("Executing the function at {}".format(datetime.now()))
-        function_to_be_executed()
-        if not self.next_call:
-            self.next_call = time.time()
-        self.next_call = self.next_call + 1
-        threading.Timer(self.next_call - time.time(), self.exec_every_one_second2).start()
 
     def exec_every_one_second(self, function_to_be_executed):
         """
@@ -182,6 +175,8 @@ class Publisher:
         Enqueue message to a broker.
         :return:
         """
+        logging.info("Publishing {} messages at time {}".format(self.messages_per_second,
+                                                           datetime.now()))
         for index in range(self.messages_per_second):
             self.json_parsed_data['lastUpdated'] = datetime.now().isoformat()
             io = StringIO()
@@ -189,6 +184,10 @@ class Publisher:
             logging.debug("enqueuing message {}."
                           .format(io.getvalue()))
             self.producer_consumer_instance.publish(io.getvalue())
+        if not self.next_call:
+            self.next_call = time.time()
+        self.next_call = self.next_call + 1
+        threading.Timer(self.next_call - time.time(), self.enqueue_message).start()
 
     def cleanup(self):
         pass
