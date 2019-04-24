@@ -160,7 +160,7 @@ services:
     depends_on:
       - redis-commander
     ports:
-      - "8889:8888"
+      - "8888:8888"
     deploy:
       replicas: 1
       #      resources:

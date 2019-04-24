@@ -31,7 +31,7 @@ services:
       - redis-commander
       - emq
     deploy:
-      replicas: 1
+      replicas: 2
       #      resources:
       #        limits:
       #          cpus: "0.8"
@@ -41,7 +41,8 @@ services:
     environment:
       broker_hostname_key: 'emq'
       broker_port_key: "1883"
-      publisher_topic_key: "ThingspaceSDK/12344444444444555/UNITOnBoard-publisher"
+      publisher_key_name: "publisher"
+      hash_table_name: "publisher_hash_table"
       message_key: "{\
                      \"lastUpdated\": \"2018-11-19T18:21:03Z\",\
                      \"unitName\": \"VZW_LH_UNIT_01\",\
@@ -68,13 +69,17 @@ services:
       total_job_enqueued_count_redis_name_key: 'total_produced_count'
       total_job_dequeued_count_redis_name_key: 'total_consumed_count'
       type_of_messaging_queue_key: 'RabbitMQ'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
   subscriber:
     image: subscriber:latest
     depends_on:
       - redis-commander
       - emq
     deploy:
-      replicas: 1
+      replicas: 2
       #      resources:
       #        limits:
       #          cpus: "0.8"
@@ -84,7 +89,8 @@ services:
     environment:
       broker_hostname_key: "emq"
       broker_port_key: "1883"
-      subscriber_topic_key: "ThingspaceSDK/12344444444444555/UNITOnBoard-subscriber"
+      subscriber_key_name: "subscriber"
+      hash_table_name: "subscriber_hash_table"
       average_latency_for_n_sec_key: "1"
       test_duration_in_sec_key: "100"
       log_level_key: "info"
@@ -97,13 +103,17 @@ services:
       total_job_dequeued_count_redis_name_key: 'total_consumed_count'
       latency_compute_start_key_name_key: 'start_time'
       type_of_messaging_queue_key: 'RabbitMQ'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
   transformer:
     image: transformer:latest
     depends_on:
       - redis-commander
       - emq
     deploy:
-      replicas: 1
+      replicas: 2
       #      resources:
       #        limits:
       #          cpus: "0.8"
@@ -113,8 +123,8 @@ services:
     environment:
       broker_hostname_key: "emq"
       broker_port_key: "1883"
-      subscriber_topic_key: "ThingspaceSDK/12344444444444555/UNITOnBoard-publisher"
-      publisher_topic_key: "ThingspaceSDK/12344444444444555/UNITOnBoard-subscriber"
+      transformer_key_name: "transformer"
+      hash_table_name: "transformer_hash_table"
       test_duration_in_sec_key: "100"
       log_level_key: "info"
       redis_server_hostname_key: 'redis'
@@ -126,7 +136,7 @@ services:
   plotter:
     image: plotter:latest
     ports:
-      - "8889:8888"
+      - "8888:8888"
     depends_on:
       - redis-commander
     deploy:
@@ -143,6 +153,37 @@ services:
       redis_log_keyname_key: 'plotter_load_test_events'
       latency_redis_key: 'latency_results'
       latency_compute_start_key_name_key: 'start_time'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+  orchestrator:
+    image: orchestrator:latest
+    depends_on:
+      - redis-commander
+    deploy:
+      replicas: 1
+      #      resources:
+      #        limits:
+      #          cpus: "0.8"
+      #          memory: 2000M
+      restart_policy:
+        condition: none
+    environment:
+      redis_server_hostname_key: 'redis'
+      redis_server_port_key:  '6379'
+      redis_log_keyname_key: 'orchestrator_load_test_events'
+      is_loopback_key: 'false'
+      publisher_key_name: "publisher"
+      publisher_hash_table_name: "publisher_hash_table"
+      subscriber_key_name: "subscriber"
+      subscriber_hash_table_name: "subscriber_hash_table"
+      transformer_key_name: "transformer"
+      transformer_hash_table_name: "transformer_hash_table"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
   redis:
     image: redis:latest
     ports:
@@ -161,7 +202,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./infrastructure_components/portainer/data:/data
-
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
 #  logspout:
 #    image: gliderlabs/logspout:latest
 #    command: 'syslog://:5000'
@@ -195,6 +237,10 @@ services:
     depends_on:
       - elasticsearch
       - kibana
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
   kibana:
     image: docker.elastic.co/kibana/kibana-oss:6.7.1
     depends_on:
@@ -204,7 +250,10 @@ services:
     configs:
       - source: kibana_config
         target: /usr/share/kibana/config/kibana.yml
-
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.7.1
     ports:
@@ -213,7 +262,10 @@ services:
     configs:
       - source: elastic_config
         target: /usr/share/elasticsearch/config/elasticsearch.yml
-
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
 configs:
   elastic_config:
     file: ./plotter/elasticsearch/config/elasticsearch.yml
