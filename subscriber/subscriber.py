@@ -74,8 +74,7 @@ class Subscriber:
         Load environment variables.
         :return:
         """
-        while not self.test_duration_in_sec or \
-                not Subscriber.latency_compute_start_key_name:
+        while not Subscriber.latency_compute_start_key_name:
             time.sleep(1)
             self.test_duration_in_sec = int(os.getenv("test_duration_in_sec_key",
                                                       default='0'))
