@@ -5,6 +5,7 @@ import sys
 import time
 import traceback
 from datetime import datetime
+import threading, time
 
 logging.basicConfig(format='%(levelname)s:%(asctime)s:%(message)s',
                     level=logging.INFO,
@@ -54,6 +55,7 @@ class Publisher:
         self.container_id = os.popen("cat /proc/self/cgroup | head -n 1 | cut -d '/' -f3").read()
         self.container_id = self.container_id[:12]
         self.redis_instance = RedisInterface('Publisher')
+        self.next_call = None
         self.broker_type = None
         self.load_environment_variables()
         self.set_log_level()
@@ -130,9 +132,17 @@ class Publisher:
 
     def perform_job(self):
         time.sleep(60)
-        self.exec_every_one_second(self.enqueue_message)
+        self.exec_every_one_second2(self.enqueue_message)
         while True:
             time.sleep(60)
+
+    def exec_every_one_second2(self, function_to_be_executed):
+        logging.info("Executing the function at {}".format(datetime.now()))
+        function_to_be_executed()
+        if not self.next_call:
+            self.next_call = time.time()
+        self.next_call = self.next_call + 1
+        threading.Timer(self.next_call - time.time(), self.exec_every_one_second2).start()
 
     def exec_every_one_second(self, function_to_be_executed):
         """
