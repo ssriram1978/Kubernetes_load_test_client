@@ -121,7 +121,7 @@ class RedisInterface(object):
                       .format(self.thread_identifer,
                               self.redis_log_keyname,
                               event))
-        self.redis_instance.write_an_event_on_redis_db(event, self.redis_log_keyname)
+        # self.redis_instance.write_an_event_on_redis_db(event, self.redis_log_keyname)
 
     def find_keys_matching_a_pattern(self, pattern):
         logging.debug("Trying to find all keys matching this pattern {}.".format(pattern))
