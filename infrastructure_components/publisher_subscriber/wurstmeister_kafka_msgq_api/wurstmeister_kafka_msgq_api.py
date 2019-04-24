@@ -207,7 +207,7 @@ class WurstMeisterKafkaMsgQAPI(object):
             # NOTE: Since produce() is an asynchronous API this poll() call
             #       will most likely not serve the delivery callback for the
             #       last produce()d message.
-            self.producer_instance.poll(timeout=0.1)
+            # self.producer_instance.poll(timeout=0.1)
             # Wait until all messages have been delivered
             # sys.stderr.write('%% Waiting for %d deliveries\n' % len(self.producer_instance))
             self.producer_instance.flush(timeout=0.1)
