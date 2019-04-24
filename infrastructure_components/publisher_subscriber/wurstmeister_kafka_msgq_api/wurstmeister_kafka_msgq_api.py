@@ -68,6 +68,7 @@ class WurstMeisterKafkaMsgQAPI(object):
         self.broker_port = None
         # self.cont_id = os.popen("cat /proc/self/cgroup | head -n 1 | cut -d '/' -f3").read()
         self.cont_id = None
+        self.publisher_topic = None
         self.redis_instance = None
         if self.is_producer:
             self.publisher_topic = queue_name

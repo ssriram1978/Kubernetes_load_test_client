@@ -50,6 +50,7 @@ class PulsarMsgQAPI:
         self.is_connected = False
         self.producer_instance = None
         self.consumer_instance = None
+        self.publisher_topic = None
         if self.is_producer:
             self.publisher_topic = queue_name
         self.subscriber_topic = None

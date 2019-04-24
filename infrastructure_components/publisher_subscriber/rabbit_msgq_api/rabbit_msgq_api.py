@@ -48,6 +48,7 @@ class RabbitMsgQAPI:
         self.is_consumer = is_consumer
         self.consumer_thread = None
         self.is_connected = False
+        self.publisher_topic = None
         if self.is_producer:
             self.publisher_topic = queue_name
         self.subscriber_topic = None

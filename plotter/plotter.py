@@ -210,13 +210,13 @@ class Plotter:
         pass
 
     def pyplot_mpld3(self, timestamp, list_of_latencies):
-        plt.xlabel("timestamp", style='normal', fontsize='24')
-        plt.ylabel("latency", style='normal', fontsize='24')
-        plt.title("Latency vs time", style='normal', fontsize='24')
+        plt.xlabel("Time --> Day:Hour:Minute:Second", style='normal', color='red', fontsize='24')
+        plt.ylabel("latency --> (milliseconds)", style='normal', color='red', fontsize='24')
+        plt.title("Latency (millseconds) vs Time", style='normal', color='red', fontsize='24')
         matplot_date = dates.date2num(timestamp)
         for value in list_of_latencies:
             plt.plot_date(xdate=True, x=matplot_date, y=value, tz='America/New_York')
-        plt.legend()
+        # plt.legend()
         plt.autoscale()
 
 

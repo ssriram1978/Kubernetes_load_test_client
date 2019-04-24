@@ -102,12 +102,21 @@ class Publisher:
         pass
 
     def publish_container_id_to_redis(self):
-        if self.redis_instance:
-            logging.info("Publishing key = {}, value = {} in redis."
-                         .format(self.publisher_key_name,
-                                 self.container_id + ' '))
-            self.redis_instance.append_value_to_a_key(self.publisher_key_name,
-                                                      self.container_id + ' ')
+        published_successfully = False
+        while not published_successfully:
+            if self.redis_instance:
+                logging.info("Trying to Publish key = {}, value = {} in redis."
+                             .format(self.publisher_key_name,
+                                     self.container_id + ' '))
+                self.redis_instance.append_value_to_a_key(self.publisher_key_name,
+                                                          self.container_id + ' ')
+                if not self.redis_instance.get_value_based_upon_the_key(self.publisher_key_name):
+                    logging.info("Unable to publish key = {}, value = {} in redis. Sleeping for 1 second."
+                                 .format(self.publisher_key_name,
+                                         self.container_id + ' '))
+                    time.sleep(1)
+                else:
+                    published_successfully = True
 
     def parse_message_into_json(self):
         """

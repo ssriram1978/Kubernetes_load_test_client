@@ -21,7 +21,6 @@ services:
       KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://:9094
       KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9094
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
-      KAFKA_CREATE_TOPICS: "ThingspaceSDK:10:1"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - "/etc/timezone:/etc/timezone:ro"
@@ -50,7 +49,7 @@ services:
       - redis-commander
       - broker
     deploy:
-      replicas: 1
+      replicas: 2
       #      resources:
       #        limits:
       #          cpus: "0.8"
@@ -98,7 +97,7 @@ services:
       - redis-commander
       - broker
     deploy:
-      replicas: 1
+      replicas: 2
       #      resources:
       #        limits:
       #          cpus: "0.8"
@@ -132,7 +131,7 @@ services:
       - redis-commander
       - broker
     deploy:
-      replicas: 1
+      replicas: 2
       #      resources:
       #        limits:
       #          cpus: "0.8"

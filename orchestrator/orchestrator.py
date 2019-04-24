@@ -131,11 +131,11 @@ class Orchestrator:
                                                                       self.subscriber_hash_table_name):
                 self.redis_instance.set_key_to_value_within_name(self.publisher_hash_table_name,
                                                                  pub_container_id,
-                                                                 "{publisher : loop_{}}".format(pub_container_id))
+                                                                 str({"publisher": "loop_" + pub_container_id}))
 
                 self.redis_instance.set_key_to_value_within_name(self.subscriber_hash_table_name,
                                                                  sub_container_id,
-                                                                 "{subscriber : loop_{}}".format(pub_container_id))
+                                                                 str({"subscriber": "loop_" + pub_container_id}))
 
     def populate_publishers_subscribers_and_transformers_hash_tables(self,
                                                                      pub_list,
@@ -149,7 +149,7 @@ class Orchestrator:
                                                                             self.transformer_hash_table_name):
                     self.redis_instance.set_key_to_value_within_name(self.publisher_hash_table_name,
                                                                      pub_container_id,
-                                                                     str({"publisher" : "pub_" + pub_container_id }))
+                                                                     str({"publisher": "pub_" + pub_container_id}))
 
                     self.redis_instance.set_key_to_value_within_name(self.subscriber_hash_table_name,
                                                                      sub_container_id,
@@ -159,6 +159,8 @@ class Orchestrator:
                                                                      trans_container_id,
                                                                      str({"subscriber": "pub_" + pub_container_id,
                                                                           "publisher": "sub_" + sub_container_id}))
+                    break
+                break
 
     def perform_job(self):
         while True:

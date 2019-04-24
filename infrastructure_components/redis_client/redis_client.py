@@ -168,7 +168,7 @@ class RedisClient(object):
         return return_value
 
     def read_key_value_from_redis_db(self, key):
-        return_value = -1
+        return_value = None
         if self.redis_instance is not None:
             try:
                 if self.redis_instance.exists(key):

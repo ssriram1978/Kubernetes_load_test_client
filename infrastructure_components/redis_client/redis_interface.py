@@ -38,7 +38,6 @@ class RedisInterface(object):
         self.redis_log_keyname = None
         self.thread_identifer = thread_identifer
         self.read_environment_variables()
-        time.sleep(10)
         self.redis_instance = RedisClient()
 
     def read_environment_variables(self):
