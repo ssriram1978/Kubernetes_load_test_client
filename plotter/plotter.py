@@ -50,6 +50,11 @@ class Plotter:
         """
         Initialize the class instance variables.
         """
+        plt.figure(figsize=(4.0, 4.0), dpi=400)
+        plt.xlabel("Time --> Day:Hour:Minute:Second", style='normal', color='red', fontsize='24')
+        plt.ylabel("Latency --> (milliseconds)", style='normal', color='red', fontsize='24')
+        plt.title("Latency (milliseconds) vs Time", style='normal', color='red', fontsize='24')
+        plt.autoscale()
         self.redis_instance = RedisInterface("Plotter")
         self.latency_redis_key = None
         self.latency_redis_start_key = None
@@ -239,16 +244,11 @@ class Plotter:
         consumer_thread.start()
 
     def pyplot_mpld3(self, timestamp, list_of_latencies):
-        plt.xlabel("Time --> Day:Hour:Minute:Second", style='normal', color='red', fontsize='24')
-        plt.ylabel("Latency --> (milliseconds)", style='normal', color='red', fontsize='24')
-        plt.title("Latency (milliseconds) vs Time", style='normal', color='red', fontsize='24')
         matplot_date = dates.date2num(timestamp)
-        plt.figure(figsize=(4.0, 4.0), dpi=400)
         for value in list_of_latencies:
             plt.plot_date(xdate=True, x=matplot_date, y=value, tz='America/New_York')
         mpld3.save_html(fig=plt.gcf(), fileobj=Plotter.html_filename, template_type='simple', use_http=True)
         # plt.legend()
-        plt.autoscale()
 
 
 class MyHandler(BaseHTTPRequestHandler):
@@ -274,9 +274,15 @@ class MyHandler(BaseHTTPRequestHandler):
         self.send_response(status_code)
         self.send_header('Content-type', 'text/html')
         self.end_headers()
-        content = None
-        with open(Plotter.html_filename, "r", encoding='utf-8') as f:
-            content = f.read()
+        content = '''
+        <html>
+        </html>
+        '''
+        try:
+            with open(Plotter.html_filename, "r", encoding='utf-8') as f:
+                content = f.read()
+        except FileNotFoundError:
+            logging.info("File {} not found yet..".format(Plotter.html_filename))
         return bytes(content, 'UTF-8')
 
     def respond(self, opts):
