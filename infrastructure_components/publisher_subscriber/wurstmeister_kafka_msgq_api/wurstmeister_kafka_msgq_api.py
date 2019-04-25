@@ -139,7 +139,7 @@ class WurstMeisterKafkaMsgQAPI(object):
                     acks=0)
                 self.is_producer_connected = True
 
-                self.publish_topic_in_redis_db(self.publisher_topic)
+                # self.publish_topic_in_redis_db(self.publisher_topic)
             except:
                 print("Exception in user code:")
                 print("-" * 60)
@@ -249,7 +249,7 @@ class WurstMeisterKafkaMsgQAPI(object):
                          "subscribed to topic={}"
                          .format(self.thread_identifier,
                                  self.subscriber_topic))
-            self.publish_topic_in_redis_db(self.subscriber_topic)
+            # self.publish_topic_in_redis_db(self.subscriber_topic)
         except:
             logging.info("Consumer:{}:Exception in user code:"
                          .format(self.thread_identifier))

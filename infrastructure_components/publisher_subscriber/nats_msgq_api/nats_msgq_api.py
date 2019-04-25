@@ -108,7 +108,7 @@ class NatsMsgQAPI:
                          loop=loop)
 
         consumer_instance.redis_instance = RedisInterface(threading.current_thread().getName())
-        consumer_instance.publish_topic_in_redis_db(consumer_instance.subscriber_topic)
+        # consumer_instance.publish_topic_in_redis_db(consumer_instance.subscriber_topic)
 
         async def message_handler(msg):
             message_data = msg.data.decode('utf-8')
@@ -183,7 +183,7 @@ class NatsMsgQAPI:
                                         instance.broker_port),
                          loop=loop)
         instance.redis_instance = RedisInterface(threading.current_thread().getName())
-        instance.publish_topic_in_redis_db(instance.publisher_topic)
+        # instance.publish_topic_in_redis_db(instance.publisher_topic)
         if nc.is_connected:
             logging.info("Connected successfully. Trying to dequeue messages...")
             while getattr(t, "do_run", True):

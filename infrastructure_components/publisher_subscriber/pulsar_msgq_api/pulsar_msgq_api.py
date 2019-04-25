@@ -103,10 +103,10 @@ class PulsarMsgQAPI:
         time.sleep(20)
         if self.is_producer:
             self.redis_instance = RedisInterface(self.thread_identifier)
-            self.publish_topic_in_redis_db(self.publisher_topic)
+            # self.publish_topic_in_redis_db(self.publisher_topic)
         elif self.is_consumer:
             self.redis_instance = RedisInterface(self.thread_identifier)
-            self.publish_topic_in_redis_db(self.subscriber_topic)
+            # self.publish_topic_in_redis_db(self.subscriber_topic)
         if self.is_producer:
             time.sleep(10)
             while not self.is_connected:
