@@ -46,6 +46,7 @@ class Plotter:
     ip_address_of_host = None
     port_number_of_host = 0
     html_filename = "latency.html"
+
     def __init__(self):
         """
         Initialize the class instance variables.
@@ -258,17 +259,7 @@ class MyHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
-        paths = {
-            '/': {'status': 200},
-            '/bar': {'status': 302},
-            '/baz': {'status': 404},
-            '/qux': {'status': 500}
-        }
-
-        if self.path in paths:
-            self.respond(paths[self.path])
-        else:
-            self.respond({'status': 500})
+        self.respond({'status': 200})
 
     def handle_http(self, status_code, path):
         self.send_response(status_code)
