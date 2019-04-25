@@ -185,11 +185,11 @@ class Publisher:
             logging.debug("enqueuing message {}."
                           .format(io.getvalue()))
             self.producer_consumer_instance.publish(io.getvalue())
+        self.current_test_duration_in_sec += 1
         if self.current_test_duration_in_sec < self.test_duration_in_sec:
             if not self.next_call:
                 self.next_call = time.time()
             self.next_call = self.next_call + 1
-            self.current_test_duration_in_sec += 1
             threading.Timer(self.next_call - time.time(), self.enqueue_message).start()
 
     def cleanup(self):
