@@ -7,8 +7,11 @@ import time
 import traceback
 import json
 import dateutil.parser
-import matplotlib.pyplot as plt, mpld3
+import matplotlib.pyplot as plt
+import mpld3
 from matplotlib import dates
+import threading
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
 logging.basicConfig(format='%(message)s',
                     level=logging.INFO)
@@ -40,7 +43,9 @@ class Plotter:
     """
         This Class is used to plot latency on Grafana via prometheus.
     """
-
+    ip_address_of_host = None
+    port_number_of_host = 0
+    html_filename = "latency.html"
     def __init__(self):
         """
         Initialize the class instance variables.
@@ -49,9 +54,8 @@ class Plotter:
         self.latency_redis_key = None
         self.latency_redis_start_key = None
         self.latency_compute_start_key_name = None
-        self.ip_address_of_host = None
-        self.port_number_of_host = 0
         self.load_environment_variables()
+        self.start_consumer_thread()
 
     def load_environment_variables(self):
         """
@@ -59,18 +63,18 @@ class Plotter:
         :return:
         """
         while not self.latency_redis_key or \
-                not self.ip_address_of_host or \
-                not self.port_number_of_host or \
+                not Plotter.ip_address_of_host or \
+                not Plotter.port_number_of_host or \
                 not self.latency_compute_start_key_name:
             time.sleep(1)
             self.latency_redis_key = os.getenv("latency_redis_key",
                                                default=None)
             self.latency_redis_start_key = os.getenv("latency_redis_start_key",
                                                      default="start_time")
-            self.ip_address_of_host = os.getenv("ip_address_of_host_key",
-                                                default='0.0.0.0')
-            self.port_number_of_host = int(os.getenv("port_number_of_host_key",
-                                                     default='8888'))
+            Plotter.ip_address_of_host = os.getenv("ip_address_of_host_key",
+                                                   default='0.0.0.0')
+            Plotter.port_number_of_host = int(os.getenv("port_number_of_host_key",
+                                                        default='8888'))
 
             self.latency_compute_start_key_name = os.getenv("latency_compute_start_key_name_key",
                                                             default=None)
@@ -80,8 +84,8 @@ class Plotter:
                        "latency_redis_start_key={},\n"
                        "latency_compute_start_key_name={}."
                        .format(self.latency_redis_key,
-                               self.ip_address_of_host,
-                               self.port_number_of_host,
+                               Plotter.ip_address_of_host,
+                               Plotter.port_number_of_host,
                                self.latency_redis_start_key,
                                self.latency_compute_start_key_name)))
 
@@ -139,7 +143,7 @@ class Plotter:
                     hash_table_name, self.latency_redis_start_key)[0].decode('utf-8')
                 if timestamp:
                     logging.info("Obtained the first starting time as {}."
-                                  .format(timestamp))
+                                 .format(timestamp))
                     is_first_timestamp_obtained = True
             except:
                 logging.info("Unable to find {} in hash table {} in redis."
@@ -202,22 +206,82 @@ class Plotter:
                 logging.info("Trying to fetch the hashtable {}.".format(latency_compute_key))
                 self.read_latency_from_redis(latency_compute_key)
 
-        mpld3.show(ip=self.ip_address_of_host,
-                   port=self.port_number_of_host,
-                   open_browser=False)
+        # mpld3.show(ip=self.ip_address_of_host,
+        #           port=self.port_number_of_host,
+        #           open_browser=False)
 
     def cleanup(self):
         pass
 
+    @staticmethod
+    def run_consumer_thread(*args, **kwargs):
+        print("Starting {}".format(threading.current_thread().getName()))
+        server_class = HTTPServer
+        httpd = server_class((Plotter.ip_address_of_host, Plotter.port_number_of_host), MyHandler)
+        print(time.asctime(), 'Server Starts - %s:%s' % (Plotter.ip_address_of_host, Plotter.port_number_of_host))
+        try:
+            httpd.serve_forever()
+        except KeyboardInterrupt:
+            pass
+        httpd.server_close()
+        print(time.asctime(), 'Server Stops - %s:%s' % (Plotter.ip_address_of_host, Plotter.port_number_of_host))
+
+        print("Thread {}: Exiting"
+              .format(threading.current_thread().getName()))
+
+    def start_consumer_thread(self):
+        consumer_thread = threading.Thread(name="plotter_thread",
+                                           target=Plotter.run_consumer_thread,
+                                           args=(),
+                                           kwargs={})
+        consumer_thread.do_run = True
+        consumer_thread.name = "plotter"
+        consumer_thread.start()
+
     def pyplot_mpld3(self, timestamp, list_of_latencies):
         plt.xlabel("Time --> Day:Hour:Minute:Second", style='normal', color='red', fontsize='24')
-        plt.ylabel("latency --> (milliseconds)", style='normal', color='red', fontsize='24')
-        plt.title("Latency (millseconds) vs Time", style='normal', color='red', fontsize='24')
+        plt.ylabel("Latency --> (milliseconds)", style='normal', color='red', fontsize='24')
+        plt.title("Latency (milliseconds) vs Time", style='normal', color='red', fontsize='24')
         matplot_date = dates.date2num(timestamp)
+        plt.figure(figsize=(4.0, 4.0), dpi=400)
         for value in list_of_latencies:
             plt.plot_date(xdate=True, x=matplot_date, y=value, tz='America/New_York')
+        mpld3.save_html(fig=plt.gcf(), fileobj=Plotter.html_filename, template_type='simple', use_http=True)
         # plt.legend()
         plt.autoscale()
+
+
+class MyHandler(BaseHTTPRequestHandler):
+    def do_HEAD(self):
+        self.send_response(200)
+        self.send_header('Content-type', 'text/html')
+        self.end_headers()
+
+    def do_GET(self):
+        paths = {
+            '/': {'status': 200},
+            '/bar': {'status': 302},
+            '/baz': {'status': 404},
+            '/qux': {'status': 500}
+        }
+
+        if self.path in paths:
+            self.respond(paths[self.path])
+        else:
+            self.respond({'status': 500})
+
+    def handle_http(self, status_code, path):
+        self.send_response(status_code)
+        self.send_header('Content-type', 'text/html')
+        self.end_headers()
+        content = None
+        with open(Plotter.html_filename, "r", encoding='utf-8') as f:
+            content = f.read()
+        return bytes(content, 'UTF-8')
+
+    def respond(self, opts):
+        response = self.handle_http(opts['status'], self.path)
+        self.wfile.write(response)
 
 
 if __name__ == '__main__':
