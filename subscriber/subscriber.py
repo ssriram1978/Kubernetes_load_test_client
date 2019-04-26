@@ -7,6 +7,7 @@ import threading
 import time
 import traceback
 from datetime import datetime
+from collections import deque
 
 import dateutil.parser
 
@@ -42,8 +43,7 @@ class Subscriber:
     """
     This Class is used to subscribe to a topic in a message queue.
     """
-    message_queue = []
-    max_queue_size = 10000
+    message_queue = deque()
     redis_instance = None
     latency_compute_start_key_name = None
 
@@ -173,12 +173,11 @@ class Subscriber:
             elif name == 'latency_name':
                 latency_name = value
         t = threading.currentThread()
-        current_index = 0
         is_first_key_published_in_redis = False
         while getattr(t, "do_run", True):
             t = threading.currentThread()
             try:
-                dequeued_message = Subscriber.message_queue[current_index]
+                dequeued_message = Subscriber.message_queue.popleft()
                 msg_rcvd_timestamp, msg = dequeued_message[0], dequeued_message[1]
                 if not is_first_key_published_in_redis:
                     if Subscriber.latency_compute_start_key_name:
@@ -193,11 +192,6 @@ class Subscriber:
                 Subscriber.parse_message_and_compute_latency(msg,
                                                              msg_rcvd_timestamp,
                                                              latency_name + '_' + container_id)
-                current_index += 1
-                if current_index >= Subscriber.max_queue_size:
-                    del Subscriber.message_queue
-                    Subscriber.message_queue = []
-                    current_index = 0
             except:
                 logging.debug("No more messages.")
                 time.sleep(0.1)
