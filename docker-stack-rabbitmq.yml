@@ -49,7 +49,7 @@ services:
                        ]\
                      }\
                    }"
-      messages_per_second_key: "100"
+      messages_per_second_key: "1000"
       test_duration_in_sec_key: "100"
       log_level_key: "info"
       redis_server_hostname_key: 'redis'
@@ -124,8 +124,6 @@ services:
     image: plotter:latest
     depends_on:
       - redis-commander
-    ports:
-      - "8888:8888"
     deploy:
       replicas: 1
       #      resources:
@@ -140,7 +138,28 @@ services:
       redis_log_keyname_key: 'plotter_load_test_events'
       latency_redis_key: 'latency_results'
       latency_compute_start_key_name_key: 'start_time'
+      html_filename_key: '/opt/html_graph_storage/latency.html'
     volumes:
+      - ./html_graph_storage:/opt/html_graph_storage
+      - /var/run/docker.sock:/var/run/docker.sock
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+  displayer:
+    image: displayer:latest
+    ports:
+      - "8888:8888"
+    deploy:
+      replicas: 1
+      #      resources:
+      #        limits:
+      #          cpus: "0.8"
+      #          memory: 2000M
+      restart_policy:
+        condition: none
+    environment:
+      html_filename_key: '/opt/html_graph_storage/latency.html'
+    volumes:
+      - ./html_graph_storage:/opt/html_graph_storage:ro
       - /var/run/docker.sock:/var/run/docker.sock
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"

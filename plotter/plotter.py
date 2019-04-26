@@ -10,8 +10,6 @@ import dateutil.parser
 import matplotlib.pyplot as plt
 import mpld3
 from matplotlib import dates
-import threading
-from http.server import BaseHTTPRequestHandler, HTTPServer
 
 logging.basicConfig(format='%(message)s',
                     level=logging.INFO)
@@ -41,11 +39,8 @@ from infrastructure_components.redis_client.redis_interface import RedisInterfac
 
 class Plotter:
     """
-        This Class is used to plot latency on Grafana via prometheus.
+        This Class is used to generate a html file that has a Latency vs time graphical plot.
     """
-    ip_address_of_host = None
-    port_number_of_host = 0
-    html_filename = "latency.html"
 
     def __init__(self):
         """
@@ -60,8 +55,8 @@ class Plotter:
         self.latency_redis_key = None
         self.latency_redis_start_key = None
         self.latency_compute_start_key_name = None
+        self.html_filename = None
         self.load_environment_variables()
-        self.start_consumer_thread()
 
     def load_environment_variables(self):
         """
@@ -69,29 +64,25 @@ class Plotter:
         :return:
         """
         while not self.latency_redis_key or \
-                not Plotter.ip_address_of_host or \
-                not Plotter.port_number_of_host or \
+                not self.html_filename or \
                 not self.latency_compute_start_key_name:
             time.sleep(1)
+            self.html_filename = os.getenv("html_filename_key",
+                                           default=None)
+
             self.latency_redis_key = os.getenv("latency_redis_key",
                                                default=None)
             self.latency_redis_start_key = os.getenv("latency_redis_start_key",
                                                      default="start_time")
-            Plotter.ip_address_of_host = os.getenv("ip_address_of_host_key",
-                                                   default='0.0.0.0')
-            Plotter.port_number_of_host = int(os.getenv("port_number_of_host_key",
-                                                        default='8888'))
 
             self.latency_compute_start_key_name = os.getenv("latency_compute_start_key_name_key",
                                                             default=None)
-        logging.debug(("latency_redis_key={},\n"
-                       "ip_address_of_host={},\n"
-                       "port_number_of_host={},\n"
+        logging.debug(("html_filename_key={}, \n"
+                       "latency_redis_key={},\n"
                        "latency_redis_start_key={},\n"
                        "latency_compute_start_key_name={}."
-                       .format(self.latency_redis_key,
-                               Plotter.ip_address_of_host,
-                               Plotter.port_number_of_host,
+                       .format(self.html_filename,
+                               self.latency_redis_key,
                                self.latency_redis_start_key,
                                self.latency_compute_start_key_name)))
 
@@ -219,66 +210,12 @@ class Plotter:
     def cleanup(self):
         pass
 
-    @staticmethod
-    def run_consumer_thread(*args, **kwargs):
-        print("Starting {}".format(threading.current_thread().getName()))
-        server_class = HTTPServer
-        httpd = server_class((Plotter.ip_address_of_host, Plotter.port_number_of_host), MyHandler)
-        print(time.asctime(), 'Server Starts - %s:%s' % (Plotter.ip_address_of_host, Plotter.port_number_of_host))
-        try:
-            httpd.serve_forever()
-        except KeyboardInterrupt:
-            pass
-        httpd.server_close()
-        print(time.asctime(), 'Server Stops - %s:%s' % (Plotter.ip_address_of_host, Plotter.port_number_of_host))
-
-        print("Thread {}: Exiting"
-              .format(threading.current_thread().getName()))
-
-    def start_consumer_thread(self):
-        consumer_thread = threading.Thread(name="plotter_thread",
-                                           target=Plotter.run_consumer_thread,
-                                           args=(),
-                                           kwargs={})
-        consumer_thread.do_run = True
-        consumer_thread.name = "plotter"
-        consumer_thread.start()
-
     def pyplot_mpld3(self, timestamp, list_of_latencies):
         matplot_date = dates.date2num(timestamp)
         for value in list_of_latencies:
             plt.plot_date(xdate=True, x=matplot_date, y=value, tz='America/New_York')
-        mpld3.save_html(fig=plt.gcf(), fileobj=Plotter.html_filename, template_type='simple', use_http=True)
+        mpld3.save_html(fig=plt.gcf(), fileobj=self.html_filename, template_type='simple', use_http=True)
         # plt.legend()
-
-
-class MyHandler(BaseHTTPRequestHandler):
-    def do_HEAD(self):
-        self.send_response(200)
-        self.send_header('Content-type', 'text/html')
-        self.end_headers()
-
-    def do_GET(self):
-        self.respond({'status': 200})
-
-    def handle_http(self, status_code, path):
-        self.send_response(status_code)
-        self.send_header('Content-type', 'text/html')
-        self.end_headers()
-        content = '''
-        <html>
-        </html>
-        '''
-        try:
-            with open(Plotter.html_filename, "r", encoding='utf-8') as f:
-                content = f.read()
-        except FileNotFoundError:
-            logging.info("File {} not found yet..".format(Plotter.html_filename))
-        return bytes(content, 'UTF-8')
-
-    def respond(self, opts):
-        response = self.handle_http(opts['status'], self.path)
-        self.wfile.write(response)
 
 
 if __name__ == '__main__':

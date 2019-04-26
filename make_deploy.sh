@@ -70,6 +70,11 @@ create_infrastructure() {
         orchestrator \
         $tag
 
+        echo "build_push_directory displayer $tag"
+        build_push_directory \
+        displayer \
+        $tag
+
         echo "docker-compose -f $2 build"
         docker-compose -f $2 build
     else
