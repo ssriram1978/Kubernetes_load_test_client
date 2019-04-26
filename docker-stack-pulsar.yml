@@ -125,8 +125,6 @@ services:
     image: plotter:latest
     depends_on:
       - redis-commander
-    ports:
-      - "8888:8888"
     deploy:
       replicas: 1
       #      resources:

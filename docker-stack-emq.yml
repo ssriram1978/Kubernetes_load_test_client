@@ -133,8 +133,6 @@ services:
       type_of_messaging_queue_key: 'RabbitMQ'
   plotter:
     image: plotter:latest
-    ports:
-      - "8888:8888"
     depends_on:
       - redis-commander
     deploy:
