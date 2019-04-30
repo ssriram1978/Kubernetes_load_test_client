@@ -35,6 +35,8 @@ from infrastructure_components.publisher_subscriber.pulsar_msgq_api.pulsar_msgq_
     PulsarMsgQAPI
 from infrastructure_components.publisher_subscriber.nats_msgq_api.nats_msgq_api import \
     NatsMsgQAPI
+from infrastructure_components.publisher_subscriber.zeromq_api.zeromq_api import \
+    ZeroMsgQAPI
 from infrastructure_components.redis_client.redis_interface import RedisInterface
 
 
@@ -51,6 +53,7 @@ class PublisherSubscriberAPI:
     wurstmeisterKafakMsqQType = "WurstMeisterKafka"
     pulsarMsgQType = "Pulsar"
     natsMsgQType = "NATS"
+    zeroMQType = "ZeroMQ"
 
     def __init__(self,
                  is_producer=False,
@@ -154,6 +157,13 @@ class PublisherSubscriberAPI:
                                                                 queue_name=queue_name)
                 elif self.type_of_messaging_queue == PublisherSubscriberAPI.natsMsgQType:
                     self.message_queue_instance = NatsMsgQAPI(is_producer=self.is_producer,
+                                                              is_consumer=self.is_consumer,
+                                                              thread_identifier=self.thread_identifier,
+                                                              subscription_cb=self.subscription_cb,
+                                                              queue_name=queue_name)
+
+                elif self.type_of_messaging_queue == PublisherSubscriberAPI.zeroMQType:
+                    self.message_queue_instance = ZeroMsgQAPI(is_producer=self.is_producer,
                                                               is_consumer=self.is_consumer,
                                                               thread_identifier=self.thread_identifier,
                                                               subscription_cb=self.subscription_cb,

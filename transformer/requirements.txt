@@ -6,3 +6,4 @@ confluent_kafka
 kafka
 pulsar-client
 asyncio-nats-client
+pyzmq

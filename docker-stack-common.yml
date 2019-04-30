@@ -1,0 +1,84 @@
+version: '3.3'
+services:
+    portainer:
+      image: portainer/portainer
+      ports:
+        - "9000:9000"
+      command: -H unix:///var/run/docker.sock
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+        - ./infrastructure_components/portainer/data:/data
+        - "/etc/timezone:/etc/timezone:ro"
+        - "/etc/localtime:/etc/localtime:ro"
+    #  logspout:
+    #    image: gliderlabs/logspout:latest
+    #    command: 'syslog://:5000'
+    #    depends_on:
+    #      - logstash
+    #    volumes:
+    #      - '/var/run/docker.sock:/var/run/docker.sock'
+    filebeat:
+      image: docker.elastic.co/beats/filebeat:6.5.4
+      user: root
+      depends_on:
+        - elasticsearch
+        - logstash
+        - kibana
+      volumes:
+        - ./plotter/filebeat/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro
+        - /var/lib/docker/containers:/var/lib/docker/containers:ro
+        - /var/run/docker.sock:/var/run/docker.sock:ro
+      environment:
+        - output.elasticsearch.hosts=["elasticsearch:9200"]
+        - strict.perms=false
+    logstash:
+      build:
+        context: ./plotter/logstash
+        dockerfile: Dockerfile
+      image: logstash:latest
+      ports:
+        - "5044:5044"
+        - "9600:9600"
+      depends_on:
+        - elasticsearch
+        - kibana
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+        - "/etc/timezone:/etc/timezone:ro"
+        - "/etc/localtime:/etc/localtime:ro"
+    kibana:
+      image: docker.elastic.co/kibana/kibana-oss:6.7.1
+      depends_on:
+        - elasticsearch
+      ports:
+        - '5601:5601'
+      configs:
+        - source: kibana_config
+          target: /usr/share/kibana/config/kibana.yml
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+        - "/etc/timezone:/etc/timezone:ro"
+        - "/etc/localtime:/etc/localtime:ro"
+    elasticsearch:
+      image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.7.1
+      ports:
+        - "9200:9200"
+        - "9300:9300"
+      configs:
+        - source: elastic_config
+          target: /usr/share/elasticsearch/config/elasticsearch.yml
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+        - "/etc/timezone:/etc/timezone:ro"
+        - "/etc/localtime:/etc/localtime:ro"
+configs:
+    elastic_config:
+      file: ./plotter/elasticsearch/config/elasticsearch.yml
+    logstash_config:
+      file: ./plotter/logstash/config/logstash.yml
+    logstash_pipeline:
+      file: ./plotter/logstash/pipeline/logstash.conf
+    kibana_config:
+      file: ./plotter/kibana/config/kibana.yml
+    filebeat_config:
+      file: ./plotter/filebeat/filebeat.docker.yml

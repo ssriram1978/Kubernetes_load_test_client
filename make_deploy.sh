@@ -88,13 +88,13 @@ create_infrastructure() {
 deploy_infrastructure() {
    yaml_file=$1
 
-   echo "docker stack deploy -c $1 load_test2"
-   docker stack deploy -c $1 load_test2
+   echo "docker stack deploy --compose-file docker-stack-common.yml -c $1 load_test"
+   docker stack deploy -c $1 load_test
 }
 
 teardown_infrastructure() {
-   echo "docker stack rm load_test2"
-   docker stack rm load_test2
+   echo "docker stack rm load_test"
+   docker stack rm load_test
 }
 
 create_deploy_infrastructure() {

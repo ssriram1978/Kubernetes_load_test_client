@@ -5,6 +5,7 @@ import os
 import sys
 import time
 import traceback
+import json
 
 logging.basicConfig(format='%(message)s',
                     level=logging.INFO)
@@ -36,6 +37,11 @@ class Orchestrator:
     """
         This Class is used to orchestrate hundreds of producer, consumer and transformer docker instances.
     """
+    publisher_message_starting_port = 50000
+    max_number_of_ports = 1000
+    publisher_signaling_starting_port = publisher_message_starting_port + max_number_of_ports
+    subscriber_message_starting_port = publisher_signaling_starting_port + max_number_of_ports
+    subscriber_signaling_starting_port = subscriber_message_starting_port + max_number_of_ports
 
     def __init__(self):
         """
@@ -53,6 +59,7 @@ class Orchestrator:
         self.publisher_key_name = None
         self.subscriber_key_name = None
         self.transformer_key_name = None
+        self.distribute_ports = None
         self.redis_instance = RedisInterface("Orchestrator")
         self.load_environment_variables()
 
@@ -68,8 +75,7 @@ class Orchestrator:
         Load environment variables.
         :return:
         """
-        while not self.is_loopback or \
-                not self.publisher_key_name or \
+        while not self.publisher_key_name or \
                 not self.subscriber_key_name or \
                 not self.transformer_key_name or \
                 not self.publisher_hash_table_name or \
@@ -89,6 +95,9 @@ class Orchestrator:
                                                         default=None)
             self.transformer_hash_table_name = os.getenv("transformer_hash_table_name",
                                                          default=None)
+            self.distribute_ports = os.getenv("distribute_ports",
+                                              default=None)
+
             time.sleep(1)
         logging.info("is_loopback={},\n"
                      "publisher_key_name={},\n"
@@ -96,6 +105,7 @@ class Orchestrator:
                      "transformer_key_name={},\n"
                      "publisher_hash_table_name={},\n"
                      "subscriber_hash_table_name={},\n"
+                     "distribute_ports={},\n"
                      "transformer_hash_table_name={},\n"
                      .format(self.is_loopback,
                              self.publisher_key_name,
@@ -103,6 +113,7 @@ class Orchestrator:
                              self.transformer_key_name,
                              self.publisher_hash_table_name,
                              self.subscriber_hash_table_name,
+                             self.distribute_ports,
                              self.transformer_hash_table_name))
 
     def read_all_containers_from_redis(self, key):
@@ -127,38 +138,160 @@ class Orchestrator:
                                                                   sub_list):
         for pub_container_id in self.yield_non_assigned_container(pub_list,
                                                                   self.publisher_hash_table_name):
-            for sub_container_id in self.yield_non_assigned_container(sub_list,
-                                                                      self.subscriber_hash_table_name):
-                self.redis_instance.set_key_to_value_within_name(self.publisher_hash_table_name,
-                                                                 pub_container_id,
-                                                                 str({"publisher": "loop_" + pub_container_id}))
+            for sub_container_id in self.yield_non_assigned_container(
+                    sub_list,
+                    self.subscriber_hash_table_name):
+                self.redis_instance.set_key_to_value_within_name(
+                    self.publisher_hash_table_name,
+                    pub_container_id,
+                    str({"publisher": "loop_" + pub_container_id}))
 
-                self.redis_instance.set_key_to_value_within_name(self.subscriber_hash_table_name,
-                                                                 sub_container_id,
-                                                                 str({"subscriber": "loop_" + pub_container_id}))
+                self.redis_instance.set_key_to_value_within_name(
+                    self.subscriber_hash_table_name,
+                    sub_container_id,
+                    str({"subscriber": "loop_" + pub_container_id}))
+                break
 
     def populate_publishers_subscribers_and_transformers_hash_tables(self,
                                                                      pub_list,
                                                                      sub_list,
                                                                      trans_list):
-        for pub_container_id in self.yield_non_assigned_container(pub_list,
-                                                                  self.publisher_hash_table_name):
-            for sub_container_id in self.yield_non_assigned_container(sub_list,
-                                                                      self.subscriber_hash_table_name):
-                for trans_container_id in self.yield_non_assigned_container(trans_list,
-                                                                            self.transformer_hash_table_name):
-                    self.redis_instance.set_key_to_value_within_name(self.publisher_hash_table_name,
-                                                                     pub_container_id,
-                                                                     str({"publisher": "pub_" + pub_container_id}))
+        for pub_container_id in self.yield_non_assigned_container(
+                pub_list,
+                self.publisher_hash_table_name):
 
-                    self.redis_instance.set_key_to_value_within_name(self.subscriber_hash_table_name,
-                                                                     sub_container_id,
-                                                                     str({"subscriber": "sub_" + sub_container_id}))
+            for sub_container_id in self.yield_non_assigned_container(
+                    sub_list,
+                    self.subscriber_hash_table_name):
+                for trans_container_id in self.yield_non_assigned_container(
+                        trans_list,
+                        self.transformer_hash_table_name):
+                    self.redis_instance.set_key_to_value_within_name(
+                        self.publisher_hash_table_name,
+                        pub_container_id,
+                        str({"publisher": "pub_" + pub_container_id}))
 
-                    self.redis_instance.set_key_to_value_within_name(self.transformer_hash_table_name,
-                                                                     trans_container_id,
-                                                                     str({"subscriber": "pub_" + pub_container_id,
-                                                                          "publisher": "sub_" + sub_container_id}))
+                    self.redis_instance.set_key_to_value_within_name(
+                        self.subscriber_hash_table_name,
+                        sub_container_id,
+                        str({"subscriber": "sub_" + sub_container_id}))
+
+                    self.redis_instance.set_key_to_value_within_name(
+                        self.transformer_hash_table_name,
+                        trans_container_id,
+                        str({"subscriber": "pub_" + pub_container_id,
+                             "publisher": "sub_" + sub_container_id}))
+                break
+            break
+
+    def yield_a_port_number_for_publisher_message(self):
+
+        for index in range(Orchestrator.publisher_message_starting_port,
+                           Orchestrator.publisher_message_starting_port + Orchestrator.max_number_of_ports):
+            yield index
+
+    def yield_a_port_number_for_publisher_signaling(self):
+
+        for index in range(Orchestrator.publisher_signaling_starting_port,
+                           Orchestrator.publisher_signaling_starting_port + Orchestrator.max_number_of_ports):
+            yield index
+
+    def yield_a_port_number_for_subscriber_message(self):
+
+        for index in range(Orchestrator.subscriber_message_starting_port,
+                           Orchestrator.subscriber_message_starting_port + Orchestrator.max_number_of_ports):
+            yield index
+
+    def yield_a_port_number_for_subscriber_signaling(self):
+
+        for index in range(Orchestrator.subscriber_signaling_starting_port,
+                           Orchestrator.subscriber_signaling_starting_port + Orchestrator.max_number_of_ports):
+            yield index
+
+    def populate_publishers_subscribers_with_loopback_ports(self,
+                                                            pub_list,
+                                                            sub_list):
+
+        for pub_container_id in self.yield_non_assigned_container(
+                pub_list,
+                self.publisher_hash_table_name):
+            for sub_container_id in self.yield_non_assigned_container(
+                    sub_list,
+                    self.subscriber_hash_table_name):
+                for pub_message_port in self.yield_a_port_number_for_publisher_message():
+                    for pub_signaling_port in self.yield_a_port_number_for_publisher_signaling():
+                        dict_of_ports = {'PUB': pub_message_port,
+                                         'REP': pub_signaling_port}
+                        self.redis_instance.set_key_to_value_within_name(
+                            self.publisher_hash_table_name,
+                            pub_container_id,
+                            str({"publisher":
+                                json.dumps(
+                                    dict_of_ports)}))
+                        dict_of_ports = {'SUB': pub_message_port,
+                                         'REQ': pub_signaling_port}
+                        self.redis_instance.set_key_to_value_within_name(
+                            self.subscriber_hash_table_name,
+                            sub_container_id,
+                            str({"subscriber":
+                                json.dumps(
+                                    dict_of_ports)}))
+                        break
+                    break
+                break
+
+    def populate_publishers_subscribers_and_transformers_hash_tables_with_ports(self,
+                                                                                publishers,
+                                                                                subscribers,
+                                                                                transformers):
+
+        for pub_container_id in self.yield_non_assigned_container(
+                publishers,
+                self.publisher_hash_table_name):
+            for sub_container_id in self.yield_non_assigned_container(
+                    subscribers,
+                    self.subscriber_hash_table_name):
+                for trans_container_id in self.yield_non_assigned_container(
+                        transformers,
+                        self.transformer_hash_table_name):
+                    for pub_message_port in self.yield_a_port_number_for_publisher_message():
+                        for pub_signaling_port in self.yield_a_port_number_for_publisher_signaling():
+                            for sub_message_port in self.yield_a_port_number_for_subscriber_message():
+                                for sub_signaling_port in self.yield_a_port_number_for_subscriber_signaling():
+                                    dict_of_ports = {'PUB': pub_message_port,
+                                                     'REP': pub_signaling_port}
+                                    self.redis_instance.set_key_to_value_within_name(
+                                        self.publisher_hash_table_name,
+                                        pub_container_id,
+                                        str({"publisher":
+                                            json.dumps(
+                                                dict_of_ports)}))
+                                    dict_of_ports = {'SUB': sub_message_port,
+                                                     'REQ': sub_signaling_port}
+
+                                    self.redis_instance.set_key_to_value_within_name(
+                                        self.subscriber_hash_table_name,
+                                        sub_container_id,
+                                        str({"subscriber":
+                                            json.dumps(
+                                                dict_of_ports)}))
+                                    dict_of_pub_ports = {'PUB': sub_message_port,
+                                                         'REP': sub_signaling_port}
+                                    dict_of_sub_ports = {'SUB': pub_message_port,
+                                                         'REQ': pub_signaling_port}
+                                    self.redis_instance.set_key_to_value_within_name(
+                                        self.transformer_hash_table_name,
+                                        trans_container_id,
+                                        str({"subscriber":
+                                            json.dumps(
+                                                dict_of_sub_ports),
+                                            "publisher":
+                                                json.dumps(
+                                                    dict_of_pub_ports)}))
+                                    break
+                                break
+                            break
+                        break
                     break
                 break
 
@@ -166,7 +299,16 @@ class Orchestrator:
         while True:
             publishers = self.read_all_containers_from_redis(self.publisher_key_name)
             subscribers = self.read_all_containers_from_redis(self.subscriber_key_name)
-            if self.is_loopback == "true":
+            if self.distribute_ports == "true":
+                if self.is_loopback and self.is_loopback == "true":
+                    self.populate_publishers_subscribers_with_loopback_ports(publishers,
+                                                                             subscribers)
+                else:
+                    transformers = self.read_all_containers_from_redis(self.transformer_key_name)
+                    self.populate_publishers_subscribers_and_transformers_hash_tables_with_ports(publishers,
+                                                                                                 subscribers,
+                                                                                                 transformers)
+            if self.is_loopback and self.is_loopback == "true":
                 self.populate_publishers_subscribers_hash_tables_with_loopback(publishers,
                                                                                subscribers)
             else:
