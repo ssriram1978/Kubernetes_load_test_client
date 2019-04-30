@@ -89,7 +89,7 @@ deploy_infrastructure() {
    yaml_file=$1
 
    echo "docker stack deploy --compose-file docker-stack-common.yml -c $1 load_test"
-   docker stack deploy -c $1 load_test
+   docker stack deploy --compose-file docker-stack-common.yml  -c $1 load_test
 }
 
 teardown_infrastructure() {

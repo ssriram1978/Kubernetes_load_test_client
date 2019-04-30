@@ -62,7 +62,7 @@ services:
       restart_policy:
         condition: none
     environment:
-      publisher_hostname_key: "10.211.55.3"
+      publisher_hostname_key: "publisher"
       subscriber_key_name: "subscriber"
       hash_table_name: "subscriber_hash_table"
       average_latency_for_n_sec_key: "1"
@@ -93,7 +93,7 @@ services:
       restart_policy:
         condition: none
     environment:
-      publisher_hostname_key: "10.211.55.3"
+      publisher_hostname_key: "publisher"
       transformer_key_name: "transformer"
       hash_table_name: "transformer_hash_table"
       log_level_key: "info"
@@ -145,8 +145,6 @@ services:
     image: plotter:latest
     depends_on:
       - redis-commander
-    ports:
-      - "8888:8888"
     deploy:
       replicas: 1
       #      resources:
