@@ -140,20 +140,21 @@ class Orchestrator:
     def populate_publishers_subscribers_hash_tables_with_loopback(self,
                                                                   pub_list,
                                                                   sub_list):
-        for pub_container_id in self.yield_non_assigned_container(pub_list,
-                                                                  self.publisher_hash_table_name):
+        for pub_container_id in self.yield_non_assigned_container(
+                pub_list,
+                self.publisher_hash_table_name):
             for sub_container_id in self.yield_non_assigned_container(
                     sub_list,
                     self.subscriber_hash_table_name):
                 self.redis_instance.set_key_to_value_within_name(
                     self.publisher_hash_table_name,
                     pub_container_id,
-                    str({"publisher": "loop_" + pub_container_id}))
+                    str({"publisher": "loop_{}".format(pub_container_id)}))
 
                 self.redis_instance.set_key_to_value_within_name(
                     self.subscriber_hash_table_name,
                     sub_container_id,
-                    str({"subscriber": "loop_" + pub_container_id}))
+                    str({"subscriber": "loop_{}".format(pub_container_id)}))
                 break
 
     def populate_publishers_subscribers_and_transformers_hash_tables(self,
@@ -163,30 +164,44 @@ class Orchestrator:
         for pub_container_id in self.yield_non_assigned_container(
                 pub_list,
                 self.publisher_hash_table_name):
-
             for sub_container_id in self.yield_non_assigned_container(
                     sub_list,
                     self.subscriber_hash_table_name):
                 for trans_container_id in self.yield_non_assigned_container(
                         trans_list,
                         self.transformer_hash_table_name):
+                    logging.info("Assigning {} to key {} in hash table {}."
+                                 .format(str({"publisher": "pub_{}".format(pub_container_id)}),
+                                         pub_container_id,
+                                         self.publisher_hash_table_name))
                     self.redis_instance.set_key_to_value_within_name(
                         self.publisher_hash_table_name,
                         pub_container_id,
-                        str({"publisher": "pub_" + pub_container_id}))
+                        str({"publisher": "pub_{}".format(pub_container_id)}))
+
+                    logging.info("Assigning {} to key {} in hash table {}."
+                                 .format(str({"subscriber": "sub_{}".format(sub_container_id)}),
+                                         sub_container_id,
+                                         self.subscriber_hash_table_name))
 
                     self.redis_instance.set_key_to_value_within_name(
                         self.subscriber_hash_table_name,
                         sub_container_id,
-                        str({"subscriber": "sub_" + sub_container_id}))
+                        str({"subscriber": "sub_{}".format(sub_container_id)}))
+
+                    logging.info("Assigning {} to key {} in hash table {}."
+                                 .format(str({"subscriber": "pub_{}".format(pub_container_id),
+                                              "publisher": "sub_{}".format(sub_container_id)}),
+                                         trans_container_id,
+                                         self.transformer_hash_table_name))
 
                     self.redis_instance.set_key_to_value_within_name(
                         self.transformer_hash_table_name,
                         trans_container_id,
-                        str({"subscriber": "pub_" + pub_container_id,
-                             "publisher": "sub_" + sub_container_id}))
+                        str({"subscriber": "pub_{}".format(pub_container_id),
+                             "publisher": "sub_{}".format(sub_container_id)}))
+                    break
                 break
-            break
 
     def populate_publishers_subscribers_with_loopback_ports(self,
                                                             pub_list,
@@ -271,7 +286,7 @@ class Orchestrator:
         while True:
             publishers = self.read_all_containers_from_redis(self.publisher_key_name)
             subscribers = self.read_all_containers_from_redis(self.subscriber_key_name)
-            if self.distribute_ports == "true":
+            if self.distribute_ports and self.distribute_ports == "true":
                 if self.is_loopback and self.is_loopback == "true":
                     self.populate_publishers_subscribers_with_loopback_ports(publishers,
                                                                              subscribers)
@@ -289,7 +304,7 @@ class Orchestrator:
                                                                                   subscribers,
                                                                                   transformers)
 
-            time.sleep(5)
+            time.sleep(1)
 
 
 if __name__ == '__main__':
