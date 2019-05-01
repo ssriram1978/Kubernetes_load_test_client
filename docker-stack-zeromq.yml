@@ -5,10 +5,8 @@ services:
     depends_on:
       - redis-commander
     ports:
-      - "50000:50000"
-      - "51000:51000"
-      - "52000:52000"
-      - "53000:53000"
+      - "50000-50099:50000-50099"
+      - "51000-51099:51000-51099"
     deploy:
       replicas: 1
       #      resources:
@@ -87,6 +85,9 @@ services:
     depends_on:
       - redis-commander
       - publisher
+    ports:
+      - "52000-52099:52000-52099"
+      - "53000-53099:53000-53099"
     deploy:
       replicas: 1
       #      resources:
@@ -106,3 +107,7 @@ services:
       total_job_enqueued_count_redis_name_key: 'total_produced_count'
       total_job_dequeued_count_redis_name_key: 'total_consumed_count'
       type_of_messaging_queue_key: 'ZeroMQ'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
