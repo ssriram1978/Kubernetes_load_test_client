@@ -122,6 +122,7 @@ services:
         restart_policy:
           condition: none
       environment:
+        html_filename_key: '/opt/html_graph_storage/latency.html'
         redis_server_hostname_key: 'redis'
         redis_server_port_key:  '6379'
         redis_log_keyname_key: 'plotter_load_test_events'
