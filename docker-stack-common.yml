@@ -129,6 +129,7 @@ services:
         latency_redis_key: 'latency_results'
         latency_compute_start_key_name_key: 'start_time'
       volumes:
+        - ./html_graph_storage:/opt/html_graph_storage:ro
         - /var/run/docker.sock:/var/run/docker.sock
         - "/etc/timezone:/etc/timezone:ro"
         - "/etc/localtime:/etc/localtime:ro"
