@@ -38,10 +38,10 @@ class Orchestrator:
         This Class is used to orchestrate hundreds of producer, consumer and transformer docker instances.
     """
     publisher_message_starting_port = 50000
-    max_number_of_ports = 1000
-    publisher_signaling_starting_port = publisher_message_starting_port + max_number_of_ports
-    subscriber_message_starting_port = publisher_signaling_starting_port + max_number_of_ports
-    subscriber_signaling_starting_port = subscriber_message_starting_port + max_number_of_ports
+    publisher_signaling_starting_port = 51000
+    subscriber_message_starting_port = 52000
+    subscriber_signaling_starting_port = 53000
+    max_number_of_ports = 100
 
     def __init__(self):
         """
@@ -62,6 +62,10 @@ class Orchestrator:
         self.distribute_ports = None
         self.redis_instance = RedisInterface("Orchestrator")
         self.load_environment_variables()
+        self.pub_message_port = Orchestrator.publisher_message_starting_port
+        self.pub_signaling_port = Orchestrator.publisher_signaling_starting_port
+        self.sub_message_port = Orchestrator.subscriber_message_starting_port
+        self.sub_signaling_port = Orchestrator.subscriber_signaling_starting_port
 
     def set_log_level(self):
         """
@@ -184,67 +188,39 @@ class Orchestrator:
                 break
             break
 
-    def yield_a_port_number_for_publisher_message(self):
-
-        for index in range(Orchestrator.publisher_message_starting_port,
-                           Orchestrator.publisher_message_starting_port + Orchestrator.max_number_of_ports):
-            yield index
-
-    def yield_a_port_number_for_publisher_signaling(self):
-
-        for index in range(Orchestrator.publisher_signaling_starting_port,
-                           Orchestrator.publisher_signaling_starting_port + Orchestrator.max_number_of_ports):
-            yield index
-
-    def yield_a_port_number_for_subscriber_message(self):
-
-        for index in range(Orchestrator.subscriber_message_starting_port,
-                           Orchestrator.subscriber_message_starting_port + Orchestrator.max_number_of_ports):
-            yield index
-
-    def yield_a_port_number_for_subscriber_signaling(self):
-
-        for index in range(Orchestrator.subscriber_signaling_starting_port,
-                           Orchestrator.subscriber_signaling_starting_port + Orchestrator.max_number_of_ports):
-            yield index
-
     def populate_publishers_subscribers_with_loopback_ports(self,
                                                             pub_list,
                                                             sub_list):
-
         for pub_container_id in self.yield_non_assigned_container(
                 pub_list,
                 self.publisher_hash_table_name):
             for sub_container_id in self.yield_non_assigned_container(
                     sub_list,
                     self.subscriber_hash_table_name):
-                for pub_message_port in self.yield_a_port_number_for_publisher_message():
-                    for pub_signaling_port in self.yield_a_port_number_for_publisher_signaling():
-                        dict_of_ports = {'PUB': pub_message_port,
-                                         'REP': pub_signaling_port}
-                        self.redis_instance.set_key_to_value_within_name(
-                            self.publisher_hash_table_name,
-                            pub_container_id,
-                            str({"publisher":
-                                json.dumps(
-                                    dict_of_ports)}))
-                        dict_of_ports = {'SUB': pub_message_port,
-                                         'REQ': pub_signaling_port}
-                        self.redis_instance.set_key_to_value_within_name(
-                            self.subscriber_hash_table_name,
-                            sub_container_id,
-                            str({"subscriber":
-                                json.dumps(
-                                    dict_of_ports)}))
-                        break
-                    break
+                dict_of_ports = {'PUB': self.pub_message_port,
+                                 'REP': self.pub_signaling_port}
+                self.redis_instance.set_key_to_value_within_name(
+                    self.publisher_hash_table_name,
+                    pub_container_id,
+                    str({"publisher":
+                        json.dumps(
+                            dict_of_ports)}))
+                dict_of_ports = {'SUB': self.pub_message_port,
+                                 'REQ': self.pub_signaling_port}
+                self.redis_instance.set_key_to_value_within_name(
+                    self.subscriber_hash_table_name,
+                    sub_container_id,
+                    str({"subscriber":
+                        json.dumps(
+                            dict_of_ports)}))
+                self.pub_message_port += 1
+                self.pub_signaling_port += 1
                 break
 
     def populate_publishers_subscribers_and_transformers_hash_tables_with_ports(self,
                                                                                 publishers,
                                                                                 subscribers,
                                                                                 transformers):
-
         for pub_container_id in self.yield_non_assigned_container(
                 publishers,
                 self.publisher_hash_table_name):
@@ -254,44 +230,40 @@ class Orchestrator:
                 for trans_container_id in self.yield_non_assigned_container(
                         transformers,
                         self.transformer_hash_table_name):
-                    for pub_message_port in self.yield_a_port_number_for_publisher_message():
-                        for pub_signaling_port in self.yield_a_port_number_for_publisher_signaling():
-                            for sub_message_port in self.yield_a_port_number_for_subscriber_message():
-                                for sub_signaling_port in self.yield_a_port_number_for_subscriber_signaling():
-                                    dict_of_ports = {'PUB': pub_message_port,
-                                                     'REP': pub_signaling_port}
-                                    self.redis_instance.set_key_to_value_within_name(
-                                        self.publisher_hash_table_name,
-                                        pub_container_id,
-                                        str({"publisher":
-                                            json.dumps(
-                                                dict_of_ports)}))
-                                    dict_of_ports = {'SUB': sub_message_port,
-                                                     'REQ': sub_signaling_port}
+                    dict_of_ports = {'PUB': self.pub_message_port,
+                                     'REP': self.pub_signaling_port}
+                    self.redis_instance.set_key_to_value_within_name(
+                        self.publisher_hash_table_name,
+                        pub_container_id,
+                        str({"publisher":
+                            json.dumps(
+                                dict_of_ports)}))
+                    dict_of_ports = {'SUB': self.sub_message_port,
+                                     'REQ': self.sub_signaling_port}
 
-                                    self.redis_instance.set_key_to_value_within_name(
-                                        self.subscriber_hash_table_name,
-                                        sub_container_id,
-                                        str({"subscriber":
-                                            json.dumps(
-                                                dict_of_ports)}))
-                                    dict_of_pub_ports = {'PUB': sub_message_port,
-                                                         'REP': sub_signaling_port}
-                                    dict_of_sub_ports = {'SUB': pub_message_port,
-                                                         'REQ': pub_signaling_port}
-                                    self.redis_instance.set_key_to_value_within_name(
-                                        self.transformer_hash_table_name,
-                                        trans_container_id,
-                                        str({"subscriber":
-                                            json.dumps(
-                                                dict_of_sub_ports),
-                                            "publisher":
-                                                json.dumps(
-                                                    dict_of_pub_ports)}))
-                                    break
-                                break
-                            break
-                        break
+                    self.redis_instance.set_key_to_value_within_name(
+                        self.subscriber_hash_table_name,
+                        sub_container_id,
+                        str({"subscriber":
+                            json.dumps(
+                                dict_of_ports)}))
+                    dict_of_pub_ports = {'PUB': self.sub_message_port,
+                                         'REP': self.sub_signaling_port}
+                    dict_of_sub_ports = {'SUB': self.pub_message_port,
+                                         'REQ': self.pub_signaling_port}
+                    self.redis_instance.set_key_to_value_within_name(
+                        self.transformer_hash_table_name,
+                        trans_container_id,
+                        str({"subscriber":
+                            json.dumps(
+                                dict_of_sub_ports),
+                            "publisher":
+                                json.dumps(
+                                    dict_of_pub_ports)}))
+                    self.pub_message_port += 1
+                    self.pub_signaling_port += 1
+                    self.sub_message_port += 1
+                    self.sub_signaling_port += 1
                     break
                 break
 
