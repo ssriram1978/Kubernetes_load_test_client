@@ -221,7 +221,8 @@ class Plotter:
 if __name__ == '__main__':
     plotter = Plotter()
     try:
-        plotter.perform_job()
+        while True:
+            plotter.perform_job()
     except KeyboardInterrupt:
         logging.error("Keyboard interrupt." + sys.exc_info()[0])
         logging.error("Exception in user code:")
