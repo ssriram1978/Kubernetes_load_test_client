@@ -52,6 +52,7 @@ class ZeroMsgQAPI:
             pass
         self.is_producer = is_producer
         self.is_consumer = is_consumer
+        self.producer_thread = None
         self.consumer_thread = None
         self.is_connected = False
         self.publisher_port_for_sending_message = 0
@@ -86,12 +87,12 @@ class ZeroMsgQAPI:
         self.context = None
         self.syncservice = None
         self.publisher_hostname = None
+        self.publisher = None
+        self.subscriber = None
         self.__read_environment_variables()
         if self.is_producer:
-            self.publisher = None
-            self.connect()
+            self.create_producer_thread()
         elif self.is_consumer:
-            self.subscriber = None
             self.create_consumer_thread()
 
     def __read_environment_variables(self):
@@ -206,6 +207,32 @@ class ZeroMsgQAPI:
         self.consumer_thread.name = "consumer"
         self.consumer_thread.start()
 
+    @staticmethod
+    def run_producer_thread(*args, **kwargs):
+        logging.debug("Starting {}".format(threading.current_thread().getName()))
+        producer_instance = None
+        for name, value in kwargs.items():
+            logging.debug("name={},value={}".format(name, value))
+            if name == 'producer_instance':
+                producer_instance = value
+        t = threading.currentThread()
+        producer_instance.connect()
+        while getattr(t, "do_run", True):
+            time.sleep(1)
+        logging.debug("Producer {}: Exiting"
+                      .format(threading.current_thread().getName()))
+
+    def create_producer_thread(self):
+        self.producer_thread = None
+        self.producer_thread = threading.Thread(name="producer_thread",
+                                                target=ZeroMsgQAPI.run_producer_thread,
+                                                args=(),
+                                                kwargs={'producer_instance':
+                                                            self})
+        self.producer_thread.do_run = True
+        self.producer_thread.name = "producer"
+        self.producer_thread.start()
+
     def disconnect(self):
         pass
 
@@ -218,6 +245,12 @@ class ZeroMsgQAPI:
                 logging.debug("Trying to join thread {}."
                               .format(self.consumer_thread.getName()))
                 self.consumer_thread.join(1.0)
+            if getattr(self.producer_thread, "do_run", True):
+                self.producer_thread.do_run = False
+                time.sleep(5)
+                logging.debug("Trying to join thread {}."
+                              .format(self.producer_thread.getName()))
+                self.producer_thread.join(1.0)
 
     def publish(self, message):
         """
