@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.7'
 services:
   zookeeper:
     image: wurstmeister/zookeeper
@@ -33,7 +33,7 @@ services:
       - redis-commander
       - broker
     deploy:
-      replicas: 10
+      replicas: 1
       #      resources:
       #        limits:
       #          cpus: "0.8"
@@ -81,7 +81,7 @@ services:
       - redis-commander
       - broker
     deploy:
-      replicas: 10
+      replicas: 1
       #      resources:
       #        limits:
       #          cpus: "0.8"
@@ -114,7 +114,7 @@ services:
       - redis-commander
       - broker
     deploy:
-      replicas: 10
+      replicas: 1
       #      resources:
       #        limits:
       #          cpus: "0.8"
