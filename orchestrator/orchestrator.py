@@ -280,7 +280,7 @@ class Orchestrator:
                     self.populate_publishers_subscribers_and_transformers_hash_tables_with_ports(publishers,
                                                                                                  subscribers,
                                                                                                  transformers)
-            if self.is_loopback and self.is_loopback == "true":
+            elif self.is_loopback and self.is_loopback == "true":
                 self.populate_publishers_subscribers_hash_tables_with_loopback(publishers,
                                                                                subscribers)
             else:
