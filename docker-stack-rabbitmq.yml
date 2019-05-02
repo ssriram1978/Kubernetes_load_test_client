@@ -1,7 +1,23 @@
-version: '3.7'
+version: '3'
 services:
   rabbitmq:
     image: rabbitmq:3.8-rc-management
+    sysctls:
+        - fs.file-max=2097152
+        - fs.nr_open=2097152
+        - net.core.somaxconn=32768
+        - net.ipv4.tcp_max_syn_backlog=16384
+        - net.core.netdev_max_backlog=16384
+        - net.ipv4.ip_local_port_range=1000 65535
+        - net.core.rmem_default=262144
+        - net.core.wmem_default=262144
+        - net.core.rmem_max=16777216
+        - net.core.wmem_max=16777216
+        - net.core.optmem_max=16777216
+        - net.ipv4.tcp_rmem=1024 4096 16777216
+        - net.ipv4.tcp_wmem=1024 4096 16777216
+        - net.ipv4.tcp_max_tw_buckets=1048576
+        - net.ipv4.tcp_fin_timeout=15
     environment:
       RABBITMQ_DEFAULT_USER: "guest"
       RABBITMQ_DEFAULT_PASS: "guest"
@@ -19,6 +35,22 @@ services:
     depends_on:
       - redis-commander
       - rabbitmq
+    sysctls:
+        - fs.file-max=2097152
+        - fs.nr_open=2097152
+        - net.core.somaxconn=32768
+        - net.ipv4.tcp_max_syn_backlog=16384
+        - net.core.netdev_max_backlog=16384
+        - net.ipv4.ip_local_port_range=1000 65535
+        - net.core.rmem_default=262144
+        - net.core.wmem_default=262144
+        - net.core.rmem_max=16777216
+        - net.core.wmem_max=16777216
+        - net.core.optmem_max=16777216
+        - net.ipv4.tcp_rmem=1024 4096 16777216
+        - net.ipv4.tcp_wmem=1024 4096 16777216
+        - net.ipv4.tcp_max_tw_buckets=1048576
+        - net.ipv4.tcp_fin_timeout=15
     deploy:
       replicas: 1
       #      resources:
@@ -64,6 +96,22 @@ services:
       - "/etc/localtime:/etc/localtime:ro"
   subscriber:
     image: subscriber:latest
+    sysctls:
+        - fs.file-max=2097152
+        - fs.nr_open=2097152
+        - net.core.somaxconn=32768
+        - net.ipv4.tcp_max_syn_backlog=16384
+        - net.core.netdev_max_backlog=16384
+        - net.ipv4.ip_local_port_range=1000 65535
+        - net.core.rmem_default=262144
+        - net.core.wmem_default=262144
+        - net.core.rmem_max=16777216
+        - net.core.wmem_max=16777216
+        - net.core.optmem_max=16777216
+        - net.ipv4.tcp_rmem=1024 4096 16777216
+        - net.ipv4.tcp_wmem=1024 4096 16777216
+        - net.ipv4.tcp_max_tw_buckets=1048576
+        - net.ipv4.tcp_fin_timeout=15
     depends_on:
       - redis-commander
       - rabbitmq
@@ -97,6 +145,22 @@ services:
       - "/etc/localtime:/etc/localtime:ro"
   transformer:
     image: transformer:latest
+    sysctls:
+        - fs.file-max=2097152
+        - fs.nr_open=2097152
+        - net.core.somaxconn=32768
+        - net.ipv4.tcp_max_syn_backlog=16384
+        - net.core.netdev_max_backlog=16384
+        - net.ipv4.ip_local_port_range=1000 65535
+        - net.core.rmem_default=262144
+        - net.core.wmem_default=262144
+        - net.core.rmem_max=16777216
+        - net.core.wmem_max=16777216
+        - net.core.optmem_max=16777216
+        - net.ipv4.tcp_rmem=1024 4096 16777216
+        - net.ipv4.tcp_wmem=1024 4096 16777216
+        - net.ipv4.tcp_max_tw_buckets=1048576
+        - net.ipv4.tcp_fin_timeout=15
     depends_on:
       - redis-commander
       - rabbitmq

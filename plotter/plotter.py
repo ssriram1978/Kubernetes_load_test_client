@@ -77,14 +77,14 @@ class Plotter:
 
             self.latency_compute_start_key_name = os.getenv("latency_compute_start_key_name_key",
                                                             default=None)
-        logging.debug(("html_filename_key={}, \n"
-                       "latency_redis_key={},\n"
-                       "latency_redis_start_key={},\n"
-                       "latency_compute_start_key_name={}."
-                       .format(self.html_filename,
-                               self.latency_redis_key,
-                               self.latency_redis_start_key,
-                               self.latency_compute_start_key_name)))
+        logging.info(("html_filename_key={}, \n"
+                      "latency_redis_key={},\n"
+                      "latency_redis_start_key={},\n"
+                      "latency_compute_start_key_name={}."
+                      .format(self.html_filename,
+                              self.latency_redis_key,
+                              self.latency_redis_start_key,
+                              self.latency_compute_start_key_name)))
 
     def convert_timestamp_from_string_to_obj(self, timestamp_in_string_format):
         timestamp_obj = None

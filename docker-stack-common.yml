@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3'
 services:
     portainer:
       image: portainer/portainer
@@ -52,10 +52,8 @@ services:
         - elasticsearch
       ports:
         - '5601:5601'
-      configs:
-        - source: kibana_config
-          target: /usr/share/kibana/config/kibana.yml
       volumes:
+        - ./plotter/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
         - /var/run/docker.sock:/var/run/docker.sock
         - "/etc/timezone:/etc/timezone:ro"
         - "/etc/localtime:/etc/localtime:ro"
@@ -64,15 +62,29 @@ services:
       ports:
         - "9200:9200"
         - "9300:9300"
-      configs:
-        - source: elastic_config
-          target: /usr/share/elasticsearch/config/elasticsearch.yml
       volumes:
+        - ./plotter/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
         - /var/run/docker.sock:/var/run/docker.sock
         - "/etc/timezone:/etc/timezone:ro"
         - "/etc/localtime:/etc/localtime:ro"
     redis:
       image: redis:latest
+    sysctls:
+        - fs.file-max=2097152
+        - fs.nr_open=2097152
+        - net.core.somaxconn=32768
+        - net.ipv4.tcp_max_syn_backlog=16384
+        - net.core.netdev_max_backlog=16384
+        - net.ipv4.ip_local_port_range=1000 65535
+        - net.core.rmem_default=262144
+        - net.core.wmem_default=262144
+        - net.core.rmem_max=16777216
+        - net.core.wmem_max=16777216
+        - net.core.optmem_max=16777216
+        - net.ipv4.tcp_rmem=1024 4096 16777216
+        - net.ipv4.tcp_wmem=1024 4096 16777216
+        - net.ipv4.tcp_max_tw_buckets=1048576
+        - net.ipv4.tcp_fin_timeout=15
       ports:
         - "6379:6379"
     redis-commander:
@@ -152,14 +164,3 @@ services:
         - /var/run/docker.sock:/var/run/docker.sock
         - "/etc/timezone:/etc/timezone:ro"
         - "/etc/localtime:/etc/localtime:ro"
-configs:
-    elastic_config:
-      file: ./plotter/elasticsearch/config/elasticsearch.yml
-    logstash_config:
-      file: ./plotter/logstash/config/logstash.yml
-    logstash_pipeline:
-      file: ./plotter/logstash/pipeline/logstash.conf
-    kibana_config:
-      file: ./plotter/kibana/config/kibana.yml
-    filebeat_config:
-      file: ./plotter/filebeat/filebeat.docker.yml

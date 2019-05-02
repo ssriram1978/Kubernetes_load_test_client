@@ -1,12 +1,44 @@
-version: '3.7'
+version: '3'
 services:
   nats:
     image: 'nats'
+    sysctls:
+        - fs.file-max=2097152
+        - fs.nr_open=2097152
+        - net.core.somaxconn=32768
+        - net.ipv4.tcp_max_syn_backlog=16384
+        - net.core.netdev_max_backlog=16384
+        - net.ipv4.ip_local_port_range=1000 65535
+        - net.core.rmem_default=262144
+        - net.core.wmem_default=262144
+        - net.core.rmem_max=16777216
+        - net.core.wmem_max=16777216
+        - net.core.optmem_max=16777216
+        - net.ipv4.tcp_rmem=1024 4096 16777216
+        - net.ipv4.tcp_wmem=1024 4096 16777216
+        - net.ipv4.tcp_max_tw_buckets=1048576
+        - net.ipv4.tcp_fin_timeout=15
     ports:
       - "8222:8222"
       - "4222:4222"
   publisher:
     image: publisher:latest
+    sysctls:
+        - fs.file-max=2097152
+        - fs.nr_open=2097152
+        - net.core.somaxconn=32768
+        - net.ipv4.tcp_max_syn_backlog=16384
+        - net.core.netdev_max_backlog=16384
+        - net.ipv4.ip_local_port_range=1000 65535
+        - net.core.rmem_default=262144
+        - net.core.wmem_default=262144
+        - net.core.rmem_max=16777216
+        - net.core.wmem_max=16777216
+        - net.core.optmem_max=16777216
+        - net.ipv4.tcp_rmem=1024 4096 16777216
+        - net.ipv4.tcp_wmem=1024 4096 16777216
+        - net.ipv4.tcp_max_tw_buckets=1048576
+        - net.ipv4.tcp_fin_timeout=15
     depends_on:
       - redis-commander
       - nats
@@ -55,6 +87,22 @@ services:
       - "/etc/localtime:/etc/localtime:ro"
   subscriber:
     image: subscriber:latest
+    sysctls:
+        - fs.file-max=2097152
+        - fs.nr_open=2097152
+        - net.core.somaxconn=32768
+        - net.ipv4.tcp_max_syn_backlog=16384
+        - net.core.netdev_max_backlog=16384
+        - net.ipv4.ip_local_port_range=1000 65535
+        - net.core.rmem_default=262144
+        - net.core.wmem_default=262144
+        - net.core.rmem_max=16777216
+        - net.core.wmem_max=16777216
+        - net.core.optmem_max=16777216
+        - net.ipv4.tcp_rmem=1024 4096 16777216
+        - net.ipv4.tcp_wmem=1024 4096 16777216
+        - net.ipv4.tcp_max_tw_buckets=1048576
+        - net.ipv4.tcp_fin_timeout=15
     depends_on:
       - redis-commander
       - nats
@@ -88,6 +136,22 @@ services:
       - "/etc/localtime:/etc/localtime:ro"
   transformer:
     image: transformer:latest
+    sysctls:
+        - fs.file-max=2097152
+        - fs.nr_open=2097152
+        - net.core.somaxconn=32768
+        - net.ipv4.tcp_max_syn_backlog=16384
+        - net.core.netdev_max_backlog=16384
+        - net.ipv4.ip_local_port_range=1000 65535
+        - net.core.rmem_default=262144
+        - net.core.wmem_default=262144
+        - net.core.rmem_max=16777216
+        - net.core.wmem_max=16777216
+        - net.core.optmem_max=16777216
+        - net.ipv4.tcp_rmem=1024 4096 16777216
+        - net.ipv4.tcp_wmem=1024 4096 16777216
+        - net.ipv4.tcp_max_tw_buckets=1048576
+        - net.ipv4.tcp_fin_timeout=15
     depends_on:
       - redis-commander
       - nats
