@@ -17,56 +17,56 @@ services:
     #      - logstash
     #    volumes:
     #      - '/var/run/docker.sock:/var/run/docker.sock'
-    filebeat:
-      image: docker.elastic.co/beats/filebeat:6.5.4
-      user: root
-      depends_on:
-        - elasticsearch
-        - logstash
-        - kibana
-      volumes:
-        - ./plotter/filebeat/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro
-        - /var/lib/docker/containers:/var/lib/docker/containers:ro
-        - /var/run/docker.sock:/var/run/docker.sock:ro
-      environment:
-        - output.elasticsearch.hosts=["elasticsearch:9200"]
-        - strict.perms=false
-    logstash:
-      build:
-        context: ./plotter/logstash
-        dockerfile: Dockerfile
-      image: logstash:latest
-      ports:
-        - "5044:5044"
-        - "9600:9600"
-      depends_on:
-        - elasticsearch
-        - kibana
-      volumes:
-        - /var/run/docker.sock:/var/run/docker.sock
-        - "/etc/timezone:/etc/timezone:ro"
-        - "/etc/localtime:/etc/localtime:ro"
-    kibana:
-      image: docker.elastic.co/kibana/kibana-oss:6.7.1
-      depends_on:
-        - elasticsearch
-      ports:
-        - '5601:5601'
-      volumes:
-        - ./plotter/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
-        - /var/run/docker.sock:/var/run/docker.sock
-        - "/etc/timezone:/etc/timezone:ro"
-        - "/etc/localtime:/etc/localtime:ro"
-    elasticsearch:
-      image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.7.1
-      ports:
-        - "9200:9200"
-        - "9300:9300"
-      volumes:
-        - ./plotter/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-        - /var/run/docker.sock:/var/run/docker.sock
-        - "/etc/timezone:/etc/timezone:ro"
-        - "/etc/localtime:/etc/localtime:ro"
+    #filebeat:
+    #  image: docker.elastic.co/beats/filebeat:6.5.4
+    #  user: root
+    #  depends_on:
+    #    - elasticsearch
+    #    - logstash
+    #    - kibana
+    #  volumes:
+    #    - ./plotter/filebeat/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro
+    #    - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    #    - /var/run/docker.sock:/var/run/docker.sock:ro
+    #  environment:
+    #    - output.elasticsearch.hosts=["elasticsearch:9200"]
+    #    - strict.perms=false
+    #logstash:
+    #  build:
+    #    context: ./plotter/logstash
+    #    dockerfile: Dockerfile
+    #  image: logstash:latest
+    #  ports:
+    #    - "5044:5044"
+    #    - "9600:9600"
+    #  depends_on:
+    #    - elasticsearch
+    #    - kibana
+    #  volumes:
+    #    - /var/run/docker.sock:/var/run/docker.sock
+    #    - "/etc/timezone:/etc/timezone:ro"
+    #    - "/etc/localtime:/etc/localtime:ro"
+    #kibana:
+    #  image: docker.elastic.co/kibana/kibana-oss:6.7.1
+    #  depends_on:
+    #    - elasticsearch
+    #  ports:
+    #    - '5601:5601'
+    #  volumes:
+    #    - ./plotter/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+    #    - /var/run/docker.sock:/var/run/docker.sock
+    #    - "/etc/timezone:/etc/timezone:ro"
+    #    - "/etc/localtime:/etc/localtime:ro"
+    #elasticsearch:
+    #  image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.7.1
+    #  ports:
+    #    - "9200:9200"
+    #    - "9300:9300"
+    #  volumes:
+    #    - ./plotter/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    #    - /var/run/docker.sock:/var/run/docker.sock
+    #    - "/etc/timezone:/etc/timezone:ro"
+    #    - "/etc/localtime:/etc/localtime:ro"
     redis:
       image: redis:latest
       ports:
@@ -148,24 +148,24 @@ services:
         - /var/run/docker.sock:/var/run/docker.sock
         - "/etc/timezone:/etc/timezone:ro"
         - "/etc/localtime:/etc/localtime:ro"
-    cadvisor:
-      image: google/cadvisor:latest
-      ports:
-        - 8089:8080
-      volumes:
-        - /:/rootfs:ro
-        - /var/run:/var/run:rw
-        - /sys:/sys:ro
-        - /var/lib/docker/:/var/lib/docker:ro
-    netdata:
-      image: netdata/netdata
-      ports:
-        - 19999:19999
-      volumes:
-        - /proc:/host/proc:ro
-        - /sys:/host/sys:ro
-        - /var/run/docker.sock:/var/run/docker.sock:ro
-      cap_add:
-        - SYS_PTRACE
-      security_opt:
-        - apparmor:unconfined
+    #cadvisor:
+    #  image: google/cadvisor:latest
+    #  ports:
+    #    - 8089:8080
+    #  volumes:
+    #    - /:/rootfs:ro
+    #    - /var/run:/var/run:rw
+    #    - /sys:/sys:ro
+    #    - /var/lib/docker/:/var/lib/docker:ro
+    #netdata:
+    #  image: netdata/netdata
+    #  ports:
+    #    - 19999:19999
+    #  volumes:
+    #    - /proc:/host/proc:ro
+    #    - /sys:/host/sys:ro
+    #    - /var/run/docker.sock:/var/run/docker.sock:ro
+    #  cap_add:
+    #    - SYS_PTRACE
+    #  security_opt:
+    #    - apparmor:unconfined
