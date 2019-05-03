@@ -148,3 +148,24 @@ services:
         - /var/run/docker.sock:/var/run/docker.sock
         - "/etc/timezone:/etc/timezone:ro"
         - "/etc/localtime:/etc/localtime:ro"
+    cadvisor:
+      image: google/cadvisor:latest
+      ports:
+        - 8089:8080
+      volumes:
+        - /:/rootfs:ro
+        - /var/run:/var/run:rw
+        - /sys:/sys:ro
+        - /var/lib/docker/:/var/lib/docker:ro
+    netdata:
+      image: netdata/netdata
+      ports:
+        - 19999:19999
+      volumes:
+        - /proc:/host/proc:ro
+        - /sys:/host/sys:ro
+        - /var/run/docker.sock:/var/run/docker.sock:ro
+      cap_add:
+        - SYS_PTRACE
+      security_opt:
+        - apparmor:unconfined
