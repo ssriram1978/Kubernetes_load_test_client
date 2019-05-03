@@ -87,7 +87,8 @@ create_infrastructure() {
 
 deploy_infrastructure() {
    yaml_file=$1
-
+    echo "sysctl_tcp_kernel_optimization"
+    sysctl_tcp_kernel_optimization
    echo "docker stack deploy --compose-file docker-stack-common.yml -c $1 load_test"
    docker stack deploy --compose-file docker-stack-common.yml  -c $1 load_test
 }
@@ -95,6 +96,99 @@ deploy_infrastructure() {
 teardown_infrastructure() {
    echo "docker stack rm load_test"
    docker stack rm load_test
+}
+
+sysctl_tcp_kernel_optimization() {
+
+    echo "fs.file-max=2097152 >> /etc/sysctl.conf"
+    echo "fs.file-max=2097152" >> /etc/sysctl.conf
+
+    echo "fs.nr_open=2097152  >> /etc/sysctl.conf"
+    echo "fs.nr_open=2097152" >> /etc/sysctl.conf
+
+    echo "net.core.somaxconn=32768  >> /etc/sysctl.conf"
+    echo "net.core.somaxconn=32768" >> /etc/sysctl.conf
+
+    echo "net.ipv4.tcp_max_syn_backlog=20480  >> /etc/sysctl.conf"
+    echo "net.ipv4.tcp_max_syn_backlog=20480" >> /etc/sysctl.conf
+
+    echo "net.core.netdev_max_backlog=16384  >> /etc/sysctl.conf"
+    echo "net.core.netdev_max_backlog=16384" >> /etc/sysctl.conf
+
+    echo "net.ipv4.ip_local_port_range=1024 65535  >> /etc/sysctl.conf"
+    echo "net.ipv4.ip_local_port_range=1024 65535" >> /etc/sysctl.conf
+
+    echo "net.core.wmem_default=12582912  >> /etc/sysctl.conf"
+    echo "net.core.wmem_default=12582912" >> /etc/sysctl.conf
+
+    echo "net.core.wmem_default=12582912  >> /etc/sysctl.conf"
+    echo "net.core.wmem_default=12582912" >> /etc/sysctl.conf
+
+    echo "net.core.rmem_max=16777216  >> /etc/sysctl.conf"
+    echo "net.core.rmem_max=16777216" >> /etc/sysctl.conf
+
+    echo "net.core.wmem_max=16777216 >> /etc/sysctl.conf"
+    echo "net.core.wmem_max=16777216" >> /etc/sysctl.conf
+
+    echo "net.core.optmem_max=16777216 >> /etc/sysctl.conf"
+    echo "net.core.optmem_max=16777216" >> /etc/sysctl.conf
+
+    echo "net.ipv4.tcp_rmem=10240 87380 16777216 >> /etc/sysctl.conf"
+    echo "net.ipv4.tcp_rmem=10240 87380 16777216" >> /etc/sysctl.conf
+
+    echo "net.ipv4.tcp_wmem=10240 87380 16777216 >> /etc/sysctl.conf"
+    echo "net.ipv4.tcp_wmem=10240 87380 16777216" >> /etc/sysctl.conf
+
+    echo "net.ipv4.tcp_max_tw_buckets=400000 >> /etc/sysctl.conf"
+    echo "net.ipv4.tcp_max_tw_buckets=400000" >> /etc/sysctl.conf
+
+    echo "net.ipv4.tcp_fin_timeout=15 >> /etc/sysctl.conf"
+    echo "net.ipv4.tcp_fin_timeout=15" >> /etc/sysctl.conf
+
+    echo "net.ipv4.tcp_mem=8388608 8388608 8388608 >> /etc/sysctl.conf"
+    echo "net.ipv4.tcp_mem=8388608 8388608 8388608" >> /etc/sysctl.conf
+
+    echo "net.ipv4.tcp_window_scaling=1 >> /etc/sysctl.conf"
+    echo "net.ipv4.tcp_window_scaling=1" >> /etc/sysctl.conf
+
+    echo "net.ipv4.tcp_tw_reuse=1 >> /etc/sysctl.conf"
+    echo "net.ipv4.tcp_tw_reuse=1" >> /etc/sysctl.conf
+
+    echo "net.ipv4.tcp_max_tw_buckets=400000 >> /etc/sysctl.conf"
+    echo "net.ipv4.tcp_max_tw_buckets=400000" >> /etc/sysctl.conf
+
+    echo "net.ipv4.tcp_no_metrics_save=1 >> /etc/sysctl.conf"
+    echo "net.ipv4.tcp_no_metrics_save=1" >> /etc/sysctl.conf
+
+    echo "net.ipv4.tcp_syn_retries=2 >> /etc/sysctl.conf"
+    echo "net.ipv4.tcp_syn_retries=2" >> /etc/sysctl.conf
+
+    echo "net.ipv4.tcp_synack_retries=2 >> /etc/sysctl.conf"
+    echo "net.ipv4.tcp_synack_retries=2" >> /etc/sysctl.conf
+
+    # Connection tracking to prevent dropped connections (usually issue on LBs)
+    echo "net.netfilter.nf_conntrack_max=262144 >> /etc/sysctl.conf"
+    echo "net.netfilter.nf_conntrack_max=262144" >> /etc/sysctl.conf
+
+    echo "net.netfilter.nf_conntrack_generic_timeout=120 >> /etc/sysctl.conf"
+    echo "net.netfilter.nf_conntrack_generic_timeout=120" >> /etc/sysctl.conf
+
+    echo "net.netfilter.nf_conntrack_tcp_timeout_established=86400 >> /etc/sysctl.conf"
+    echo "net.netfilter.nf_conntrack_tcp_timeout_established=86400" >> /etc/sysctl.conf
+
+    # ARP cache settings for a highly loaded docker swarm
+    echo "net.ipv4.neigh.default.gc_thresh1=8096 >> /etc/sysctl.conf"
+    echo "net.ipv4.neigh.default.gc_thresh1=8096" >> /etc/sysctl.conf
+
+    echo "net.ipv4.neigh.default.gc_thresh2=12288 >> /etc/sysctl.conf"
+    echo "net.ipv4.neigh.default.gc_thresh2=12288" >> /etc/sysctl.conf
+
+    echo "net.ipv4.neigh.default.gc_thresh3=16384 >> /etc/sysctl.conf"
+    echo "net.ipv4.neigh.default.gc_thresh3=16384" >> /etc/sysctl.conf
+
+    echo "sysctl -p"
+    sysctl -p
+
 }
 
 create_deploy_infrastructure() {

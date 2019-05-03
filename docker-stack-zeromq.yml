@@ -2,29 +2,13 @@ version: '3'
 services:
   publisher:
     image: publisher:latest
-    sysctls:
-      - fs.file-max=2097152
-      - fs.nr_open=2097152
-      - net.core.somaxconn=32768
-      - net.ipv4.tcp_max_syn_backlog=16384
-      - net.core.netdev_max_backlog=16384
-      - net.ipv4.ip_local_port_range=1000 65535
-      - net.core.rmem_default=262144
-      - net.core.wmem_default=262144
-      - net.core.rmem_max=16777216
-      - net.core.wmem_max=16777216
-      - net.core.optmem_max=16777216
-      - net.ipv4.tcp_rmem=1024 4096 16777216
-      - net.ipv4.tcp_wmem=1024 4096 16777216
-      - net.ipv4.tcp_max_tw_buckets=1048576
-      - net.ipv4.tcp_fin_timeout=15
     depends_on:
       - redis-commander
     ports:
       - "50000-50099:50000-50099"
       - "51000-51099:51000-51099"
     deploy:
-      replicas: 10
+      replicas: 1
       #      resources:
       #        limits:
       #          cpus: "0.8"
@@ -66,27 +50,11 @@ services:
       - "/etc/localtime:/etc/localtime:ro"
   subscriber:
     image: subscriber:latest
-    sysctls:
-        - fs.file-max=2097152
-        - fs.nr_open=2097152
-        - net.core.somaxconn=32768
-        - net.ipv4.tcp_max_syn_backlog=16384
-        - net.core.netdev_max_backlog=16384
-        - net.ipv4.ip_local_port_range=1000 65535
-        - net.core.rmem_default=262144
-        - net.core.wmem_default=262144
-        - net.core.rmem_max=16777216
-        - net.core.wmem_max=16777216
-        - net.core.optmem_max=16777216
-        - net.ipv4.tcp_rmem=1024 4096 16777216
-        - net.ipv4.tcp_wmem=1024 4096 16777216
-        - net.ipv4.tcp_max_tw_buckets=1048576
-        - net.ipv4.tcp_fin_timeout=15
     depends_on:
       - redis-commander
       - transformer
     deploy:
-      replicas: 10
+      replicas: 1
       #      resources:
       #        limits:
       #          cpus: "0.8"
@@ -114,22 +82,6 @@ services:
       - "/etc/localtime:/etc/localtime:ro"
   transformer:
     image: transformer:latest
-    sysctls:
-        - fs.file-max=2097152
-        - fs.nr_open=2097152
-        - net.core.somaxconn=32768
-        - net.ipv4.tcp_max_syn_backlog=16384
-        - net.core.netdev_max_backlog=16384
-        - net.ipv4.ip_local_port_range=1000 65535
-        - net.core.rmem_default=262144
-        - net.core.wmem_default=262144
-        - net.core.rmem_max=16777216
-        - net.core.wmem_max=16777216
-        - net.core.optmem_max=16777216
-        - net.ipv4.tcp_rmem=1024 4096 16777216
-        - net.ipv4.tcp_wmem=1024 4096 16777216
-        - net.ipv4.tcp_max_tw_buckets=1048576
-        - net.ipv4.tcp_fin_timeout=15
     depends_on:
       - redis-commander
       - publisher
@@ -137,7 +89,7 @@ services:
       - "52000-52099:52000-52099"
       - "53000-53099:53000-53099"
     deploy:
-      replicas: 10
+      replicas: 1
       #      resources:
       #        limits:
       #          cpus: "0.8"
