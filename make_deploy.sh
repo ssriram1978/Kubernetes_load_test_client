@@ -14,8 +14,8 @@ build_push_directory() {
    directory_name=$1
    tag=$2
 
-   echo "rm -f $1/infrastructure_components.tar.gz "
-   rm -f $1/infrastructure_components.tar.gz
+   echo "rm -f $directory_name/infrastructure_components.tar.gz "
+   rm -f $directory_name/infrastructure_components.tar.gz
 
    echo "cp infrastructure_components.tar.gz $directory_name/"
    cp infrastructure_components.tar.gz $directory_name
@@ -91,7 +91,15 @@ create_infrastructure() {
 
 monitor_infrastructure() {
    yaml_file=$1
-   tag=$2
+   stack_tag=$2
+
+    if [[ -z $1 ]]; then
+        yaml_file="docker-stack-infrastructure.yml"
+    fi
+
+    if [[ -z $2 ]]; then
+        stack_tag="infrastructure"
+    fi
 
     echo "sysctl_tcp_kernel_optimization"
     sysctl_tcp_kernel_optimization
@@ -105,36 +113,29 @@ monitor_infrastructure() {
     echo "docker-compose -f $yaml_file build"
     docker-compose -f $yaml_file build
 
-    if [[ $tag == "" ]]; then
-        echo "docker stack deploy -c $1 load_test"
-        docker stack deploy -c $1 load_test
-    else
-        echo "docker stack deploy -c $1 $tag"
-        docker stack deploy -c $1 $tag
-    fi
+     echo "docker stack deploy -c $yaml_file $stack_tag"
+     docker stack deploy -c $yaml_file $stack_tag
 }
 
 deploy_infrastructure() {
    yaml_file=$1
    tag=$2
 
-    echo "sysctl_tcp_kernel_optimization"
-    sysctl_tcp_kernel_optimization
+  if [[ $2 == "" ]]; then
+       tag="load_test"
+   fi
 
-    if [[ $tag == "" ]]; then
-        echo "docker stack deploy --compose-file docker-stack-common.yml -c $1 load_test"
-        docker stack deploy --compose-file docker-stack-common.yml  -c $1 load_test
-    else
-        echo "docker stack deploy --compose-file docker-stack-common.yml -c $1 $tag"
-        docker stack deploy --compose-file docker-stack-common.yml  -c $1 $tag
-    fi
+   echo "sysctl_tcp_kernel_optimization"
+   sysctl_tcp_kernel_optimization
+
+   echo "docker stack deploy --compose-file docker-stack-common.yml -c $yaml_file $tag"
+   docker stack deploy --compose-file docker-stack-common.yml  -c $yaml_file $tag
 }
 
 teardown_infrastructure() {
    echo "docker stack rm load_test"
    docker stack rm load_test
 }
-
 
 docker_prune() {
    echo "sudo find /var/lib/docker/containers/ -type f -name \"*.log\" -delete"
