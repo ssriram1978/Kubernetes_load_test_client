@@ -1,9 +1,0 @@
-prospectors:
- - paths:
-   - /var/lib/docker/containers/*/*.log
-   document_type: syslog
-output:
- logstash:
-  enabled: true
-  hosts:
-      - elk:5044

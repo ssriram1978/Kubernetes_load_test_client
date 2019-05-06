@@ -7,66 +7,61 @@ services:
       command: -H unix:///var/run/docker.sock
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
-        - ./infrastructure_components/portainer/data:/data
+        - ./infrastructure_components/portainer:/data
         - "/etc/timezone:/etc/timezone:ro"
         - "/etc/localtime:/etc/localtime:ro"
-    #  logspout:
-    #    image: gliderlabs/logspout:latest
-    #    command: 'syslog://:5000'
-    #    depends_on:
-    #      - logstash
-    #    volumes:
-    #      - '/var/run/docker.sock:/var/run/docker.sock'
-    #filebeat:
-    #  image: docker.elastic.co/beats/filebeat:6.5.4
-    #  user: root
-    #  depends_on:
-    #    - elasticsearch
-    #    - logstash
-    #    - kibana
-    #  volumes:
-    #    - ./plotter/filebeat/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro
-    #    - /var/lib/docker/containers:/var/lib/docker/containers:ro
-    #    - /var/run/docker.sock:/var/run/docker.sock:ro
-    #  environment:
-    #    - output.elasticsearch.hosts=["elasticsearch:9200"]
-    #    - strict.perms=false
-    #logstash:
-    #  build:
-    #    context: ./plotter/logstash
-    #    dockerfile: Dockerfile
-    #  image: logstash:latest
-    #  ports:
-    #    - "5044:5044"
-    #    - "9600:9600"
-    #  depends_on:
-    #    - elasticsearch
-    #    - kibana
-    #  volumes:
-    #    - /var/run/docker.sock:/var/run/docker.sock
-    #    - "/etc/timezone:/etc/timezone:ro"
-    #    - "/etc/localtime:/etc/localtime:ro"
-    #kibana:
-    #  image: docker.elastic.co/kibana/kibana-oss:6.7.1
-    #  depends_on:
-    #    - elasticsearch
-    #  ports:
-    #    - '5601:5601'
-    #  volumes:
-    #    - ./plotter/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
-    #    - /var/run/docker.sock:/var/run/docker.sock
-    #    - "/etc/timezone:/etc/timezone:ro"
-    #    - "/etc/localtime:/etc/localtime:ro"
-    #elasticsearch:
-    #  image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.7.1
-    #  ports:
-    #    - "9200:9200"
-    #    - "9300:9300"
-    #  volumes:
-    #    - ./plotter/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-    #    - /var/run/docker.sock:/var/run/docker.sock
-    #    - "/etc/timezone:/etc/timezone:ro"
-    #    - "/etc/localtime:/etc/localtime:ro"
+    filebeat:
+      image: docker.elastic.co/beats/filebeat:6.5.4
+      user: root
+      depends_on:
+        - elasticsearch
+        - logstash
+        - kibana
+      volumes:
+        - ./plotter/filebeat/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro
+        - /var/lib/docker/containers:/var/lib/docker/containers:ro
+        - /var/run/docker.sock:/var/run/docker.sock:ro
+        - "/etc/timezone:/etc/timezone:ro"
+        - "/etc/localtime:/etc/localtime:ro"
+      environment:
+        - output.elasticsearch.hosts=["elasticsearch:9200"]
+        - strict.perms=false
+    logstash:
+      build:
+        context: ./plotter/logstash
+        dockerfile: Dockerfile
+      image: logstash:latest
+      ports:
+        - "5044:5044"
+        - "9600:9600"
+      depends_on:
+        - elasticsearch
+        - kibana
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+        - "/etc/timezone:/etc/timezone:ro"
+        - "/etc/localtime:/etc/localtime:ro"
+    kibana:
+      image: docker.elastic.co/kibana/kibana-oss:6.7.1
+      depends_on:
+        - elasticsearch
+      ports:
+        - '5601:5601'
+      volumes:
+        - ./plotter/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+        - /var/run/docker.sock:/var/run/docker.sock
+        - "/etc/timezone:/etc/timezone:ro"
+        - "/etc/localtime:/etc/localtime:ro"
+    elasticsearch:
+      image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.7.1
+      ports:
+        - "9200:9200"
+        - "9300:9300"
+      volumes:
+        - ./plotter/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+        - /var/run/docker.sock:/var/run/docker.sock
+        - "/etc/timezone:/etc/timezone:ro"
+        - "/etc/localtime:/etc/localtime:ro"
     redis:
       image: redis:latest
       ports:
@@ -105,49 +100,49 @@ services:
         - /var/run/docker.sock:/var/run/docker.sock
         - "/etc/timezone:/etc/timezone:ro"
         - "/etc/localtime:/etc/localtime:ro"
-    plotter:
-      image: plotter:latest
-      depends_on:
-        - redis-commander
-      deploy:
-        replicas: 1
+    #plotter:
+    #  image: plotter:latest
+    #  depends_on:
+    #    - redis-commander
+    #  deploy:
+    #    replicas: 1
         #      resources:
         #        limits:
         #          cpus: "0.8"
         #          memory: 2000M
-        restart_policy:
-          condition: none
-      environment:
-        html_filename_key: '/opt/html_graph_storage/latency.html'
-        redis_server_hostname_key: 'redis'
-        redis_server_port_key:  '6379'
-        redis_log_keyname_key: 'plotter_load_test_events'
-        latency_redis_key: 'latency_results'
-        latency_compute_start_key_name_key: 'start_time'
-      volumes:
-        - ./html_graph_storage:/opt/html_graph_storage
-        - /var/run/docker.sock:/var/run/docker.sock
-        - "/etc/timezone:/etc/timezone:ro"
-        - "/etc/localtime:/etc/localtime:ro"
-    displayer:
-      image: displayer:latest
-      ports:
-        - "8888:8888"
-      deploy:
-        replicas: 1
+    #    restart_policy:
+    #      condition: none
+    #  environment:
+    #    html_filename_key: '/opt/html_graph_storage/latency.html'
+    #    redis_server_hostname_key: 'redis'
+    #    redis_server_port_key:  '6379'
+    #    redis_log_keyname_key: 'plotter_load_test_events'
+    #    latency_redis_key: 'latency_results'
+    #    latency_compute_start_key_name_key: 'start_time'
+    #  volumes:
+    #    - ./html_graph_storage:/opt/html_graph_storage
+    #    - /var/run/docker.sock:/var/run/docker.sock
+    #    - "/etc/timezone:/etc/timezone:ro"
+    #    - "/etc/localtime:/etc/localtime:ro"
+    #displayer:
+    #  image: displayer:latest
+    #  ports:
+    #    - "8888:8888"
+    #  deploy:
+    #    replicas: 1
         #      resources:
         #        limits:
         #          cpus: "0.8"
         #          memory: 2000M
-        restart_policy:
-          condition: none
-      environment:
-        html_filename_key: '/opt/html_graph_storage/latency.html'
-      volumes:
-        - ./html_graph_storage:/opt/html_graph_storage:ro
-        - /var/run/docker.sock:/var/run/docker.sock
-        - "/etc/timezone:/etc/timezone:ro"
-        - "/etc/localtime:/etc/localtime:ro"
+    #    restart_policy:
+    #      condition: none
+    #  environment:
+    #    html_filename_key: '/opt/html_graph_storage/latency.html'
+    #  volumes:
+    #    - ./html_graph_storage:/opt/html_graph_storage:ro
+    #    - /var/run/docker.sock:/var/run/docker.sock
+    #    - "/etc/timezone:/etc/timezone:ro"
+    #    - "/etc/localtime:/etc/localtime:ro"
     #cadvisor:
     #  image: google/cadvisor:latest
     #  ports:

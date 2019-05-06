@@ -98,6 +98,18 @@ teardown_infrastructure() {
    docker stack rm load_test
 }
 
+
+docker_prune() {
+   echo "sudo find /var/lib/docker/containers/ -type f -name \"*.log\" -delete"
+   sudo find /var/lib/docker/containers/ -type f -name "*.log" -delete
+
+   echo "sudo docker container prune -f"
+   sudo docker container prune -f
+
+   echo "sudo docker image prune -f"
+   sudo docker image prune -f
+}
+
 sysctl_tcp_kernel_optimization() {
 
     echo "fs.file-max=2097152 >> /etc/sysctl.conf"
@@ -212,11 +224,13 @@ case "$1" in
   deploy) deploy_infrastructure $2 ;;
   build_and_deploy) create_deploy_infrastructure $2 $3 $4 ;;
   stop) teardown_infrastructure  ;;
+  prune) docker_prune ;;
   *) echo "usage: $0"
       echo "<build <all|directory_name> <yaml file> <tag -- optional> > |"
       echo "<deploy <yaml file> > |"
       echo "<build_and_deploy <all|directory_name> <yaml file> <tag --optional>> | "
       echo "stop"
+      echo "prune"
      exit 1
      ;;
 esac

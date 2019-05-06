@@ -11,9 +11,8 @@ from collections import deque
 
 import dateutil.parser
 
-logging.basicConfig(format='%(levelname)s:%(asctime)s:%(message)s',
-                    level=logging.INFO,
-                    datefmt='%m/%d/%Y %I:%M:%S %p')
+logging.basicConfig(format='%(message)s',
+                    level=logging.INFO)
 
 
 def import_all_paths():
@@ -203,8 +202,8 @@ class Subscriber:
         try:
             dt = None
             latency = time_difference.microseconds / 1000
-            logging.info("{}:Latency in milliseconds = {}".format(threading.current_thread().getName(),
-                                                                  latency))
+            logging.info("Sent_timestamp:{},Latency_in_milliseconds:{}".format(timestamp_from_message,
+                                                                               latency))
             if Subscriber.redis_instance:
                 ts = dateutil.parser.parse(timestamp_from_message)
                 dt = ts.isoformat(timespec='seconds')

@@ -174,8 +174,9 @@ class Plotter:
                     continue
             else:
                 current_retry_attempts = 0
-                dict_data = {'originated_timestamp': date_time, 'latency': eval(latency_list[0].decode('utf-8'))}
-                logging.info("{}".format(json.dumps(dict_data, ensure_ascii=False)))
+                list_of_latencies = eval(latency_list[0].decode('utf-8'))
+                for latency in list_of_latencies:
+                    logging.info("Sent_timestamp:{},Latency_in_milliseconds:{}".format(date_time, latency))
                 self.pyplot_mpld3(ts_obj, eval(latency_list[0].decode('utf-8')))
                 date_time = self.go_to_the_next_second(date_time)
                 ts_obj = self.convert_timestamp_from_string_to_obj(date_time)
