@@ -88,7 +88,8 @@ create_infrastructure() {
     fi
 }
 
-deploy_infrastructure() {
+
+monitor_infrastructure() {
    yaml_file=$1
    tag=$2
 
@@ -100,6 +101,25 @@ deploy_infrastructure() {
 
     echo "chown root:root plotter/filebeat/filebeat.docker.yml"
     chown root:root plotter/filebeat/filebeat.docker.yml
+
+    echo "docker-compose -f $yaml_file build"
+    docker-compose -f $yaml_file build
+
+    if [[ $tag == "" ]]; then
+        echo "docker stack deploy -c $1 load_test"
+        docker stack deploy -c $1 load_test
+    else
+        echo "docker stack deploy -c $1 $tag"
+        docker stack deploy -c $1 $tag
+    fi
+}
+
+deploy_infrastructure() {
+   yaml_file=$1
+   tag=$2
+
+    echo "sysctl_tcp_kernel_optimization"
+    sysctl_tcp_kernel_optimization
 
     if [[ $tag == "" ]]; then
         echo "docker stack deploy --compose-file docker-stack-common.yml -c $1 load_test"
@@ -243,12 +263,14 @@ case "$1" in
   build_and_deploy) create_deploy_infrastructure $2 $3 $4 ;;
   stop) teardown_infrastructure  ;;
   prune) docker_prune ;;
+  monitor) monitor_infrastructure $2 $3;;
   *) echo "usage: $0"
       echo "<build <all|directory_name> <yaml file> <tag -- optional> > |"
       echo "<deploy <yaml file> > |"
       echo "<build_and_deploy <all|directory_name> <yaml file> <tag --optional>> | "
       echo "stop"
       echo "prune"
+      echo "monitor"
      exit 1
      ;;
 esac
