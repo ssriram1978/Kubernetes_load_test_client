@@ -81,7 +81,8 @@ class ZeroMsgQAPI:
                                  self.subscriber_port_for_signaling))
         self.redis_instance = None
         self.client_instance = None
-        self.cont_id = os.popen("cat /proc/self/cgroup | head -n 1 | cut -d '/' -f3").read()
+        self.cont_id = os.popen("cat /etc/hostname").read()
+        self.cont_id = self.cont_id[:-1]
         self.thread_identifier = thread_identifier
         self.subscription_cb = subscription_cb
         self.context = None

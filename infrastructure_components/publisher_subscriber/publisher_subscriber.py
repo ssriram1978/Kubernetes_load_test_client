@@ -66,8 +66,8 @@ class PublisherSubscriberAPI:
         self.is_consumer = is_consumer
         self.subscription_cb = subscription_cb
         self.type_of_messaging_queue = None
-        self.container_id = os.popen("cat /proc/self/cgroup | head -n 1 | cut -d '/' -f3").read()
-        self.container_id = self.container_id[:12]
+        self.container_id = os.popen("cat /etc/hostname").read()
+        self.container_id = self.container_id[:-1]
         self.thread_identifier = thread_identifier
         self.dict_of_queue_names = None
         self.redis_instance = RedisInterface("Publisher_Subscriber")

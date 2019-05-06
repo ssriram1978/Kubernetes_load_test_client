@@ -61,7 +61,8 @@ class NatsMsgQAPI:
             self.subscriber_topic = queue_name
         self.redis_instance = None
         self.broker_hostname = None
-        self.cont_id = os.popen("cat /proc/self/cgroup | head -n 1 | cut -d '/' -f3").read()
+        self.cont_id = os.popen("cat /etc/hostname").read()
+        self.cont_id = self.cont_id[:-1]
         self.thread_identifier = thread_identifier
         self.__read_environment_variables()
         self.subscription_cb = subscription_cb

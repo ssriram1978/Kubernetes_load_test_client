@@ -43,8 +43,8 @@ class RedisClient(object):
         self.load_environment_variables()
         self.connect_to_redis_server()
         self.hostname = os.popen("cat /etc/hostname").read()
-        self.cont_id = os.popen("cat /proc/self/cgroup | head -n 1 | cut -d '/' -f3").read()
-        self.cont_id = self.cont_id[:12]
+        self.cont_id = os.popen("cat /etc/hostname").read()
+        self.cont_id = self.cont_id[:-1]
 
     def load_environment_variables(self):
         while not self.redis_server_hostname or \

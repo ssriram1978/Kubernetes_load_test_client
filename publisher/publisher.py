@@ -53,8 +53,8 @@ class Publisher:
         self.log_level = None
         self.json_parsed_data = None
         self.publisher_key_name = None
-        self.container_id = os.popen("cat /proc/self/cgroup | head -n 1 | cut -d '/' -f3").read()
-        self.container_id = self.container_id[:12]
+        self.container_id = os.popen("cat /etc/hostname").read()
+        self.container_id = self.container_id[:-1]
         self.redis_instance = RedisInterface('Publisher')
         self.next_call = None
         self.broker_type = None

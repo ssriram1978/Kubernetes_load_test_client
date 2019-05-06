@@ -56,8 +56,8 @@ class Transformer:
         self.log_level = None
         self.redis_server_hostname = None
         self.redis_server_port = None
-        self.container_id = os.popen("cat /proc/self/cgroup | head -n 1 | cut -d '/' -f3").read()
-        self.container_id = self.container_id[:12]
+        self.container_id = os.popen("cat /etc/hostname").read()
+        self.container_id = self.container_id[:-1]
         self.transformer_key_name = None
         self.load_environment_variables()
         self.redis_instance = RedisInterface("Transformer")

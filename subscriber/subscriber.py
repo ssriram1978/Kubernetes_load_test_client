@@ -53,8 +53,8 @@ class Subscriber:
         self.average_latency_for_n_sec = 0
         self.test_duration_in_sec = 0
         self.log_level = None
-        self.container_id = os.popen("cat /proc/self/cgroup | head -n 1 | cut -d '/' -f3").read()
-        self.container_id = self.container_id[:12]
+        self.container_id = os.popen("cat /etc/hostname").read()
+        self.container_id = self.container_id[:-1]
         self.latency_publish_name = None
         self.max_consumer_threads = 1
         self.producer_consumer_instance = None

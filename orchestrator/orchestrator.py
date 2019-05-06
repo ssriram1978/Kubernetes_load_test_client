@@ -47,8 +47,7 @@ class Orchestrator:
         """
         Initialize the class instance variables.
         """
-        self.container_id = os.popen("cat /proc/self/cgroup | head -n 1 | cut -d '/' -f3").read()
-        self.container_id = self.container_id[:12]
+        self.container_id = os.popen("cat /etc/hostname").read()
         self.is_loopback = None
         self.publisher_container_ids = None
         self.subscriber_container_ids = None

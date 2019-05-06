@@ -38,6 +38,7 @@ services:
         - elasticsearch
         - kibana
       volumes:
+        - ./plotter/logstash:/usr/share/logstash/data
         - /var/run/docker.sock:/var/run/docker.sock
         - "/etc/timezone:/etc/timezone:ro"
         - "/etc/localtime:/etc/localtime:ro"
@@ -48,6 +49,7 @@ services:
       ports:
         - '5601:5601'
       volumes:
+        - ./plotter/kibana:/usr/share/kibana/data
         - ./plotter/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
         - /var/run/docker.sock:/var/run/docker.sock
         - "/etc/timezone:/etc/timezone:ro"
@@ -58,6 +60,7 @@ services:
         - "9200:9200"
         - "9300:9300"
       volumes:
+        - ./plotter/elasticsearch:/usr/share/elasticsearch/data
         - ./plotter/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
         - /var/run/docker.sock:/var/run/docker.sock
         - "/etc/timezone:/etc/timezone:ro"
