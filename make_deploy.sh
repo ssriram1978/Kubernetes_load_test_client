@@ -90,6 +90,8 @@ create_infrastructure() {
 
 deploy_infrastructure() {
    yaml_file=$1
+   tag=$2
+
     echo "sysctl_tcp_kernel_optimization"
     sysctl_tcp_kernel_optimization
 
@@ -97,10 +99,15 @@ deploy_infrastructure() {
     chmod go-w plotter/filebeat/filebeat.docker.yml
 
     echo "chown root:root plotter/filebeat/filebeat.docker.yml"
-   chown root:root plotter/filebeat/filebeat.docker.yml
+    chown root:root plotter/filebeat/filebeat.docker.yml
 
-    echo "docker stack deploy --compose-file docker-stack-common.yml -c $1 load_test"
-   docker stack deploy --compose-file docker-stack-common.yml  -c $1 load_test
+    if [[ $tag == "" ]]; then
+        echo "docker stack deploy --compose-file docker-stack-common.yml -c $1 load_test"
+        docker stack deploy --compose-file docker-stack-common.yml  -c $1 load_test
+    else
+        echo "docker stack deploy --compose-file docker-stack-common.yml -c $1 $tag"
+        docker stack deploy --compose-file docker-stack-common.yml  -c $1 $tag
+    fi
 }
 
 teardown_infrastructure() {
@@ -227,11 +234,12 @@ create_deploy_infrastructure() {
    echo "deploy_infrastructure"
    deploy_infrastructure \
       $yaml_file
+      $tag
 }
 
 case "$1" in
   build) create_infrastructure $2 $3 $4 ;;
-  deploy) deploy_infrastructure $2 ;;
+  deploy) deploy_infrastructure $2 $3;;
   build_and_deploy) create_deploy_infrastructure $2 $3 $4 ;;
   stop) teardown_infrastructure  ;;
   prune) docker_prune ;;

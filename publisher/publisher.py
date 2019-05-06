@@ -8,8 +8,7 @@ from datetime import datetime
 import threading, time
 
 logging.basicConfig(format='%(levelname)s:%(asctime)s:%(message)s',
-                    level=logging.INFO,
-                    datefmt='%m/%d/%Y %I:%M:%S %p')
+                    level=logging.INFO)
 
 import json
 from io import StringIO
@@ -41,6 +40,7 @@ class Publisher:
     """
     This class publishes JSON messages to a broker.
     """
+    MILLI_SECONDS_TO_SPLIT_EVENLY_FOR_MESSAGES = 1000
 
     def __init__(self):
         """
@@ -49,7 +49,8 @@ class Publisher:
         self.message = None
         self.messages_per_second = 0
         self.test_duration_in_sec = 0
-        self.current_test_duration_in_sec = 0
+        self.start_test_time = None
+        self.current_time = None
         self.log_level = None
         self.json_parsed_data = None
         self.publisher_key_name = None
@@ -59,6 +60,17 @@ class Publisher:
         self.next_call = None
         self.broker_type = None
         self.load_environment_variables()
+        self.timer_resolution = 0
+        self.messages_per_millisecond = 0
+        if self.messages_per_second > Publisher.MILLI_SECONDS_TO_SPLIT_EVENLY_FOR_MESSAGES:
+            self.timer_resolution = 1 / Publisher.MILLI_SECONDS_TO_SPLIT_EVENLY_FOR_MESSAGES
+            self.messages_per_millisecond = self.messages_per_second // \
+                                            Publisher.MILLI_SECONDS_TO_SPLIT_EVENLY_FOR_MESSAGES
+        else:
+            self.timer_resolution = 1 / self.messages_per_second
+            self.messages_per_millisecond = 1
+        logging.info("timer_resolution={},messages_per_millisecond={}"
+                     .format(self.timer_resolution, self.messages_per_millisecond))
         self.set_log_level()
         self.publish_container_id_to_redis()
         self.parse_message_into_json()
@@ -133,64 +145,40 @@ class Publisher:
 
     def perform_job(self):
         time.sleep(60)
-        self.enqueue_message()
+        self.start_test_time = datetime.now()
+        logging.info("Starting the load test at {}".format(self.start_test_time))
+        self.exec_every_n_milliseconds()
         # self.exec_every_one_second(self.enqueue_message)
         while True:
             time.sleep(60)
-
-    def exec_every_one_second(self, function_to_be_executed):
-        """
-        Execute the passed in function every one second.
-        Note 1: If the passed in function takes more than one second, then execute the function immediately.
-        Note 2: If the passed in function takes less than a second, then compute the delta time and sleep.
-        :param function_to_be_executed:
-        :return:
-        """
-        first_called = datetime.now()
-        previous_time = datetime.now()
-        current_total_time = 0
-        while current_total_time < self.test_duration_in_sec:
-            function_to_be_executed()
-            current_time = datetime.now()
-
-            execution_time = current_time - previous_time
-            total_execution_time = current_time - first_called
-            current_total_time = total_execution_time.seconds
-            logging.info("current execution_time_micro sec={},"
-                         "current execution time in sec={},"
-                         "current_total_time={}"
-                         .format(execution_time.microseconds,
-                                 execution_time.seconds,
-                                 current_total_time))
-            if execution_time.seconds > 1:
-                logging.info("Not sleeping now.")
-            else:
-                sleep_time = 1 - execution_time.microseconds * (10 ** (-6))
-                if sleep_time > 0:
-                    logging.info("Sleeping for {} milliseconds.".format(sleep_time))
-                    time.sleep(1 - execution_time.microseconds * (10 ** (-6)))
-            previous_time = current_time
 
     def enqueue_message(self):
         """
         Enqueue message to a broker.
         :return:
         """
-        logging.info("Publishing {} messages at time {}".format(self.messages_per_second,
-                                                                datetime.now()))
-        for index in range(self.messages_per_second):
-            self.json_parsed_data['lastUpdated'] = datetime.now().isoformat()
-            io = StringIO()
-            json.dump(self.json_parsed_data, io)
-            logging.debug("enqueuing message {}."
-                          .format(io.getvalue()))
-            self.producer_consumer_instance.publish(io.getvalue())
-        self.current_test_duration_in_sec += 1
-        if self.current_test_duration_in_sec < self.test_duration_in_sec:
-            if not self.next_call:
-                self.next_call = time.time()
-            self.next_call = self.next_call + 1
-            threading.Timer(self.next_call - time.time(), self.enqueue_message).start()
+        self.json_parsed_data['lastUpdated'] = datetime.now().isoformat()
+        io = StringIO()
+        json.dump(self.json_parsed_data, io)
+        logging.debug("enqueuing message {}."
+                      .format(io.getvalue()))
+        self.producer_consumer_instance.publish(io.getvalue())
+
+    def exec_every_n_milliseconds(self):
+        for _ in range(self.messages_per_millisecond):
+            self.enqueue_message()
+        self.current_time = datetime.now()
+        duration_in_sec = (self.current_time - self.start_test_time).seconds
+        logging.debug("duration_in_sec={},total_test_duration={}."
+                      .format(duration_in_sec,
+                              self.test_duration_in_sec))
+        if duration_in_sec < self.test_duration_in_sec:
+            logging.debug("Invoking threading timer.")
+            threading.Timer(interval=self.timer_resolution,
+                            function=self.exec_every_n_milliseconds).start()
+        else:
+            logging.info("Stopping the producer because the test ran for {} seconds."
+                         .format(duration_in_sec))
 
     def cleanup(self):
         pass
