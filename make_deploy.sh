@@ -60,20 +60,23 @@ create_infrastructure() {
         transformer \
         $tag
 
-        echo "build_push_directory plotter $tag"
-        build_push_directory \
-        plotter \
-        $tag
+        #cho "build_push_directory plotter $tag"
+        #build_push_directory \
+        #plotter \
+        #$tag
 
         echo "build_push_directory orchestrator $tag"
         build_push_directory \
         orchestrator \
         $tag
 
-        echo "build_push_directory displayer $tag"
-        build_push_directory \
-        displayer \
-        $tag
+        #echo "build_push_directory displayer $tag"
+        #build_push_directory \
+        #displayer \
+        #$tag
+
+        echo "docker-compose -f  docker-stack-common.yml build"
+        docker-compose -f docker-stack-common.yml build
 
         echo "docker-compose -f $2 build"
         docker-compose -f $2 build
