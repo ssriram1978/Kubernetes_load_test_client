@@ -89,7 +89,14 @@ deploy_infrastructure() {
    yaml_file=$1
     echo "sysctl_tcp_kernel_optimization"
     sysctl_tcp_kernel_optimization
-   echo "docker stack deploy --compose-file docker-stack-common.yml -c $1 load_test"
+
+    echo "chmod go-w plotter/filebeat/filebeat.docker.yml"
+    chmod go-w plotter/filebeat/filebeat.docker.yml
+
+    echo "chown root:root plotter/filebeat/filebeat.docker.yml"
+   chown root:root plotter/filebeat/filebeat.docker.yml
+
+    echo "docker stack deploy --compose-file docker-stack-common.yml -c $1 load_test"
    docker stack deploy --compose-file docker-stack-common.yml  -c $1 load_test
 }
 
