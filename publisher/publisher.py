@@ -172,7 +172,7 @@ class Publisher:
         logging.debug("duration_in_sec={},total_test_duration={}."
                       .format(duration_in_sec,
                               self.test_duration_in_sec))
-        if duration_in_sec < self.test_duration_in_sec:
+        if duration_in_sec <= self.test_duration_in_sec:
             logging.debug("Invoking threading timer.")
             threading.Timer(interval=self.timer_resolution,
                             function=self.exec_every_n_milliseconds).start()
