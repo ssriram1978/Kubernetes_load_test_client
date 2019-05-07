@@ -105,6 +105,9 @@ monitor_infrastructure() {
   if [[ "$1" == "stop" ]]; then
        echo "docker stack rm $stack_tag"
        docker stack rm ${stack_tag}
+
+       echo "curl -XDELETE 'http://172.17.0.1:9200/*"
+       curl -XDELETE 'http://172.17.0.1:9200/*'
   elif [[ "$1" == "start" ]]; then
         echo "sysctl_tcp_kernel_optimization"
         sysctl_tcp_kernel_optimization
