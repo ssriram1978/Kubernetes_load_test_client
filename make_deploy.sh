@@ -90,31 +90,37 @@ create_infrastructure() {
 
 
 monitor_infrastructure() {
-   yaml_file=$1
-   stack_tag=$2
+   start_stop=$1
+   yaml_file=$2
+   stack_tag=$3
 
-    if [[ -z $1 ]]; then
+    if [[ -z $2 ]]; then
         yaml_file="docker-stack-infrastructure.yml"
     fi
 
-    if [[ -z $2 ]]; then
+    if [[ -z $3 ]]; then
         stack_tag="infrastructure"
     fi
 
-    echo "sysctl_tcp_kernel_optimization"
-    sysctl_tcp_kernel_optimization
+  if [[ "$1" == "stop" ]]; then
+       echo "docker stack rm $stack_tag"
+       docker stack rm ${stack_tag}
+  elif [[ "$1" == "start" ]]; then
+        echo "sysctl_tcp_kernel_optimization"
+        sysctl_tcp_kernel_optimization
 
-    echo "chmod go-w plotter/filebeat/filebeat.docker.yml"
-    chmod go-w plotter/filebeat/filebeat.docker.yml
+       echo "chmod go-w plotter/filebeat/filebeat.docker.yml"
+       chmod go-w plotter/filebeat/filebeat.docker.yml
 
-    echo "chown root:root plotter/filebeat/filebeat.docker.yml"
-    chown root:root plotter/filebeat/filebeat.docker.yml
+       echo "chown root:root plotter/filebeat/filebeat.docker.yml"
+       chown root:root plotter/filebeat/filebeat.docker.yml
 
-    echo "docker-compose -f $yaml_file build"
-    docker-compose -f $yaml_file build
+       echo "docker-compose -f $yaml_file build"
+       docker-compose -f ${yaml_file} build
 
-     echo "docker stack deploy -c $yaml_file $stack_tag"
-     docker stack deploy -c $yaml_file $stack_tag
+       echo "docker stack deploy -c $yaml_file $stack_tag"
+       docker stack deploy -c ${yaml_file} ${stack_tag}
+   fi
 }
 
 deploy_infrastructure() {
@@ -254,7 +260,7 @@ create_deploy_infrastructure() {
 
    echo "deploy_infrastructure"
    deploy_infrastructure \
-      $yaml_file
+      $yaml_file \
       $tag
 }
 
@@ -264,14 +270,14 @@ case "$1" in
   build_and_deploy) create_deploy_infrastructure $2 $3 $4 ;;
   stop) teardown_infrastructure  ;;
   prune) docker_prune ;;
-  monitor) monitor_infrastructure $2 $3;;
+  monitor) monitor_infrastructure $2 $3 $4;;
   *) echo "usage: $0"
       echo "<build <all|directory_name> <yaml file> <tag -- optional> > |"
       echo "<deploy <yaml file> > |"
       echo "<build_and_deploy <all|directory_name> <yaml file> <tag --optional>> | "
       echo "stop"
       echo "prune"
-      echo "monitor"
+      echo "monitor start|stop"
      exit 1
      ;;
 esac
