@@ -165,6 +165,9 @@ sysctl_tcp_kernel_optimization() {
     echo "fs.nr_open=2097152  >> /etc/sysctl.conf"
     echo "fs.nr_open=2097152" >> /etc/sysctl.conf
 
+    echo "net.ipv4.conf.default.rp_filter=0 >> /etc/sysctl.conf"
+    echo "net.ipv4.conf.default.rp_filter=0" >> /etc/sysctl.conf
+
     echo "net.core.somaxconn=32768  >> /etc/sysctl.conf"
     echo "net.core.somaxconn=32768" >> /etc/sysctl.conf
 
@@ -203,6 +206,15 @@ sysctl_tcp_kernel_optimization() {
 
     echo "net.ipv4.tcp_fin_timeout=15 >> /etc/sysctl.conf"
     echo "net.ipv4.tcp_fin_timeout=15" >> /etc/sysctl.conf
+
+    echo "net.ipv4.tcp_keepalive_time=30 >> /etc/sysctl.conf"
+    echo "net.ipv4.tcp_keepalive_time=30" >> /etc/sysctl.conf
+
+    echo "net.ipv4.tcp_keepalive_intvl=15 >> /etc/sysctl.conf"
+    echo "net.ipv4.tcp_keepalive_intvl=15" >> /etc/sysctl.conf
+
+    echo "net.ipv4.tcp_keepalive_probes=4 >> /etc/sysctl.conf"
+    echo "net.ipv4.tcp_keepalive_probes=4" >> /etc/sysctl.conf
 
     echo "net.ipv4.tcp_mem=8388608 8388608 8388608 >> /etc/sysctl.conf"
     echo "net.ipv4.tcp_mem=8388608 8388608 8388608" >> /etc/sysctl.conf
