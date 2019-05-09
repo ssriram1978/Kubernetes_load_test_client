@@ -10,23 +10,6 @@ services:
       - ./infrastructure_components/portainer:/data
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
-  filebeat:
-    image: docker.elastic.co/beats/filebeat:6.5.4
-    #image: docker.elastic.co/beats/filebeat:6.7.1
-    user: root
-    depends_on:
-      - elasticsearch
-      - logstash
-      - kibana
-    volumes:
-      - ./plotter/filebeat/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro
-      - /var/lib/docker/containers:/var/lib/docker/containers:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - "/etc/timezone:/etc/timezone:ro"
-      - "/etc/localtime:/etc/localtime:ro"
-    environment:
-      - output.elasticsearch.hosts=["elasticsearch:9200"]
-      - strict.perms=false
   logstash:
     #latency --> painless  --> return Float.parseFloat(doc['latency.keyword'].value);
     #curl 'localhost:9200/_cat/indices?v'
