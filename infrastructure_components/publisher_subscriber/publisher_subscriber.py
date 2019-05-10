@@ -38,6 +38,7 @@ from infrastructure_components.publisher_subscriber.nats_msgq_api.nats_msgq_api 
 from infrastructure_components.publisher_subscriber.zeromq_api.zeromq_api import \
     ZeroMsgQAPI
 from infrastructure_components.redis_client.redis_interface import RedisInterface
+from infrastructure_components.publisher_subscriber.websocket_api.websocket_api import WebSocketAPI
 
 
 class PublisherSubscriberAPI:
@@ -54,6 +55,7 @@ class PublisherSubscriberAPI:
     pulsarMsgQType = "Pulsar"
     natsMsgQType = "NATS"
     zeroMQType = "ZeroMQ"
+    websocketAPIType = "WebSocket"
 
     def __init__(self,
                  is_producer=False,
@@ -168,6 +170,12 @@ class PublisherSubscriberAPI:
                                                               thread_identifier=self.thread_identifier,
                                                               subscription_cb=self.subscription_cb,
                                                               queue_name=queue_name)
+                elif self.type_of_messaging_queue == PublisherSubscriberAPI.websocketAPIType:
+                    self.message_queue_instance = WebSocketAPI(is_producer=self.is_producer,
+                                                               is_consumer=self.is_consumer,
+                                                               thread_identifier=self.thread_identifier,
+                                                               subscription_cb=self.subscription_cb,
+                                                               queue_name=queue_name)
 
             except:
                 print("Exception in user code:")
