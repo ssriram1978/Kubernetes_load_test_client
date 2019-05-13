@@ -116,6 +116,8 @@ Goals:
 	
       	Pulsar
 	
+	EMQ
+	
  We plan to evaluate the following iPass solutions that could be incorporated into our MEC-IOT environment.
  	
 	Snaplogic
@@ -153,17 +155,41 @@ Here is the source code that is still work in progress that demonstrates a possi
 			The unit_test directory contains the unit test script that validates redis interface.
 
 3. There is a make_deploy.sh shell script.
+usage: ./make_deploy.sh
+<build <all|directory_name> <yaml file> <tag -- optional> > |
+<deploy <yaml file> > |
+<build_and_deploy <all|directory_name> <yaml file> <tag --optional>> | 
+stop
+prune
+monitor start|stop
 
-	./make_deploy.sh build sss 
-	This command will build docker images of producer and consumer directories and mark them with tag sss.
+4. In order to run ELK, do the following:
 
-	./make_deploy.sh deploy
-		This command will invoke the docker-stack.yml file and deploy all the built components in your local host 			where you built the docker images.
-	
-	./make_deploy.sh build_and_deploy sss
-		This command will build docker images of producer and consumer directories and mark them with tag sss and will invoke the docker-stack.yml file and deploy all the built components in your local host where you built the docker images.
-		
-4. docker-stack.yml – contains the list of services and their respective configuration details.
+./make_deploy.sh monitor start
+
+This command will bring up ELK stack. Note that you do not need to run ELK stack on the same host where you perform the load testing.
+
+Use this command to check if ELK stack is up and running. watch -n 1 curl 'localhost:9200/_cat/indices?v'
+
+5. In order to run the load test, do the following:
+
+Filebeat container is used to ship the local container logs to local or remote ELK host.
+Edit the plotter/filebeat/filebeat.docker.yml and change the host: line to point filebeat to the remote host where ELK is running.
+...
+output.logstash:
+        hosts: ["10.211.55.3:5044"]
+
+./make_deploy.sh build_and_deploy all docker-stack-rabbitmq.yml
+	This command will build docker images of all directories and deploy the containers specified in docker-stack-rabbitmq.yml and docker-stack-common.yml files.
+
+
+6. Kibana Port number is 5601. Open web browser and go to ip-address-of-elk:5601 to view Kibana dashboard.
+
+7. Redis command per port is 8082: Open web browser and go to ip-address-of-load-test:8082 to view Redis dashboard.
+
+8. Portainer port is 9000: Open web browser and go to ip-address-of-load-test:9000 to view Portainer dashboard.
+
+9. The list of services and their respective configuration details.
 
 	a. rabbitmq – creates a rabbitmq container.
 	
@@ -185,10 +211,3 @@ Here is the source code that is still work in progress that demonstrates a possi
 	
 	j. elasticsearch – creates a container to handle the elastic search of all the logstash.
 	
-		Note 1: In this docker-stack.yml, change the hard coded IP address of the test bed to your local PC IP address to run all the docker instances on your laptop.
-		
-		Note 2: In this docker-stack.yml, you can observe the following port mappings:
-			<ip address>:5601 – to access the kibana web interface.
-			<ip address>:9010 – to access the redis commander web interface.
-			<ip address>:9000 – to access the portainer docker web interface.
-			<ip address>:15672 – to access the rabbitMQ docker web interface.
