@@ -119,7 +119,17 @@ services:
         redis_log_keyname_key: 'transformer_load_test_events'
         total_job_enqueued_count_redis_name_key: 'total_produced_count'
         total_job_dequeued_count_redis_name_key: 'total_consumed_count'
-        #plotter:
+    portainer:
+      image: portainer/portainer
+      ports:
+        - "9000:9000"
+      command: -H unix:///var/run/docker.sock
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+        - ./infrastructure_components/portainer/data:/data
+        - "/etc/timezone:/etc/timezone:ro"
+        - "/etc/localtime:/etc/localtime:ro"
+    #plotter:
     #  image: plotter:latest
     #  depends_on:
     #    - redis-commander
