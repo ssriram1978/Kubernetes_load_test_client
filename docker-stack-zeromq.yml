@@ -56,5 +56,5 @@ services:
   orchestrator:
     image: orchestrator:latest
     environment:
-      distribute_ports: 'false'
+      distribute_ports: 'true'
       is_loopback_key: 'false'
