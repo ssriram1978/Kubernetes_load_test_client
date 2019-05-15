@@ -51,6 +51,74 @@ services:
       environment:
         #- output.logstash.hosts=["logstash:5044"]
         - strict.perms=false
+    publisher:
+      image: publisher:latest
+      depends_on:
+        - redis-commander
+      environment:
+        publisher_key_name: "publisher"
+        hash_table_name: "publisher_hash_table"
+        message_key: "{\
+                     \"lastUpdated\": \"2018-11-19T18:21:03Z\",\
+                     \"unitName\": \"VZW_LH_UNIT_01\",\
+                     \"unitMacId\": \"864508030027459\",\
+                     \"sensor\": {\
+                       \"name\": \"cHe_AssetTracker\",\
+                       \"characteristics\": [\
+                         {\
+                           \"characteristicsName\": \"temperature\",\
+                           \"currentValue\": \"30.2999\",\
+                           \"readLevel\": \"R\",\
+                           \"parameterType\": \"Number\",\
+                           \"measurementUnit\": \"Celcius\"\
+                         }\
+                       ]\
+                     }\
+                   }"
+        log_level_key: "info"
+        redis_server_hostname_key: 'redis'
+        redis_server_port_key:  '6379'
+        redis_log_keyname_key: 'produce_load_test_events'
+        total_job_enqueued_count_redis_name_key: 'total_produced_count'
+        total_job_dequeued_count_redis_name_key: 'total_consumed_count'
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+        - "/etc/timezone:/etc/timezone:ro"
+        - "/etc/localtime:/etc/localtime:ro"
+    subscriber:
+      image: subscriber:latest
+      depends_on:
+        - redis-commander
+      environment:
+        subscriber_key_name: "subscriber"
+        hash_table_name: "subscriber_hash_table"
+        average_latency_for_n_sec_key: "1"
+        log_level_key: "info"
+        max_consumer_threads_key: "1"
+        redis_server_hostname_key: 'redis'
+        redis_server_port_key:  '6379'
+        redis_log_keyname_key: 'consume_load_test_events'
+        latency_publish_key: 'latency_results'
+        total_job_enqueued_count_redis_name_key: 'total_produced_count'
+        total_job_dequeued_count_redis_name_key: 'total_consumed_count'
+        latency_compute_start_key_name_key: 'start_time'
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+        - "/etc/timezone:/etc/timezone:ro"
+        - "/etc/localtime:/etc/localtime:ro"
+    transformer:
+      image: transformer:latest
+      depends_on:
+        - redis-commander
+      environment:
+        transformer_key_name: "transformer"
+        hash_table_name: "transformer_hash_table"
+        log_level_key: "info"
+        redis_server_hostname_key: 'redis'
+        redis_server_port_key:  '6379'
+        redis_log_keyname_key: 'transformer_load_test_events'
+        total_job_enqueued_count_redis_name_key: 'total_produced_count'
+        total_job_dequeued_count_redis_name_key: 'total_consumed_count'
         #plotter:
     #  image: plotter:latest
     #  depends_on:

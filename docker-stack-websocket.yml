@@ -1,0 +1,39 @@
+version: '3'
+services:
+  publisher:
+    image: publisher:latest
+    ports:
+      - "50000-50099:50000-50099"
+      - "51000-51099:51000-51099"
+    deploy:
+      replicas: 1
+      #      resources:
+      #        limits:
+      #          cpus: "0.8"
+      #          memory: 2000M
+      restart_policy:
+        condition: none
+    environment:
+      publisher_key_name: "publisher"
+      messages_per_second_key: "500"
+      test_duration_in_sec_key: "100"
+      type_of_messaging_queue_key: 'WebSocket'
+  subscriber:
+    image: subscriber:latest
+    depends_on:
+      - transformer
+    deploy:
+      replicas: 1
+      #      resources:
+      #        limits:
+      #          cpus: "0.8"
+      #          memory: 2000M
+      restart_policy:
+        condition: none
+    environment:
+      type_of_messaging_queue_key: 'WebSocket'
+  orchestrator:
+    image: orchestrator:latest
+    environment:
+      distribute_ports: 'true'
+      is_loopback_key: 'true'

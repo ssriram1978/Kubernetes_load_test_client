@@ -6,6 +6,7 @@ import time
 import json
 import socket
 import subprocess
+import struct
 
 
 def import_all_paths():
@@ -27,8 +28,7 @@ def import_all_paths():
 
 import_all_paths()
 
-
-# from infrastructure_components.redis_client.redis_interface import RedisInterface
+from infrastructure_components.redis_client.redis_interface import RedisInterface
 
 
 class WebSocketAPI:
@@ -83,7 +83,7 @@ class WebSocketAPI:
             logging.info("message_port={},signaling_port={}"
                          .format(self.subscriber_port_for_sending_message,
                                  self.subscriber_port_for_signaling))
-        # self.redis_instance = None
+        self.redis_instance = None
         self.client_instance = None
         # self.cont_id = os.popen("cat /etc/hostname").read()
         # self.cont_id = self.cont_id[:-1]
@@ -123,23 +123,31 @@ class WebSocketAPI:
         Connect to a broker.
         :return:
         """
-        # self.redis_instance = RedisInterface(self.thread_identifier)
+        self.redis_instance = RedisInterface(self.thread_identifier)
         if self.is_producer:
             # Socket to talk to clients
             # TODO 1. Create a tcp client socket localhost:port (1234)
             # Create a TCP/IP socket
             # run the jar file by creating a new process. (jar file for publisher)
-            logging.info("Trying to bring up websocket-java-api-client-all.jar")
-            subprocess.run(['java', '-jar', 'websocket-java-api-client-all.jar',
+            list_of_args = ['java',
+                            '-jar',
+                            'websocket-java-api-client-all.jar',
                             self.publisher_port_for_signaling,
-                            'localhost:' + str(self.publisher_port_for_sending_message)])
+                            'localhost:' + str(self.publisher_port_for_sending_message)]
+            os.spawnvpe(os.P_NOWAIT, 'java', list_of_args, os.environ)
+            time.sleep(5)
+            self.serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            logging.debug("TCPIP Socket producer side connected at port {}." \
+                          .format(self.publisher_port_for_signaling))
+            # connect to server on local computer
+            self.serversocket.connect(('localhost', int(self.publisher_port_for_signaling)))
+            # self.serversocket.setblocking(0)
             # time.sleep(2)
         elif self.is_consumer:
             # First, connect our subscriber socket
             # TODO 1. Create  tcp server socket localhost:port (self.subscriber_port_for_signaling)
             # Create a TCP/IP socket
             # run the jar file for subscriber.
-            logging.info("Trying to bring up Java-WebSocket-1.4.0-all-1.4.1-SNAPSHOT.jar")
             list_of_args = ['java',
                             '-jar',
                             'Java-WebSocket-1.4.0-all-1.4.1-SNAPSHOT.jar',
@@ -147,7 +155,7 @@ class WebSocketAPI:
                             'localhost',
                             self.subscriber_port_for_signaling]
             os.spawnvpe(os.P_NOWAIT, 'java', list_of_args, os.environ)
-            time.sleep(5)
+
             # Create a TCP/IP socket
             self.tcpipsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             # Bind the socket to the port
@@ -159,16 +167,18 @@ class WebSocketAPI:
         # msg = self.subscriber.recv()
         # this is the server side for subscription. Therefore, you just need to listen to incoming message.
         conn, addr = self.tcpipsocket.accept()
-        msg = conn.recv(1024)
-        msg = msg.decode('utf-8')
+        msg = conn.recv(4096)
+        # msg = msg.decode('utf-8')
+        msg = msg.decode(encoding="utf-8", errors="ignore")
         event_message = "\n \n Received message from {}:{},payload={}." \
             .format(self.publisher_hostname,
                     self.subscriber_port_for_sending_message,
                     msg)
         # logging.debug(event_message)
-        # self.redis_instance.write_an_event_in_redis_db(event_message)
-        # self.redis_instance.increment_dequeue_count()
+        self.redis_instance.write_an_event_in_redis_db(event_message)
+        self.redis_instance.increment_dequeue_count()
         self.subscription_cb(msg)
+        conn.close()
 
     @staticmethod
     def run_consumer_thread(*args, **kwargs):
@@ -230,12 +240,17 @@ class WebSocketAPI:
         if self.consumer_thread:
             # self.client_instance.disconnect()
             if getattr(self.consumer_thread, "do_run", True):
+                if self.is_consumer:
+                    self.tcpipsocket.close()
                 self.consumer_thread.do_run = False
                 time.sleep(5)
                 logging.debug("Trying to join thread {}."
                               .format(self.consumer_thread.getName()))
                 self.consumer_thread.join(1.0)
             if getattr(self.producer_thread, "do_run", True):
+                if self.is_producer:
+                    self.serversocket.close()
+                    self.serversocket.shutdown(socket.SHUT_RDWR)
                 # self.producer_thread.do_run = False
                 time.sleep(5)
                 # logging.debug("Trying to join thread {}."
@@ -248,19 +263,27 @@ class WebSocketAPI:
         :param message:
         :return status False or True:
         """
-        self.serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # time.sleep(1)
+        # self.serversocket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         # connect to server on local computer 
-        self.serversocket.connect(('localhost', int(self.publisher_port_for_signaling)))
+        # self.serversocket.connect(('localhost', int(self.publisher_port_for_signaling)))
+        # self.serversocket.connect(('localhost', 6010))
+        # self.serversocket.setblocking(False)
 
         event_message = "\n \n {}: Publishing a message {} to port {}." \
             .format(self.thread_identifier,
                     message,
                     self.publisher_port_for_signaling)
         # logging.debug(event_message)
-        # self.redis_instance.write_an_event_in_redis_db(event_message)
+        self.redis_instance.write_an_event_in_redis_db(event_message)
         # TODO invoke the socket send to send the message via tcp client socket to the producer jar file.
         # logging.debug(message.decode('utf-8'))
         # self.serversocket.send(str(message, 'utf-8'))
-        self.serversocket.sendall(message.encode('utf-8'))
-        self.serversocket.close()
-        # self.redis_instance.increment_enqueue_count()
+        msg_sent_length = 0
+        while not msg_sent_length or msg_sent_length < len(message):
+            self.serversocket.send(struct.pack("!H", len(message)))
+            msg_sent_length = self.serversocket.send(message.encode('utf-8'))
+            self.redis_instance.increment_enqueue_count()
+            # logging.info("msg_sent_length={},{}".format(msg_sent_length,len(message)))
+        # logging.info("Successfully sent a message {} of length {}.".format(message, msg_sent_length))
+        # self.serversocket.close()
