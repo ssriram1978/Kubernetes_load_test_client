@@ -147,6 +147,9 @@ teardown_infrastructure() {
 }
 
 docker_prune() {
+   echo "docker system prune --all --force --volumes"
+   sudo docker system prune --all --force --volumes
+
    echo "sudo find /var/lib/docker/containers/ -type f -name \"*.log\" -delete"
    sudo find /var/lib/docker/containers/ -type f -name "*.log" -delete
 
