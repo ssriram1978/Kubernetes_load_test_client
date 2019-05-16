@@ -55,6 +55,11 @@ uninstall_docker_ce() {
 }
 
 install_kubernetes() {
+  master_or_worker=$1
+  address=$2
+  token=$3
+  hash=$4
+
   echo "sudo apt-get update && apt-get install -y apt-transport-https curl"
   sudo apt-get update && sudo apt-get install -y apt-transport-https curl
 
@@ -82,26 +87,41 @@ install_kubernetes() {
   echo "sudo swapoff -a"
   sudo swapoff -a
 
-  echo "sudo kubeadm init"
-  sudo kubeadm init
+  if [[ $1 == "" ]]; then
+       master_or_worker="master"
+  fi
 
-  echo "mkdir -p $HOME/.kube"
-  mkdir -p $HOME/.kube
+  if [[ $master_or_worker == "master" ]]; then
+     echo "sudo kubeadm init  --ignore-preflight-errors=all"
+     sudo kubeadm init  --ignore-preflight-errors=all
 
-  echo "sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config"
-  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+     echo "mkdir -p $HOME/.kube"
+     mkdir -p $HOME/.kube
 
-  echo "sudo chown \$(id -u):\$(id -g) \$HOME/.kube/config"
-  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+     echo "sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config"
+     sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 
-  echo "sudo kubectl taint nodes --all node-role.kubernetes.io/master-"
-  sudo sudo kubectl taint nodes --all node-role.kubernetes.io/master-
+     echo "sudo chown \$(id -u):\$(id -g) \$HOME/.kube/config"
+     sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+     echo "sudo kubectl taint nodes --all node-role.kubernetes.io/master-"
+     sudo kubectl taint nodes --all node-role.kubernetes.io/master-
+
+     echo "sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml"
+     sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+
+  fi
+
+  if [[ $master_or_worker == "worker" ]]; then
+     echo "sudo kubeadm join --token $token --discovery-token-ca-cert-hash $hash"
+     sudo kubeadm join $address --token $token --discovery-token-ca-cert-hash $hash
+  fi
 
 }
 
 uninstall_kubernetes() {
-  echo "sudo kubeadm reset"
-  sudo kubeadm reset
+  echo "sudo kubeadm reset -y"
+  sudo kubeadm reset -y
 
   echo "sudo apt-get -y purge kubeadm kubectl kubelet kubernetes-cni kube*"
   sudo apt-get purge -y kubeadm kubectl kubelet kubernetes-cni kube*
@@ -117,7 +137,7 @@ uninstall_kubernetes() {
 case "$1" in
 	install_docker) install_docker_ce ;;
 	uninstall_docker) uninstall_docker_ce ;;
-	install_kubernetes) install_kubernetes ;;
+	install_kubernetes) install_kubernetes $2 $3 $4;;
 	uninstall_kubernetes) uninstall_kubernetes ;;
 	*) echo "usage: $0"
 	   echo "install_docker"
