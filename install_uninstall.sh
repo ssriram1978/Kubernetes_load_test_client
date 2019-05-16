@@ -125,21 +125,27 @@ install_kubernetes() {
      echo "kubectl apply -f \"https://cloud.weave.works/k8s/net?k8s-version=\$kubever\""
      sudo kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$kubever"
 
-     echo "kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/aio/deploy/recommended/kubernetes-dashboard.yaml"
-     sudo kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/aio/deploy/recommended/kubernetes-dashboard.yaml
+     #echo "kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/aio/deploy/recommended/kubernetes-dashboard.yaml"
+     #sudo kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/aio/deploy/recommended/kubernetes-dashboard.yaml
 
-     echo "kubectl create serviceaccount cluster-admin-dashboard-sa"
-     sudo kubectl create serviceaccount cluster-admin-dashboard-sa
+     #echo "kubectl create serviceaccount cluster-admin-dashboard-sa"
+     #sudo kubectl create serviceaccount cluster-admin-dashboard-sa
 
-     echo "kubectl create clusterrolebinding cluster-admin-dashboard-sa \
-           --clusterrole=cluster-admin \
-           --serviceaccount=default:cluster-admin-dashboard-sa"
-     sudo kubectl create clusterrolebinding cluster-admin-dashboard-sa \
-             --clusterrole=cluster-admin \
-             --serviceaccount=default:cluster-admin-dashboard-sa
+     #echo "kubectl create clusterrolebinding cluster-admin-dashboard-sa \
+     #      --clusterrole=cluster-admin \
+     #      --serviceaccount=default:cluster-admin-dashboard-sa"
+     #sudo kubectl create clusterrolebinding cluster-admin-dashboard-sa \
+     #        --clusterrole=cluster-admin \
+     #        --serviceaccount=default:cluster-admin-dashboard-sa
 
-     sudo "kubectl describe secret $(kubectl get secret | grep cluster-admin-dashboard-sa | awk '{print $1}')"
-     sudo kubectl describe secret $(sudo kubectl get secret | grep cluster-admin-dashboard-sa | awk '{print $1}')
+     #sudo "kubectl describe secret $(kubectl get secret | grep cluster-admin-dashboard-sa | awk '{print $1}')"
+     #sudo kubectl describe secret $(sudo kubectl get secret | grep cluster-admin-dashboard-sa | awk '{print $1}')
+
+     echo "kubectl apply -f https://gist.githubusercontent.com/initcron/32ff89394c881414ea7ef7f4d3a1d499/raw/baffda78ffdcaf8ece87a76fb2bb3fd767820a3f/kube-dashboard.yaml"
+     kubectl apply -f https://gist.githubusercontent.com/initcron/32ff89394c881414ea7ef7f4d3a1d499/raw/baffda78ffdcaf8ece87a76fb2bb3fd767820a3f/kube-dashboard.yaml
+
+     echo "kubectl -n kube-system get service kubernetes-dashboard"
+     sudo kubectl -n kube-system get service kubernetes-dashboard
 
   fi
 
