@@ -113,8 +113,27 @@ install_kubernetes() {
      echo "sudo kubectl taint nodes --all node-role.kubernetes.io/master-"
      sudo kubectl taint nodes --all node-role.kubernetes.io/master-
 
-     echo "sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml"
-     sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+     #echo "sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml"
+     #sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+
+     echo "export kubever=$(kubectl version | base64 | tr -d '\n')"
+     export kubever=$(kubectl version | base64 | tr -d '\n')
+
+     echo "kubectl apply -f \"https://cloud.weave.works/k8s/net?k8s-version=\$kubever\""
+     sudo kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$kubever"
+
+     echo "kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/aio/deploy/recommended/kubernetes-dashboard.yaml"
+     sudo kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/aio/deploy/recommended/kubernetes-dashboard.yaml
+
+     echo "kubectl create serviceaccount cluster-admin-dashboard-sa"
+     sudo kubectl create serviceaccount cluster-admin-dashboard-sa
+
+     echo "kubectl create clusterrolebinding cluster-admin-dashboard-sa \
+           --clusterrole=cluster-admin \
+           --serviceaccount=default:cluster-admin-dashboard-sa"
+     sudo kubectl create clusterrolebinding cluster-admin-dashboard-sa \
+             --clusterrole=cluster-admin \
+             --serviceaccount=default:cluster-admin-dashboard-sa
 
   fi
 
