@@ -135,6 +135,9 @@ install_kubernetes() {
              --clusterrole=cluster-admin \
              --serviceaccount=default:cluster-admin-dashboard-sa
 
+     sudo "kubectl describe secret $(kubectl get secret | grep cluster-admin-dashboard-sa | awk '{print $1}')"
+     sudo kubectl describe secret $(sudo kubectl get secret | grep cluster-admin-dashboard-sa | awk '{print $1}')
+
   fi
 
   if [[ $master_or_worker == "worker" ]]; then
