@@ -41,9 +41,15 @@ install_docker_ce() {
 	echo "sudo systemctl enable docker"
 	sudo systemctl enable docker
 
+	echo "docker swarm init"
+	sudo docker swarm init
+
 }
 
 uninstall_docker_ce() {
+   echo "sudo docker swarm leave --force"
+   sudo docker swarm leave --force
+
    echo "sudo apt-get purge docker-ce"
    sudo apt-get purge docker-ce
 
@@ -120,8 +126,8 @@ install_kubernetes() {
 }
 
 uninstall_kubernetes() {
-  echo "sudo kubeadm reset -y"
-  sudo kubeadm reset -y
+  echo "sudo kubeadm reset -f"
+  sudo kubeadm reset -f
 
   echo "sudo apt-get -y purge kubeadm kubectl kubelet kubernetes-cni kube*"
   sudo apt-get purge -y kubeadm kubectl kubelet kubernetes-cni kube*
