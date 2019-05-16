@@ -104,10 +104,10 @@ uninstall_kubernetes() {
   sudo kubeadm reset
 
   echo "sudo apt-get -y purge kubeadm kubectl kubelet kubernetes-cni kube*"
-  sudo apt-get purge kubeadm kubectl kubelet kubernetes-cni kube*
+  sudo apt-get purge -y kubeadm kubectl kubelet kubernetes-cni kube*
 
   echo "sudo apt-get -y autoremove"
-  sudo apt-get autoremove
+  sudo apt-get -y autoremove
 
   echo "sudo rm -rf ~/.kube"
   sudo rm -rf ~/.kube
