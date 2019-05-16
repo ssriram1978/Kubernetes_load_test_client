@@ -93,6 +93,9 @@ install_kubernetes() {
   echo "sudo swapoff -a"
   sudo swapoff -a
 
+  echo "systemctl enable kubelet"
+  sudo systemctl enable kubelet
+
   if [[ $1 == "" ]]; then
        master_or_worker="master"
   fi
