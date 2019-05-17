@@ -1,0 +1,67 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-stack-common.yml --volumes hostPath
+    kompose.version: 1.17.0 (a74acad)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: publisher
+  name: publisher
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: publisher
+    spec:
+      containers:
+      - env:
+        - name: hash_table_name
+          value: publisher_hash_table
+        - name: log_level_key
+          value: info
+        - name: message_key
+          value: '{"lastUpdated": "2018-11-19T18:21:03Z","unitName": "VZW_LH_UNIT_01","unitMacId":
+            "864508030027459","sensor": {"name": "cHe_AssetTracker","characteristics":
+            [{"characteristicsName": "temperature","currentValue": "30.2999","readLevel":
+            "R","parameterType": "Number","measurementUnit": "Celcius"}]}}'
+        - name: publisher_key_name
+          value: publisher
+        - name: redis_log_keyname_key
+          value: produce_load_test_events
+        - name: redis_server_hostname_key
+          value: redis
+        - name: redis_server_port_key
+          value: "6379"
+        - name: total_job_dequeued_count_redis_name_key
+          value: total_consumed_count
+        - name: total_job_enqueued_count_redis_name_key
+          value: total_produced_count
+        image: publisher:latest
+        name: publisher
+        resources: {}
+        volumeMounts:
+        - mountPath: /var/run/docker.sock
+          name: publisher-hostpath0
+        - mountPath: /etc/timezone
+          name: publisher-hostpath1
+          readOnly: true
+        - mountPath: /etc/localtime
+          name: publisher-hostpath2
+          readOnly: true
+      restartPolicy: Always
+      volumes:
+      - hostPath:
+          path: /media/psf/Home/git/IOT_load_test_client/kubernetes_yaml_files/common_components/var/run/docker.sock
+        name: publisher-hostpath0
+      - hostPath:
+          path: /media/psf/Home/git/IOT_load_test_client/kubernetes_yaml_files/common_components/etc/timezone
+        name: publisher-hostpath1
+      - hostPath:
+          path: /media/psf/Home/git/IOT_load_test_client/kubernetes_yaml_files/common_components/etc/localtime
+        name: publisher-hostpath2
+status: {}

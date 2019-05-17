@@ -1,0 +1,55 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-stack-infrastructure.yml --volumes hostPath
+    kompose.version: 1.17.0 (a74acad)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: portainer
+  name: portainer
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: portainer
+    spec:
+      containers:
+      - args:
+        - -H
+        - unix:///var/run/docker.sock
+        image: portainer/portainer
+        name: portainer
+        ports:
+        - containerPort: 9000
+        resources: {}
+        volumeMounts:
+        - mountPath: /var/run/docker.sock
+          name: portainer-hostpath0
+        - mountPath: /data
+          name: portainer-hostpath1
+        - mountPath: /etc/timezone
+          name: portainer-hostpath2
+          readOnly: true
+        - mountPath: /etc/localtime
+          name: portainer-hostpath3
+          readOnly: true
+      restartPolicy: Always
+      volumes:
+      - hostPath:
+          path: /media/psf/Home/git/IOT_load_test_client/var/run/docker.sock
+        name: portainer-hostpath0
+      - hostPath:
+          path: /media/psf/Home/git/IOT_load_test_client/media/psf/Home/git/IOT-load-test-client/infrastructure-components/portainer
+        name: portainer-hostpath1
+      - hostPath:
+          path: /media/psf/Home/git/IOT_load_test_client/etc/timezone
+        name: portainer-hostpath2
+      - hostPath:
+          path: /media/psf/Home/git/IOT_load_test_client/etc/localtime
+        name: portainer-hostpath3
+status: {}

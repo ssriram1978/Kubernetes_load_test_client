@@ -1,0 +1,58 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-stack-infrastructure.yml --volumes hostPath
+    kompose.version: 1.17.0 (a74acad)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: elasticsearch
+  name: elasticsearch
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: elasticsearch
+    spec:
+      containers:
+      - image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.7.1
+        name: elasticsearch
+        ports:
+        - containerPort: 9200
+        - containerPort: 9300
+        resources: {}
+        volumeMounts:
+        - mountPath: /usr/share/elasticsearch/data
+          name: elasticsearch-hostpath0
+        - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
+          name: elasticsearch-hostpath1
+        - mountPath: /var/run/docker.sock
+          name: elasticsearch-hostpath2
+        - mountPath: /etc/timezone
+          name: elasticsearch-hostpath3
+          readOnly: true
+        - mountPath: /etc/localtime
+          name: elasticsearch-hostpath4
+          readOnly: true
+      restartPolicy: Always
+      volumes:
+      - hostPath:
+          path: /media/psf/Home/git/IOT_load_test_client/media/psf/Home/git/IOT-load-test-client/plotter/elasticsearch
+        name: elasticsearch-hostpath0
+      - hostPath:
+          path: /media/psf/Home/git/IOT_load_test_client/media/psf/Home/git/IOT-load-test-client/plotter/elasticsearch/config/elasticsearch.yml
+        name: elasticsearch-hostpath1
+      - hostPath:
+          path: /media/psf/Home/git/IOT_load_test_client/var/run/docker.sock
+        name: elasticsearch-hostpath2
+      - hostPath:
+          path: /media/psf/Home/git/IOT_load_test_client/etc/timezone
+        name: elasticsearch-hostpath3
+      - hostPath:
+          path: /media/psf/Home/git/IOT_load_test_client/etc/localtime
+        name: elasticsearch-hostpath4
+status: {}

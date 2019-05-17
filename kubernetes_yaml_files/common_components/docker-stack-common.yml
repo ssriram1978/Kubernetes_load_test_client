@@ -1,0 +1,195 @@
+version: '3'
+services:
+    redis:
+      image: redis:latest
+      ports:
+        - "6379:6379"
+    redis-commander:
+      image: rediscommander/redis-commander:latest
+      environment:
+        - REDIS_HOSTS=redis:redis:6379
+      ports:
+        - 8082:8081
+    orchestrator:
+      image: orchestrator:latest
+      depends_on:
+        - redis-commander
+      deploy:
+        replicas: 1
+        #      resources:
+        #        limits:
+        #          cpus: "0.8"
+        #          memory: 2000M
+        restart_policy:
+          condition: none
+      environment:
+        redis_server_hostname_key: 'redis'
+        redis_server_port_key:  '6379'
+        redis_log_keyname_key: 'orchestrator_load_test_events'
+        # distribute_ports: 'true'
+        # is_loopback_key: 'true'
+        publisher_key_name: "publisher"
+        publisher_hash_table_name: "publisher_hash_table"
+        subscriber_key_name: "subscriber"
+        subscriber_hash_table_name: "subscriber_hash_table"
+        transformer_key_name: "transformer"
+        transformer_hash_table_name: "transformer_hash_table"
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+        - "/etc/timezone:/etc/timezone:ro"
+        - "/etc/localtime:/etc/localtime:ro"
+    filebeat:
+      image: docker.elastic.co/beats/filebeat:6.5.4
+      #image: docker.elastic.co/beats/filebeat:6.7.1
+      user: root
+      volumes:
+        - ./plotter/filebeat/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro
+        - /var/lib/docker/containers:/var/lib/docker/containers:ro
+        - /var/run/docker.sock:/var/run/docker.sock:ro
+        - "/etc/timezone:/etc/timezone:ro"
+        - "/etc/localtime:/etc/localtime:ro"
+      environment:
+        #- output.logstash.hosts=["logstash:5044"]
+        - strict.perms=false
+    publisher:
+      image: publisher:latest
+      depends_on:
+        - redis-commander
+      environment:
+        publisher_key_name: "publisher"
+        hash_table_name: "publisher_hash_table"
+        message_key: "{\
+                     \"lastUpdated\": \"2018-11-19T18:21:03Z\",\
+                     \"unitName\": \"VZW_LH_UNIT_01\",\
+                     \"unitMacId\": \"864508030027459\",\
+                     \"sensor\": {\
+                       \"name\": \"cHe_AssetTracker\",\
+                       \"characteristics\": [\
+                         {\
+                           \"characteristicsName\": \"temperature\",\
+                           \"currentValue\": \"30.2999\",\
+                           \"readLevel\": \"R\",\
+                           \"parameterType\": \"Number\",\
+                           \"measurementUnit\": \"Celcius\"\
+                         }\
+                       ]\
+                     }\
+                   }"
+        log_level_key: "info"
+        redis_server_hostname_key: 'redis'
+        redis_server_port_key:  '6379'
+        redis_log_keyname_key: 'produce_load_test_events'
+        total_job_enqueued_count_redis_name_key: 'total_produced_count'
+        total_job_dequeued_count_redis_name_key: 'total_consumed_count'
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+        - "/etc/timezone:/etc/timezone:ro"
+        - "/etc/localtime:/etc/localtime:ro"
+    subscriber:
+      image: subscriber:latest
+      depends_on:
+        - redis-commander
+      environment:
+        subscriber_key_name: "subscriber"
+        hash_table_name: "subscriber_hash_table"
+        average_latency_for_n_sec_key: "1"
+        log_level_key: "info"
+        max_consumer_threads_key: "1"
+        redis_server_hostname_key: 'redis'
+        redis_server_port_key:  '6379'
+        redis_log_keyname_key: 'consume_load_test_events'
+        latency_publish_key: 'latency_results'
+        total_job_enqueued_count_redis_name_key: 'total_produced_count'
+        total_job_dequeued_count_redis_name_key: 'total_consumed_count'
+        latency_compute_start_key_name_key: 'start_time'
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+        - "/etc/timezone:/etc/timezone:ro"
+        - "/etc/localtime:/etc/localtime:ro"
+    transformer:
+      image: transformer:latest
+      depends_on:
+        - redis-commander
+      environment:
+        transformer_key_name: "transformer"
+        hash_table_name: "transformer_hash_table"
+        log_level_key: "info"
+        redis_server_hostname_key: 'redis'
+        redis_server_port_key:  '6379'
+        redis_log_keyname_key: 'transformer_load_test_events'
+        total_job_enqueued_count_redis_name_key: 'total_produced_count'
+        total_job_dequeued_count_redis_name_key: 'total_consumed_count'
+    portainer:
+      image: portainer/portainer
+      ports:
+        - "9000:9000"
+      command: -H unix:///var/run/docker.sock
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+        - ./infrastructure_components/portainer/data:/data
+        - "/etc/timezone:/etc/timezone:ro"
+        - "/etc/localtime:/etc/localtime:ro"
+    #plotter:
+    #  image: plotter:latest
+    #  depends_on:
+    #    - redis-commander
+    #  deploy:
+    #    replicas: 1
+        #      resources:
+        #        limits:
+        #          cpus: "0.8"
+        #          memory: 2000M
+    #    restart_policy:
+    #      condition: none
+    #  environment:
+    #    html_filename_key: '/opt/html_graph_storage/latency.html'
+    #    redis_server_hostname_key: 'redis'
+    #    redis_server_port_key:  '6379'
+    #    redis_log_keyname_key: 'plotter_load_test_events'
+    #    latency_redis_key: 'latency_results'
+    #    latency_compute_start_key_name_key: 'start_time'
+    #  volumes:
+    #    - ./html_graph_storage:/opt/html_graph_storage
+    #    - /var/run/docker.sock:/var/run/docker.sock
+    #    - "/etc/timezone:/etc/timezone:ro"
+    #    - "/etc/localtime:/etc/localtime:ro"
+    #displayer:
+    #  image: displayer:latest
+    #  ports:
+    #    - "8888:8888"
+    #  deploy:
+    #    replicas: 1
+        #      resources:
+        #        limits:
+        #          cpus: "0.8"
+        #          memory: 2000M
+    #    restart_policy:
+    #      condition: none
+    #  environment:
+    #    html_filename_key: '/opt/html_graph_storage/latency.html'
+    #  volumes:
+    #    - ./html_graph_storage:/opt/html_graph_storage:ro
+    #    - /var/run/docker.sock:/var/run/docker.sock
+    #    - "/etc/timezone:/etc/timezone:ro"
+    #    - "/etc/localtime:/etc/localtime:ro"
+    #cadvisor:
+    #  image: google/cadvisor:latest
+    #  ports:
+    #    - 8089:8080
+    #  volumes:
+    #    - /:/rootfs:ro
+    #    - /var/run:/var/run:rw
+    #    - /sys:/sys:ro
+    #    - /var/lib/docker/:/var/lib/docker:ro
+    #netdata:
+    #  image: netdata/netdata
+    #  ports:
+    #    - 19999:19999
+    #  volumes:
+    #    - /proc:/host/proc:ro
+    #    - /sys:/host/sys:ro
+    #    - /var/run/docker.sock:/var/run/docker.sock:ro
+    #  cap_add:
+    #    - SYS_PTRACE
+    #  security_opt:
+    #    - apparmor:unconfined
