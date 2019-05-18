@@ -2,6 +2,10 @@ version: '3'
 services:
     redis:
       image: redis:latest
+      deploy:
+         replicas: 1
+         placement:
+           constraints: [node.role == manager]
       ports:
         - "6379:6379"
     redis-commander:
@@ -40,6 +44,10 @@ services:
         - "/etc/localtime:/etc/localtime:ro"
     filebeat:
       image: docker.elastic.co/beats/filebeat:6.5.4
+      deploy:
+         replicas: 1
+         placement:
+           constraints: [node.role == manager]
       #image: docker.elastic.co/beats/filebeat:6.7.1
       user: root
       volumes:
@@ -124,6 +132,10 @@ services:
       ports:
         - "9000:9000"
       command: -H unix:///var/run/docker.sock
+      deploy:
+         replicas: 1
+         placement:
+           constraints: [node.role == manager]
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
         - ./infrastructure_components/portainer/data:/data
