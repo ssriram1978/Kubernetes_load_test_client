@@ -38,6 +38,10 @@ spec:
           value: transformer_hash_table
         - name: transformer_key_name
           value: transformer
+        - name: distribute_ports
+          value: "false"
+        - name: is_loopback_key
+          value: "false"
         image: orchestrator:latest
         name: orchestrator
         imagePullPolicy: IfNotPresent

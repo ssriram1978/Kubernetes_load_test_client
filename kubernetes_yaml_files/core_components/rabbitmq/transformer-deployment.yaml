@@ -2,7 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: kompose convert -f docker-stack-rabbitmq.yml --volumes hostPath
+    kompose.cmd: kompose convert -f docker-stack-common.yml --volumes hostPath
     kompose.version: 1.17.0 (a74acad)
   creationTimestamp: null
   labels:
@@ -19,6 +19,22 @@ spec:
     spec:
       containers:
       - env:
+        - name: hash_table_name
+          value: transformer_hash_table
+        - name: log_level_key
+          value: info
+        - name: redis_log_keyname_key
+          value: transformer_load_test_events
+        - name: redis_server_hostname_key
+          value: redis
+        - name: redis_server_port_key
+          value: "6379"
+        - name: total_job_dequeued_count_redis_name_key
+          value: total_consumed_count
+        - name: total_job_enqueued_count_redis_name_key
+          value: total_produced_count
+        - name: transformer_key_name
+          value: transformer
         - name: broker_hostname_key
           value: rabbitmq
         - name: broker_port_key
@@ -28,5 +44,5 @@ spec:
         image: transformer:latest
         name: transformer
         resources: {}
-      restartPolicy: Never
+      restartPolicy: Always
 status: {}
