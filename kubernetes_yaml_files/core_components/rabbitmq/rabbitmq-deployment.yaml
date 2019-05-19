@@ -1,0 +1,57 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-stack-rabbitmq.yml --volumes hostPath
+    kompose.version: 1.17.0 (a74acad)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: rabbitmq
+  name: rabbitmq
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: rabbitmq
+    spec:
+      containers:
+      - env:
+        - name: RABBITMQ_DEFAULT_PASS
+          value: guest
+        - name: RABBITMQ_DEFAULT_USER
+          value: guest
+        image: rabbitmq:3.8-rc-management
+        name: rabbitmq
+        ports:
+        - containerPort: 15672
+        - containerPort: 5672
+        - containerPort: 1883
+        resources: {}
+        volumeMounts:
+        - mountPath: /etc/rabbitmq/enabled_plugins
+          name: rabbitmq-hostpath0
+        - mountPath: /etc/rabbitmq/rabbitmq-env.conf
+          name: rabbitmq-hostpath1
+        - mountPath: /etc/rabbitmq/rabbitmq-modified.conf
+          name: rabbitmq-hostpath2
+        - mountPath: /etc/rabbitmq/rabbitmq-definitions.json
+          name: rabbitmq-hostpath3
+      restartPolicy: Always
+      volumes:
+      - hostPath:
+          path: /home/sriramsridhar/git/IOT_load_test_client/kubernetes_yaml_files/core_components/rabbitmq/home/sriramsridhar/git/IOT-load-test-client/kubernetes-yaml-files/core-components/rabbitmq/infrastructure-components/publisher-subscriber/rabbit-msgq-api/rabbitmq-conf-plugins/enabled-plugins
+        name: rabbitmq-hostpath0
+      - hostPath:
+          path: /home/sriramsridhar/git/IOT_load_test_client/kubernetes_yaml_files/core_components/rabbitmq/home/sriramsridhar/git/IOT-load-test-client/kubernetes-yaml-files/core-components/rabbitmq/infrastructure-components/publisher-subscriber/rabbit-msgq-api/rabbitmq-conf-plugins/rabbitmq-env.conf
+        name: rabbitmq-hostpath1
+      - hostPath:
+          path: /home/sriramsridhar/git/IOT_load_test_client/kubernetes_yaml_files/core_components/rabbitmq/home/sriramsridhar/git/IOT-load-test-client/kubernetes-yaml-files/core-components/rabbitmq/infrastructure-components/publisher-subscriber/rabbit-msgq-api/rabbitmq-conf-plugins/rabbitmq-modified.conf
+        name: rabbitmq-hostpath2
+      - hostPath:
+          path: /home/sriramsridhar/git/IOT_load_test_client/kubernetes_yaml_files/core_components/rabbitmq/home/sriramsridhar/git/IOT-load-test-client/kubernetes-yaml-files/core-components/rabbitmq/infrastructure-components/publisher-subscriber/rabbit-msgq-api/rabbitmq-conf-plugins/rabbitmq-definitions.json
+        name: rabbitmq-hostpath3
+status: {}

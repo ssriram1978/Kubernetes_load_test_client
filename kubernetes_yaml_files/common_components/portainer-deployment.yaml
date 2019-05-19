@@ -41,15 +41,15 @@ spec:
       restartPolicy: Always
       volumes:
       - hostPath:
-          path: /media/psf/Home/git/IOT_load_test_client/kubernetes_yaml_files/common_components/var/run/docker.sock
+          path: /var/run/docker.sock
         name: portainer-hostpath0
       - hostPath:
-          path: /media/psf/Home/git/IOT_load_test_client/kubernetes_yaml_files/common_components/media/psf/Home/git/IOT-load-test-client/kubernetes-yaml-files/common-components/infrastructure-components/portainer/data
+          path: /home/sriramsridhar/git/IOT-load-test-client/infrastructure-components/portainer/data
         name: portainer-hostpath1
       - hostPath:
-          path: /media/psf/Home/git/IOT_load_test_client/kubernetes_yaml_files/common_components/etc/timezone
+          path: /etc/timezone
         name: portainer-hostpath2
       - hostPath:
-          path: /media/psf/Home/git/IOT_load_test_client/kubernetes_yaml_files/common_components/etc/localtime
+          path: /etc/localtime
         name: portainer-hostpath3
 status: {}

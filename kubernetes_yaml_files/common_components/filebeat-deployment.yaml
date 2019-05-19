@@ -44,18 +44,19 @@ spec:
       restartPolicy: Always
       volumes:
       - hostPath:
-          path: /media/psf/Home/git/IOT_load_test_client/kubernetes_yaml_files/common_components/media/psf/Home/git/IOT-load-test-client/kubernetes-yaml-files/common-components/plotter/filebeat/filebeat.docker.yml
+          path: /home/sriramsridhar/git/IOT_load_test_client/plotter/filebeat/filebeat.docker.yml
+          type: File
         name: filebeat-hostpath0
       - hostPath:
-          path: /media/psf/Home/git/IOT_load_test_client/kubernetes_yaml_files/common_components/var/lib/docker/containers
+          path: /var/lib/docker/containers
         name: filebeat-hostpath1
       - hostPath:
-          path: /media/psf/Home/git/IOT_load_test_client/kubernetes_yaml_files/common_components/var/run/docker.sock
+          path: /var/run/docker.sock
         name: filebeat-hostpath2
       - hostPath:
-          path: /media/psf/Home/git/IOT_load_test_client/kubernetes_yaml_files/common_components/etc/timezone
+          path: /etc/timezone
         name: filebeat-hostpath3
       - hostPath:
-          path: /media/psf/Home/git/IOT_load_test_client/kubernetes_yaml_files/common_components/etc/localtime
+          path: /etc/localtime
         name: filebeat-hostpath4
 status: {}

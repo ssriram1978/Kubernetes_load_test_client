@@ -1,0 +1,36 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-stack-rabbitmq.yml --volumes hostPath
+    kompose.version: 1.17.0 (a74acad)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: publisher
+  name: publisher
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: publisher
+    spec:
+      containers:
+      - env:
+        - name: broker_hostname_key
+          value: rabbitmq
+        - name: broker_port_key
+          value: "1883"
+        - name: messages_per_second_key
+          value: "500"
+        - name: test_duration_in_sec_key
+          value: "100000"
+        - name: type_of_messaging_queue_key
+          value: RabbitMQ
+        image: publisher:latest
+        name: publisher
+        resources: {}
+      restartPolicy: Never
+status: {}

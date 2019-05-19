@@ -1,0 +1,30 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-stack-rabbitmq.yml --volumes hostPath
+    kompose.version: 1.17.0 (a74acad)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: orchestrator
+  name: orchestrator
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: orchestrator
+    spec:
+      containers:
+      - env:
+        - name: distribute_ports
+          value: "false"
+        - name: is_loopback_key
+          value: "false"
+        image: orchestrator:latest
+        name: orchestrator
+        resources: {}
+      restartPolicy: Always
+status: {}

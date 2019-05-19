@@ -56,12 +56,12 @@ spec:
       restartPolicy: Always
       volumes:
       - hostPath:
-          path: /media/psf/Home/git/IOT_load_test_client/kubernetes_yaml_files/common_components/var/run/docker.sock
+          path: /var/run/docker.sock
         name: publisher-hostpath0
       - hostPath:
-          path: /media/psf/Home/git/IOT_load_test_client/kubernetes_yaml_files/common_components/etc/timezone
+          path: /etc/timezone
         name: publisher-hostpath1
       - hostPath:
-          path: /media/psf/Home/git/IOT_load_test_client/kubernetes_yaml_files/common_components/etc/localtime
+          path: /etc/localtime
         name: publisher-hostpath2
 status: {}

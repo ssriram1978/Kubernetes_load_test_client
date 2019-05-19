@@ -171,16 +171,39 @@ uninstall_kubernetes() {
 
 }
 
+install_kompose() {
+   echo "curl -L https://github.com/kubernetes/kompose/releases/download/v1.17.0/kompose-linux-amd64 -o kompose"
+   curl -L https://github.com/kubernetes/kompose/releases/download/v1.17.0/kompose-linux-amd64 -o kompose
+
+   echo "chmod +x kompose"
+   chmod +x kompose
+
+   echo "sudo mv ./kompose /usr/local/bin/kompose"
+   sudo mv ./kompose /usr/local/bin/kompose
+}
+
+kompose_convert() {
+   yml_file=$1
+
+   echo "kompose convert -f $yml_file --volumes hostPath"
+   kompose convert -f $yml_file --volumes hostPath
+}
+
+
 case "$1" in
 	install_docker) install_docker_ce ;;
 	uninstall_docker) uninstall_docker_ce ;;
 	install_kubernetes) install_kubernetes $2 $3 $4;;
 	uninstall_kubernetes) uninstall_kubernetes ;;
+	install_kompose) install_kompose ;;
+	kompose_convert) kompose_convert $2 ;;
 	*) echo "usage: $0"
 	   echo "install_docker"
 	   echo "uninstall_docker"
 	   echo "install_kubernetes"
 	   echo "uninstall_kubernetes"
+	   echo "install_kompose"
+	   echo "kompose_convert"
 	   exit 1
 	   ;;
 esac

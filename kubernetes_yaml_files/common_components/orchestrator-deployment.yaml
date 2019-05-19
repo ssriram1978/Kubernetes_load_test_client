@@ -40,6 +40,7 @@ spec:
           value: transformer
         image: orchestrator:latest
         name: orchestrator
+        imagePullPolicy: IfNotPresent
         resources: {}
         volumeMounts:
         - mountPath: /var/run/docker.sock
@@ -50,15 +51,15 @@ spec:
         - mountPath: /etc/localtime
           name: orchestrator-hostpath2
           readOnly: true
-      restartPolicy: Never
+      restartPolicy: Always
       volumes:
       - hostPath:
-          path: /media/psf/Home/git/IOT_load_test_client/kubernetes_yaml_files/common_components/var/run/docker.sock
+          path: /var/run/docker.sock
         name: orchestrator-hostpath0
       - hostPath:
-          path: /media/psf/Home/git/IOT_load_test_client/kubernetes_yaml_files/common_components/etc/timezone
+          path: /etc/timezone
         name: orchestrator-hostpath1
       - hostPath:
-          path: /media/psf/Home/git/IOT_load_test_client/kubernetes_yaml_files/common_components/etc/localtime
+          path: /etc/localtime
         name: orchestrator-hostpath2
 status: {}
