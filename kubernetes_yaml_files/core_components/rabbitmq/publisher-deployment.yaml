@@ -53,6 +53,7 @@ spec:
           value: RabbitMQ
         image: publisher:latest
         name: publisher
+        imagePullPolicy: IfNotPresent
         resources: {}
         volumeMounts:
         - mountPath: /var/run/docker.sock

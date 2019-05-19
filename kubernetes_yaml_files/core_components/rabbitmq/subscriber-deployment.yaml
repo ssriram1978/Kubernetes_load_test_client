@@ -52,6 +52,7 @@ spec:
           value: RabbitMQ
         image: subscriber:latest
         name: subscriber
+        imagePullPolicy: IfNotPresent
         resources: {}
         volumeMounts:
         - mountPath: /var/run/docker.sock

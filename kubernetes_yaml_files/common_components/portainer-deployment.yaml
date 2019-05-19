@@ -44,7 +44,7 @@ spec:
           path: /var/run/docker.sock
         name: portainer-hostpath0
       - hostPath:
-          path: /home/sriramsridhar/git/IOT-load-test-client/infrastructure-components/portainer/data
+          path: /home/sriramsridhar/git/IOT-load-test-client/infrastructure_components/portainer/data
         name: portainer-hostpath1
       - hostPath:
           path: /etc/timezone

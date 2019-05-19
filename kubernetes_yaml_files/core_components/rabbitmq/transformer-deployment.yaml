@@ -43,6 +43,7 @@ spec:
           value: RabbitMQ
         image: transformer:latest
         name: transformer
+        imagePullPolicy: IfNotPresent
         resources: {}
       restartPolicy: Always
 status: {}

@@ -16,8 +16,8 @@ spec:
   - name: "5672"
     port: 5672
     targetPort: 5672
-  - name: "1889"
-    port: 1889
+  - name: "1883"
+    port: 1883
     targetPort: 1883
   selector:
     io.kompose.service: rabbitmq
