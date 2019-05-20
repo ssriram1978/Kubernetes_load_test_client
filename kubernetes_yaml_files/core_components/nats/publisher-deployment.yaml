@@ -73,6 +73,6 @@ spec:
           path: /nats/etc/timezone
         name: publisher-hostpath1
       - hostPath:
-          path: /nats/etc/localtime
+          path: /etc/localtime
         name: publisher-hostpath2
 status: {}
