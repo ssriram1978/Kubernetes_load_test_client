@@ -39,15 +39,15 @@ spec:
       restartPolicy: Always
       volumes:
       - hostPath:
-          path: /media/psf/Home/git/IOT_load_test_client/media/psf/Home/git/IOT-load-test-client/plotter/logstash
+          path: /home/sriramsridhar/git/IOT-load-test-client/plotter/logstash
         name: logstash-hostpath0
       - hostPath:
-          path: /media/psf/Home/git/IOT_load_test_client/var/run/docker.sock
+          path: /var/run/docker.sock
         name: logstash-hostpath1
       - hostPath:
-          path: /media/psf/Home/git/IOT_load_test_client/etc/timezone
+          path: /etc/timezone
         name: logstash-hostpath2
       - hostPath:
-          path: /media/psf/Home/git/IOT_load_test_client/etc/localtime
+          path: /etc/localtime
         name: logstash-hostpath3
 status: {}

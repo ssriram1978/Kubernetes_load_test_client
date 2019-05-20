@@ -40,18 +40,18 @@ spec:
       restartPolicy: Always
       volumes:
       - hostPath:
-          path: /media/psf/Home/git/IOT_load_test_client/media/psf/Home/git/IOT-load-test-client/plotter/kibana
+          path: /home/sriramsridhar/git/IOT-load-test-client/plotter/kibana
         name: kibana-hostpath0
       - hostPath:
-          path: /media/psf/Home/git/IOT_load_test_client/media/psf/Home/git/IOT-load-test-client/plotter/kibana/config/kibana.yml
+          path: /home/sriramsridhar/git/IOT-load-test-client/plotter/kibana/config/kibana.yml
         name: kibana-hostpath1
       - hostPath:
-          path: /media/psf/Home/git/IOT_load_test_client/var/run/docker.sock
+          path: /var/run/docker.sock
         name: kibana-hostpath2
       - hostPath:
-          path: /media/psf/Home/git/IOT_load_test_client/etc/timezone
+          path: /etc/timezone
         name: kibana-hostpath3
       - hostPath:
-          path: /media/psf/Home/git/IOT_load_test_client/etc/localtime
+          path: /etc/localtime
         name: kibana-hostpath4
 status: {}

@@ -41,18 +41,18 @@ spec:
       restartPolicy: Always
       volumes:
       - hostPath:
-          path: /media/psf/Home/git/IOT_load_test_client/media/psf/Home/git/IOT-load-test-client/plotter/elasticsearch
+          path: /home/sriramsridhar/git/IOT_load_test_client/plotter/elasticsearch
         name: elasticsearch-hostpath0
       - hostPath:
-          path: /media/psf/Home/git/IOT_load_test_client/media/psf/Home/git/IOT-load-test-client/plotter/elasticsearch/config/elasticsearch.yml
+          path: /home/sriramsridhar/git/IOT_load_test_client/plotter/elasticsearch/config/elasticsearch.yml
         name: elasticsearch-hostpath1
       - hostPath:
-          path: /media/psf/Home/git/IOT_load_test_client/var/run/docker.sock
+          path: /var/run/docker.sock
         name: elasticsearch-hostpath2
       - hostPath:
-          path: /media/psf/Home/git/IOT_load_test_client/etc/timezone
+          path: /etc/timezone
         name: elasticsearch-hostpath3
       - hostPath:
-          path: /media/psf/Home/git/IOT_load_test_client/etc/localtime
+          path: /etc/localtime
         name: elasticsearch-hostpath4
 status: {}
