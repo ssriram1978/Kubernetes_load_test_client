@@ -38,8 +38,8 @@
                         "pattern": "^mqtt",
                         "apply-to": "queues",
                         "definition": {
-                                "max-length": 100000,
-                                "message-ttl": 10,
+                                "max-length": 3000,
+                                "message-ttl": 3,
                                 "dead-letter-exchange": "mqtt_dead_letter_exchange",
                                 "dead-letter-routing-key": "message_dead_lettered",
                                 "ha-mode": "exactly",
