@@ -70,7 +70,7 @@ spec:
           path: /var/run/docker.sock
         name: publisher-hostpath0
       - hostPath:
-          path: /nats/etc/timezone
+          path: /etc/timezone
         name: publisher-hostpath1
       - hostPath:
           path: /etc/localtime
