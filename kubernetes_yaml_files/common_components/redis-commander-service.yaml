@@ -10,10 +10,14 @@ metadata:
   name: redis-commander
 spec:
   ports:
-  - name: "8082"
-    port: 8082
+  - name: "32622"
+    nodePort: 32622
+    port: 32622
+    protocol: TCP
     targetPort: 8081
   selector:
     io.kompose.service: redis-commander
+  sessionAffinity: None
+  type: NodePort
 status:
   loadBalancer: {}

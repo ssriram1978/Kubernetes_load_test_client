@@ -10,10 +10,14 @@ metadata:
   name: portainer
 spec:
   ports:
-  - name: "9000"
-    port: 9000
+  - name: "30315"
+    nodePort: 30315
+    port: 30315
+    protocol: TCP
     targetPort: 9000
   selector:
     io.kompose.service: portainer
+  sessionAffinity: None
+  type: NodePort
 status:
   loadBalancer: {}

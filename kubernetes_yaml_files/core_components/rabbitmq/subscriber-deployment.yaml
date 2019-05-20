@@ -9,7 +9,7 @@ metadata:
     io.kompose.service: subscriber
   name: subscriber
 spec:
-  replicas: 1
+  replicas: 50
   strategy:
     type: Recreate
   template:

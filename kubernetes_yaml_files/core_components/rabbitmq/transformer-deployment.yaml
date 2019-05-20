@@ -9,7 +9,7 @@ metadata:
     io.kompose.service: transformer
   name: transformer
 spec:
-  replicas: 1
+  replicas: 50
   strategy: {}
   template:
     metadata:
