@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-stack-common.yml --volumes hostPath
+    kompose.version: 1.17.0 (a74acad)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: redis-commander
+  name: redis-commander
+spec:
+  ports:
+  - name: "32622"
+    nodePort: 32622
+    port: 32622
+    protocol: TCP
+    targetPort: 8081
+  selector:
+    io.kompose.service: redis-commander
+  sessionAffinity: None
+  type: NodePort
+status:
+  loadBalancer: {}
