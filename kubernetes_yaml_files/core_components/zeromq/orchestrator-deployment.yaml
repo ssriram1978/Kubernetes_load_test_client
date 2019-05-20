@@ -39,7 +39,7 @@ spec:
         - name: transformer_key_name
           value: transformer
         - name: distribute_ports
-          value: "false"
+          value: "true"
         - name: is_loopback_key
           value: "false"
         image: orchestrator:latest
