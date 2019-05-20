@@ -48,6 +48,7 @@ spec:
         - name: type_of_messaging_queue_key
           value: ZeroMQ
         image: publisher:latest
+        imagePullPolicy: IfNotPresent
         name: publisher
         ports:
         - containerPort: 50000

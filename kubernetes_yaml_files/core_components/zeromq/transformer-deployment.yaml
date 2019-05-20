@@ -41,6 +41,7 @@ spec:
         - name: type_of_messaging_queue_key
           value: ZeroMQ
         image: transformer:latest
+        imagePullPolicy: IfNotPresent
         name: transformer
         ports:
         - containerPort: 52000
