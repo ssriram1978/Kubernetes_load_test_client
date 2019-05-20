@@ -1,0 +1,267 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-stack-zeromq.yml --volumes hostPath
+    kompose.version: 1.17.0 (a74acad)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: transformer
+  name: transformer
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: transformer
+    spec:
+      containers:
+      - env:
+        - name: hash_table_name
+          value: transformer_hash_table
+        - name: log_level_key
+          value: info
+        - name: publisher_hostname_key
+          value: publisher
+        - name: redis_log_keyname_key
+          value: transformer_load_test_events
+        - name: redis_server_hostname_key
+          value: redis
+        - name: redis_server_port_key
+          value: "6379"
+        - name: total_job_dequeued_count_redis_name_key
+          value: total_consumed_count
+        - name: total_job_enqueued_count_redis_name_key
+          value: total_produced_count
+        - name: transformer_key_name
+          value: transformer
+        - name: type_of_messaging_queue_key
+          value: ZeroMQ
+        image: transformer:latest
+        name: transformer
+        ports:
+        - containerPort: 52000
+        - containerPort: 52001
+        - containerPort: 52002
+        - containerPort: 52003
+        - containerPort: 52004
+        - containerPort: 52005
+        - containerPort: 52006
+        - containerPort: 52007
+        - containerPort: 52008
+        - containerPort: 52009
+        - containerPort: 52010
+        - containerPort: 52011
+        - containerPort: 52012
+        - containerPort: 52013
+        - containerPort: 52014
+        - containerPort: 52015
+        - containerPort: 52016
+        - containerPort: 52017
+        - containerPort: 52018
+        - containerPort: 52019
+        - containerPort: 52020
+        - containerPort: 52021
+        - containerPort: 52022
+        - containerPort: 52023
+        - containerPort: 52024
+        - containerPort: 52025
+        - containerPort: 52026
+        - containerPort: 52027
+        - containerPort: 52028
+        - containerPort: 52029
+        - containerPort: 52030
+        - containerPort: 52031
+        - containerPort: 52032
+        - containerPort: 52033
+        - containerPort: 52034
+        - containerPort: 52035
+        - containerPort: 52036
+        - containerPort: 52037
+        - containerPort: 52038
+        - containerPort: 52039
+        - containerPort: 52040
+        - containerPort: 52041
+        - containerPort: 52042
+        - containerPort: 52043
+        - containerPort: 52044
+        - containerPort: 52045
+        - containerPort: 52046
+        - containerPort: 52047
+        - containerPort: 52048
+        - containerPort: 52049
+        - containerPort: 52050
+        - containerPort: 52051
+        - containerPort: 52052
+        - containerPort: 52053
+        - containerPort: 52054
+        - containerPort: 52055
+        - containerPort: 52056
+        - containerPort: 52057
+        - containerPort: 52058
+        - containerPort: 52059
+        - containerPort: 52060
+        - containerPort: 52061
+        - containerPort: 52062
+        - containerPort: 52063
+        - containerPort: 52064
+        - containerPort: 52065
+        - containerPort: 52066
+        - containerPort: 52067
+        - containerPort: 52068
+        - containerPort: 52069
+        - containerPort: 52070
+        - containerPort: 52071
+        - containerPort: 52072
+        - containerPort: 52073
+        - containerPort: 52074
+        - containerPort: 52075
+        - containerPort: 52076
+        - containerPort: 52077
+        - containerPort: 52078
+        - containerPort: 52079
+        - containerPort: 52080
+        - containerPort: 52081
+        - containerPort: 52082
+        - containerPort: 52083
+        - containerPort: 52084
+        - containerPort: 52085
+        - containerPort: 52086
+        - containerPort: 52087
+        - containerPort: 52088
+        - containerPort: 52089
+        - containerPort: 52090
+        - containerPort: 52091
+        - containerPort: 52092
+        - containerPort: 52093
+        - containerPort: 52094
+        - containerPort: 52095
+        - containerPort: 52096
+        - containerPort: 52097
+        - containerPort: 52098
+        - containerPort: 52099
+        - containerPort: 53000
+        - containerPort: 53001
+        - containerPort: 53002
+        - containerPort: 53003
+        - containerPort: 53004
+        - containerPort: 53005
+        - containerPort: 53006
+        - containerPort: 53007
+        - containerPort: 53008
+        - containerPort: 53009
+        - containerPort: 53010
+        - containerPort: 53011
+        - containerPort: 53012
+        - containerPort: 53013
+        - containerPort: 53014
+        - containerPort: 53015
+        - containerPort: 53016
+        - containerPort: 53017
+        - containerPort: 53018
+        - containerPort: 53019
+        - containerPort: 53020
+        - containerPort: 53021
+        - containerPort: 53022
+        - containerPort: 53023
+        - containerPort: 53024
+        - containerPort: 53025
+        - containerPort: 53026
+        - containerPort: 53027
+        - containerPort: 53028
+        - containerPort: 53029
+        - containerPort: 53030
+        - containerPort: 53031
+        - containerPort: 53032
+        - containerPort: 53033
+        - containerPort: 53034
+        - containerPort: 53035
+        - containerPort: 53036
+        - containerPort: 53037
+        - containerPort: 53038
+        - containerPort: 53039
+        - containerPort: 53040
+        - containerPort: 53041
+        - containerPort: 53042
+        - containerPort: 53043
+        - containerPort: 53044
+        - containerPort: 53045
+        - containerPort: 53046
+        - containerPort: 53047
+        - containerPort: 53048
+        - containerPort: 53049
+        - containerPort: 53050
+        - containerPort: 53051
+        - containerPort: 53052
+        - containerPort: 53053
+        - containerPort: 53054
+        - containerPort: 53055
+        - containerPort: 53056
+        - containerPort: 53057
+        - containerPort: 53058
+        - containerPort: 53059
+        - containerPort: 53060
+        - containerPort: 53061
+        - containerPort: 53062
+        - containerPort: 53063
+        - containerPort: 53064
+        - containerPort: 53065
+        - containerPort: 53066
+        - containerPort: 53067
+        - containerPort: 53068
+        - containerPort: 53069
+        - containerPort: 53070
+        - containerPort: 53071
+        - containerPort: 53072
+        - containerPort: 53073
+        - containerPort: 53074
+        - containerPort: 53075
+        - containerPort: 53076
+        - containerPort: 53077
+        - containerPort: 53078
+        - containerPort: 53079
+        - containerPort: 53080
+        - containerPort: 53081
+        - containerPort: 53082
+        - containerPort: 53083
+        - containerPort: 53084
+        - containerPort: 53085
+        - containerPort: 53086
+        - containerPort: 53087
+        - containerPort: 53088
+        - containerPort: 53089
+        - containerPort: 53090
+        - containerPort: 53091
+        - containerPort: 53092
+        - containerPort: 53093
+        - containerPort: 53094
+        - containerPort: 53095
+        - containerPort: 53096
+        - containerPort: 53097
+        - containerPort: 53098
+        - containerPort: 53099
+        resources: {}
+        volumeMounts:
+        - mountPath: /var/run/docker.sock
+          name: transformer-hostpath0
+        - mountPath: /etc/timezone
+          name: transformer-hostpath1
+          readOnly: true
+        - mountPath: /etc/localtime
+          name: transformer-hostpath2
+          readOnly: true
+      restartPolicy: Always
+      volumes:
+      - hostPath:
+          path: /media/psf/Home/git/IOT_load_test_client/kubernetes_yaml_files/core_components/zeromq/var/run/docker.sock
+        name: transformer-hostpath0
+      - hostPath:
+          path: /media/psf/Home/git/IOT_load_test_client/kubernetes_yaml_files/core_components/zeromq/etc/timezone
+        name: transformer-hostpath1
+      - hostPath:
+          path: /media/psf/Home/git/IOT_load_test_client/kubernetes_yaml_files/core_components/zeromq/etc/localtime
+        name: transformer-hostpath2
+status: {}

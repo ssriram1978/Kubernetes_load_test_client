@@ -1,0 +1,69 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-stack-common.yml --volumes hostPath
+    kompose.version: 1.17.0 (a74acad)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: orchestrator
+  name: orchestrator
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: orchestrator
+    spec:
+      containers:
+      - env:
+        - name: publisher_hash_table_name
+          value: publisher_hash_table
+        - name: publisher_key_name
+          value: publisher
+        - name: redis_log_keyname_key
+          value: orchestrator_load_test_events
+        - name: redis_server_hostname_key
+          value: redis
+        - name: redis_server_port_key
+          value: "6379"
+        - name: subscriber_hash_table_name
+          value: subscriber_hash_table
+        - name: subscriber_key_name
+          value: subscriber
+        - name: transformer_hash_table_name
+          value: transformer_hash_table
+        - name: transformer_key_name
+          value: transformer
+        - name: distribute_ports
+          value: "false"
+        - name: is_loopback_key
+          value: "false"
+        image: orchestrator:latest
+        name: orchestrator
+        imagePullPolicy: IfNotPresent
+        resources: {}
+        volumeMounts:
+        - mountPath: /var/run/docker.sock
+          name: orchestrator-hostpath0
+        - mountPath: /etc/timezone
+          name: orchestrator-hostpath1
+          readOnly: true
+        - mountPath: /etc/localtime
+          name: orchestrator-hostpath2
+          readOnly: true
+      restartPolicy: Always
+      volumes:
+      - hostPath:
+          path: /var/run/docker.sock
+        name: orchestrator-hostpath0
+      - hostPath:
+          path: /etc/timezone
+        name: orchestrator-hostpath1
+      - hostPath:
+          path: /etc/localtime
+        name: orchestrator-hostpath2
+status: {}

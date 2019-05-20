@@ -127,6 +127,10 @@ services:
         redis_log_keyname_key: 'transformer_load_test_events'
         total_job_enqueued_count_redis_name_key: 'total_produced_count'
         total_job_dequeued_count_redis_name_key: 'total_consumed_count'
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+        - "/etc/timezone:/etc/timezone:ro"
+        - "/etc/localtime:/etc/localtime:ro"
     portainer:
       image: portainer/portainer
       ports:

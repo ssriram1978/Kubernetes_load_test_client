@@ -1,0 +1,274 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-stack-zeromq.yml --volumes hostPath
+    kompose.version: 1.17.0 (a74acad)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: publisher
+  name: publisher
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: publisher
+    spec:
+      containers:
+      - env:
+        - name: hash_table_name
+          value: publisher_hash_table
+        - name: log_level_key
+          value: info
+        - name: message_key
+          value: '{"lastUpdated": "2018-11-19T18:21:03Z","unitName": "VZW_LH_UNIT_01","unitMacId":
+            "864508030027459","sensor": {"name": "cHe_AssetTracker","characteristics":
+            [{"characteristicsName": "temperature","currentValue": "30.2999","readLevel":
+            "R","parameterType": "Number","measurementUnit": "Celcius"}]}}'
+        - name: messages_per_second_key
+          value: "1000"
+        - name: publisher_key_name
+          value: publisher
+        - name: redis_log_keyname_key
+          value: produce_load_test_events
+        - name: redis_server_hostname_key
+          value: redis
+        - name: redis_server_port_key
+          value: "6379"
+        - name: test_duration_in_sec_key
+          value: "100"
+        - name: total_job_dequeued_count_redis_name_key
+          value: total_consumed_count
+        - name: total_job_enqueued_count_redis_name_key
+          value: total_produced_count
+        - name: type_of_messaging_queue_key
+          value: ZeroMQ
+        image: publisher:latest
+        name: publisher
+        ports:
+        - containerPort: 50000
+        - containerPort: 50001
+        - containerPort: 50002
+        - containerPort: 50003
+        - containerPort: 50004
+        - containerPort: 50005
+        - containerPort: 50006
+        - containerPort: 50007
+        - containerPort: 50008
+        - containerPort: 50009
+        - containerPort: 50010
+        - containerPort: 50011
+        - containerPort: 50012
+        - containerPort: 50013
+        - containerPort: 50014
+        - containerPort: 50015
+        - containerPort: 50016
+        - containerPort: 50017
+        - containerPort: 50018
+        - containerPort: 50019
+        - containerPort: 50020
+        - containerPort: 50021
+        - containerPort: 50022
+        - containerPort: 50023
+        - containerPort: 50024
+        - containerPort: 50025
+        - containerPort: 50026
+        - containerPort: 50027
+        - containerPort: 50028
+        - containerPort: 50029
+        - containerPort: 50030
+        - containerPort: 50031
+        - containerPort: 50032
+        - containerPort: 50033
+        - containerPort: 50034
+        - containerPort: 50035
+        - containerPort: 50036
+        - containerPort: 50037
+        - containerPort: 50038
+        - containerPort: 50039
+        - containerPort: 50040
+        - containerPort: 50041
+        - containerPort: 50042
+        - containerPort: 50043
+        - containerPort: 50044
+        - containerPort: 50045
+        - containerPort: 50046
+        - containerPort: 50047
+        - containerPort: 50048
+        - containerPort: 50049
+        - containerPort: 50050
+        - containerPort: 50051
+        - containerPort: 50052
+        - containerPort: 50053
+        - containerPort: 50054
+        - containerPort: 50055
+        - containerPort: 50056
+        - containerPort: 50057
+        - containerPort: 50058
+        - containerPort: 50059
+        - containerPort: 50060
+        - containerPort: 50061
+        - containerPort: 50062
+        - containerPort: 50063
+        - containerPort: 50064
+        - containerPort: 50065
+        - containerPort: 50066
+        - containerPort: 50067
+        - containerPort: 50068
+        - containerPort: 50069
+        - containerPort: 50070
+        - containerPort: 50071
+        - containerPort: 50072
+        - containerPort: 50073
+        - containerPort: 50074
+        - containerPort: 50075
+        - containerPort: 50076
+        - containerPort: 50077
+        - containerPort: 50078
+        - containerPort: 50079
+        - containerPort: 50080
+        - containerPort: 50081
+        - containerPort: 50082
+        - containerPort: 50083
+        - containerPort: 50084
+        - containerPort: 50085
+        - containerPort: 50086
+        - containerPort: 50087
+        - containerPort: 50088
+        - containerPort: 50089
+        - containerPort: 50090
+        - containerPort: 50091
+        - containerPort: 50092
+        - containerPort: 50093
+        - containerPort: 50094
+        - containerPort: 50095
+        - containerPort: 50096
+        - containerPort: 50097
+        - containerPort: 50098
+        - containerPort: 50099
+        - containerPort: 51000
+        - containerPort: 51001
+        - containerPort: 51002
+        - containerPort: 51003
+        - containerPort: 51004
+        - containerPort: 51005
+        - containerPort: 51006
+        - containerPort: 51007
+        - containerPort: 51008
+        - containerPort: 51009
+        - containerPort: 51010
+        - containerPort: 51011
+        - containerPort: 51012
+        - containerPort: 51013
+        - containerPort: 51014
+        - containerPort: 51015
+        - containerPort: 51016
+        - containerPort: 51017
+        - containerPort: 51018
+        - containerPort: 51019
+        - containerPort: 51020
+        - containerPort: 51021
+        - containerPort: 51022
+        - containerPort: 51023
+        - containerPort: 51024
+        - containerPort: 51025
+        - containerPort: 51026
+        - containerPort: 51027
+        - containerPort: 51028
+        - containerPort: 51029
+        - containerPort: 51030
+        - containerPort: 51031
+        - containerPort: 51032
+        - containerPort: 51033
+        - containerPort: 51034
+        - containerPort: 51035
+        - containerPort: 51036
+        - containerPort: 51037
+        - containerPort: 51038
+        - containerPort: 51039
+        - containerPort: 51040
+        - containerPort: 51041
+        - containerPort: 51042
+        - containerPort: 51043
+        - containerPort: 51044
+        - containerPort: 51045
+        - containerPort: 51046
+        - containerPort: 51047
+        - containerPort: 51048
+        - containerPort: 51049
+        - containerPort: 51050
+        - containerPort: 51051
+        - containerPort: 51052
+        - containerPort: 51053
+        - containerPort: 51054
+        - containerPort: 51055
+        - containerPort: 51056
+        - containerPort: 51057
+        - containerPort: 51058
+        - containerPort: 51059
+        - containerPort: 51060
+        - containerPort: 51061
+        - containerPort: 51062
+        - containerPort: 51063
+        - containerPort: 51064
+        - containerPort: 51065
+        - containerPort: 51066
+        - containerPort: 51067
+        - containerPort: 51068
+        - containerPort: 51069
+        - containerPort: 51070
+        - containerPort: 51071
+        - containerPort: 51072
+        - containerPort: 51073
+        - containerPort: 51074
+        - containerPort: 51075
+        - containerPort: 51076
+        - containerPort: 51077
+        - containerPort: 51078
+        - containerPort: 51079
+        - containerPort: 51080
+        - containerPort: 51081
+        - containerPort: 51082
+        - containerPort: 51083
+        - containerPort: 51084
+        - containerPort: 51085
+        - containerPort: 51086
+        - containerPort: 51087
+        - containerPort: 51088
+        - containerPort: 51089
+        - containerPort: 51090
+        - containerPort: 51091
+        - containerPort: 51092
+        - containerPort: 51093
+        - containerPort: 51094
+        - containerPort: 51095
+        - containerPort: 51096
+        - containerPort: 51097
+        - containerPort: 51098
+        - containerPort: 51099
+        resources: {}
+        volumeMounts:
+        - mountPath: /var/run/docker.sock
+          name: publisher-hostpath0
+        - mountPath: /etc/timezone
+          name: publisher-hostpath1
+          readOnly: true
+        - mountPath: /etc/localtime
+          name: publisher-hostpath2
+          readOnly: true
+      restartPolicy: Always
+      volumes:
+      - hostPath:
+          path: /media/psf/Home/git/IOT_load_test_client/kubernetes_yaml_files/core_components/zeromq/var/run/docker.sock
+        name: publisher-hostpath0
+      - hostPath:
+          path: /media/psf/Home/git/IOT_load_test_client/kubernetes_yaml_files/core_components/zeromq/etc/timezone
+        name: publisher-hostpath1
+      - hostPath:
+          path: /media/psf/Home/git/IOT_load_test_client/kubernetes_yaml_files/core_components/zeromq/etc/localtime
+        name: publisher-hostpath2
+status: {}

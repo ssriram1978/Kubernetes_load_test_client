@@ -2,7 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: kompose convert -f docker-stack-common.yml --volumes hostPath
+    kompose.cmd: kompose convert -f docker-stack-nats.yml --volumes hostPath
     kompose.version: 1.17.0 (a74acad)
   creationTimestamp: null
   labels:
@@ -10,7 +10,8 @@ metadata:
   name: transformer
 spec:
   replicas: 1
-  strategy: {}
+  strategy:
+    type: Recreate
   template:
     metadata:
       creationTimestamp: null
@@ -19,6 +20,10 @@ spec:
     spec:
       containers:
       - env:
+        - name: broker_hostname_key
+          value: nats
+        - name: broker_port_key
+          value: "4222"
         - name: hash_table_name
           value: transformer_hash_table
         - name: log_level_key
@@ -35,34 +40,30 @@ spec:
           value: total_produced_count
         - name: transformer_key_name
           value: transformer
-        - name: broker_hostname_key
-          value: rabbitmq
-        - name: broker_port_key
-          value: "1883"
         - name: type_of_messaging_queue_key
-          value: RabbitMQ
+          value: NATS
         image: transformer:latest
-        name: transformer
         imagePullPolicy: IfNotPresent
+        name: transformer
         resources: {}
         volumeMounts:
-          - mountPath: /var/run/docker.sock
-            name: transformer-hostpath0
-          - mountPath: /etc/timezone
-            name: transformer-hostpath1
-            readOnly: true
-          - mountPath: /etc/localtime
-            name: transformer-hostpath2
-            readOnly: true
+        - mountPath: /var/run/docker.sock
+          name: transformer-hostpath0
+        - mountPath: /etc/timezone
+          name: transformer-hostpath1
+          readOnly: true
+        - mountPath: /etc/localtime
+          name: transformer-hostpath2
+          readOnly: true
       restartPolicy: Always
       volumes:
-            - hostPath:
-                path: /var/run/docker.sock
-              name: transformer-hostpath0
-            - hostPath:
-                path: /etc/timezone
-              name: transformer-hostpath1
-            - hostPath:
-                path: /etc/localtime
-              name: transformer-hostpath2
+      - hostPath:
+          path: /media/psf/Home/git/IOT_load_test_client/kubernetes_yaml_files/core_components/nats/var/run/docker.sock
+        name: transformer-hostpath0
+      - hostPath:
+          path: /media/psf/Home/git/IOT_load_test_client/kubernetes_yaml_files/core_components/nats/etc/timezone
+        name: transformer-hostpath1
+      - hostPath:
+          path: /media/psf/Home/git/IOT_load_test_client/kubernetes_yaml_files/core_components/nats/etc/localtime
+        name: transformer-hostpath2
 status: {}

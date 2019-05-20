@@ -1,0 +1,34 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-stack-emq.yml --volumes hostPath
+    kompose.version: 1.17.0 (a74acad)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: emq
+  name: emq
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: emq
+    spec:
+      containers:
+      - env:
+        - name: EMQX_AUTH__REDIS__SERVER
+          value: redis:6379
+        - name: EMQX_LOADED_PLUGINS
+          value: emqx_auth_redis,emqx_recon,emqx_retainer,emqx_management,emqx_dashboard
+        image: emqx/emqx:latest
+        name: emq
+        ports:
+        - containerPort: 18083
+        - containerPort: 1883
+        - containerPort: 4369
+        resources: {}
+      restartPolicy: Always
+status: {}

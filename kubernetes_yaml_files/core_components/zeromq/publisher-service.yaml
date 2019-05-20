@@ -1,0 +1,616 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-stack-zeromq.yml --volumes hostPath
+    kompose.version: 1.17.0 (a74acad)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: publisher
+  name: publisher
+spec:
+  ports:
+  - name: "50000"
+    port: 50000
+    targetPort: 50000
+  - name: "50001"
+    port: 50001
+    targetPort: 50001
+  - name: "50002"
+    port: 50002
+    targetPort: 50002
+  - name: "50003"
+    port: 50003
+    targetPort: 50003
+  - name: "50004"
+    port: 50004
+    targetPort: 50004
+  - name: "50005"
+    port: 50005
+    targetPort: 50005
+  - name: "50006"
+    port: 50006
+    targetPort: 50006
+  - name: "50007"
+    port: 50007
+    targetPort: 50007
+  - name: "50008"
+    port: 50008
+    targetPort: 50008
+  - name: "50009"
+    port: 50009
+    targetPort: 50009
+  - name: "50010"
+    port: 50010
+    targetPort: 50010
+  - name: "50011"
+    port: 50011
+    targetPort: 50011
+  - name: "50012"
+    port: 50012
+    targetPort: 50012
+  - name: "50013"
+    port: 50013
+    targetPort: 50013
+  - name: "50014"
+    port: 50014
+    targetPort: 50014
+  - name: "50015"
+    port: 50015
+    targetPort: 50015
+  - name: "50016"
+    port: 50016
+    targetPort: 50016
+  - name: "50017"
+    port: 50017
+    targetPort: 50017
+  - name: "50018"
+    port: 50018
+    targetPort: 50018
+  - name: "50019"
+    port: 50019
+    targetPort: 50019
+  - name: "50020"
+    port: 50020
+    targetPort: 50020
+  - name: "50021"
+    port: 50021
+    targetPort: 50021
+  - name: "50022"
+    port: 50022
+    targetPort: 50022
+  - name: "50023"
+    port: 50023
+    targetPort: 50023
+  - name: "50024"
+    port: 50024
+    targetPort: 50024
+  - name: "50025"
+    port: 50025
+    targetPort: 50025
+  - name: "50026"
+    port: 50026
+    targetPort: 50026
+  - name: "50027"
+    port: 50027
+    targetPort: 50027
+  - name: "50028"
+    port: 50028
+    targetPort: 50028
+  - name: "50029"
+    port: 50029
+    targetPort: 50029
+  - name: "50030"
+    port: 50030
+    targetPort: 50030
+  - name: "50031"
+    port: 50031
+    targetPort: 50031
+  - name: "50032"
+    port: 50032
+    targetPort: 50032
+  - name: "50033"
+    port: 50033
+    targetPort: 50033
+  - name: "50034"
+    port: 50034
+    targetPort: 50034
+  - name: "50035"
+    port: 50035
+    targetPort: 50035
+  - name: "50036"
+    port: 50036
+    targetPort: 50036
+  - name: "50037"
+    port: 50037
+    targetPort: 50037
+  - name: "50038"
+    port: 50038
+    targetPort: 50038
+  - name: "50039"
+    port: 50039
+    targetPort: 50039
+  - name: "50040"
+    port: 50040
+    targetPort: 50040
+  - name: "50041"
+    port: 50041
+    targetPort: 50041
+  - name: "50042"
+    port: 50042
+    targetPort: 50042
+  - name: "50043"
+    port: 50043
+    targetPort: 50043
+  - name: "50044"
+    port: 50044
+    targetPort: 50044
+  - name: "50045"
+    port: 50045
+    targetPort: 50045
+  - name: "50046"
+    port: 50046
+    targetPort: 50046
+  - name: "50047"
+    port: 50047
+    targetPort: 50047
+  - name: "50048"
+    port: 50048
+    targetPort: 50048
+  - name: "50049"
+    port: 50049
+    targetPort: 50049
+  - name: "50050"
+    port: 50050
+    targetPort: 50050
+  - name: "50051"
+    port: 50051
+    targetPort: 50051
+  - name: "50052"
+    port: 50052
+    targetPort: 50052
+  - name: "50053"
+    port: 50053
+    targetPort: 50053
+  - name: "50054"
+    port: 50054
+    targetPort: 50054
+  - name: "50055"
+    port: 50055
+    targetPort: 50055
+  - name: "50056"
+    port: 50056
+    targetPort: 50056
+  - name: "50057"
+    port: 50057
+    targetPort: 50057
+  - name: "50058"
+    port: 50058
+    targetPort: 50058
+  - name: "50059"
+    port: 50059
+    targetPort: 50059
+  - name: "50060"
+    port: 50060
+    targetPort: 50060
+  - name: "50061"
+    port: 50061
+    targetPort: 50061
+  - name: "50062"
+    port: 50062
+    targetPort: 50062
+  - name: "50063"
+    port: 50063
+    targetPort: 50063
+  - name: "50064"
+    port: 50064
+    targetPort: 50064
+  - name: "50065"
+    port: 50065
+    targetPort: 50065
+  - name: "50066"
+    port: 50066
+    targetPort: 50066
+  - name: "50067"
+    port: 50067
+    targetPort: 50067
+  - name: "50068"
+    port: 50068
+    targetPort: 50068
+  - name: "50069"
+    port: 50069
+    targetPort: 50069
+  - name: "50070"
+    port: 50070
+    targetPort: 50070
+  - name: "50071"
+    port: 50071
+    targetPort: 50071
+  - name: "50072"
+    port: 50072
+    targetPort: 50072
+  - name: "50073"
+    port: 50073
+    targetPort: 50073
+  - name: "50074"
+    port: 50074
+    targetPort: 50074
+  - name: "50075"
+    port: 50075
+    targetPort: 50075
+  - name: "50076"
+    port: 50076
+    targetPort: 50076
+  - name: "50077"
+    port: 50077
+    targetPort: 50077
+  - name: "50078"
+    port: 50078
+    targetPort: 50078
+  - name: "50079"
+    port: 50079
+    targetPort: 50079
+  - name: "50080"
+    port: 50080
+    targetPort: 50080
+  - name: "50081"
+    port: 50081
+    targetPort: 50081
+  - name: "50082"
+    port: 50082
+    targetPort: 50082
+  - name: "50083"
+    port: 50083
+    targetPort: 50083
+  - name: "50084"
+    port: 50084
+    targetPort: 50084
+  - name: "50085"
+    port: 50085
+    targetPort: 50085
+  - name: "50086"
+    port: 50086
+    targetPort: 50086
+  - name: "50087"
+    port: 50087
+    targetPort: 50087
+  - name: "50088"
+    port: 50088
+    targetPort: 50088
+  - name: "50089"
+    port: 50089
+    targetPort: 50089
+  - name: "50090"
+    port: 50090
+    targetPort: 50090
+  - name: "50091"
+    port: 50091
+    targetPort: 50091
+  - name: "50092"
+    port: 50092
+    targetPort: 50092
+  - name: "50093"
+    port: 50093
+    targetPort: 50093
+  - name: "50094"
+    port: 50094
+    targetPort: 50094
+  - name: "50095"
+    port: 50095
+    targetPort: 50095
+  - name: "50096"
+    port: 50096
+    targetPort: 50096
+  - name: "50097"
+    port: 50097
+    targetPort: 50097
+  - name: "50098"
+    port: 50098
+    targetPort: 50098
+  - name: "50099"
+    port: 50099
+    targetPort: 50099
+  - name: "51000"
+    port: 51000
+    targetPort: 51000
+  - name: "51001"
+    port: 51001
+    targetPort: 51001
+  - name: "51002"
+    port: 51002
+    targetPort: 51002
+  - name: "51003"
+    port: 51003
+    targetPort: 51003
+  - name: "51004"
+    port: 51004
+    targetPort: 51004
+  - name: "51005"
+    port: 51005
+    targetPort: 51005
+  - name: "51006"
+    port: 51006
+    targetPort: 51006
+  - name: "51007"
+    port: 51007
+    targetPort: 51007
+  - name: "51008"
+    port: 51008
+    targetPort: 51008
+  - name: "51009"
+    port: 51009
+    targetPort: 51009
+  - name: "51010"
+    port: 51010
+    targetPort: 51010
+  - name: "51011"
+    port: 51011
+    targetPort: 51011
+  - name: "51012"
+    port: 51012
+    targetPort: 51012
+  - name: "51013"
+    port: 51013
+    targetPort: 51013
+  - name: "51014"
+    port: 51014
+    targetPort: 51014
+  - name: "51015"
+    port: 51015
+    targetPort: 51015
+  - name: "51016"
+    port: 51016
+    targetPort: 51016
+  - name: "51017"
+    port: 51017
+    targetPort: 51017
+  - name: "51018"
+    port: 51018
+    targetPort: 51018
+  - name: "51019"
+    port: 51019
+    targetPort: 51019
+  - name: "51020"
+    port: 51020
+    targetPort: 51020
+  - name: "51021"
+    port: 51021
+    targetPort: 51021
+  - name: "51022"
+    port: 51022
+    targetPort: 51022
+  - name: "51023"
+    port: 51023
+    targetPort: 51023
+  - name: "51024"
+    port: 51024
+    targetPort: 51024
+  - name: "51025"
+    port: 51025
+    targetPort: 51025
+  - name: "51026"
+    port: 51026
+    targetPort: 51026
+  - name: "51027"
+    port: 51027
+    targetPort: 51027
+  - name: "51028"
+    port: 51028
+    targetPort: 51028
+  - name: "51029"
+    port: 51029
+    targetPort: 51029
+  - name: "51030"
+    port: 51030
+    targetPort: 51030
+  - name: "51031"
+    port: 51031
+    targetPort: 51031
+  - name: "51032"
+    port: 51032
+    targetPort: 51032
+  - name: "51033"
+    port: 51033
+    targetPort: 51033
+  - name: "51034"
+    port: 51034
+    targetPort: 51034
+  - name: "51035"
+    port: 51035
+    targetPort: 51035
+  - name: "51036"
+    port: 51036
+    targetPort: 51036
+  - name: "51037"
+    port: 51037
+    targetPort: 51037
+  - name: "51038"
+    port: 51038
+    targetPort: 51038
+  - name: "51039"
+    port: 51039
+    targetPort: 51039
+  - name: "51040"
+    port: 51040
+    targetPort: 51040
+  - name: "51041"
+    port: 51041
+    targetPort: 51041
+  - name: "51042"
+    port: 51042
+    targetPort: 51042
+  - name: "51043"
+    port: 51043
+    targetPort: 51043
+  - name: "51044"
+    port: 51044
+    targetPort: 51044
+  - name: "51045"
+    port: 51045
+    targetPort: 51045
+  - name: "51046"
+    port: 51046
+    targetPort: 51046
+  - name: "51047"
+    port: 51047
+    targetPort: 51047
+  - name: "51048"
+    port: 51048
+    targetPort: 51048
+  - name: "51049"
+    port: 51049
+    targetPort: 51049
+  - name: "51050"
+    port: 51050
+    targetPort: 51050
+  - name: "51051"
+    port: 51051
+    targetPort: 51051
+  - name: "51052"
+    port: 51052
+    targetPort: 51052
+  - name: "51053"
+    port: 51053
+    targetPort: 51053
+  - name: "51054"
+    port: 51054
+    targetPort: 51054
+  - name: "51055"
+    port: 51055
+    targetPort: 51055
+  - name: "51056"
+    port: 51056
+    targetPort: 51056
+  - name: "51057"
+    port: 51057
+    targetPort: 51057
+  - name: "51058"
+    port: 51058
+    targetPort: 51058
+  - name: "51059"
+    port: 51059
+    targetPort: 51059
+  - name: "51060"
+    port: 51060
+    targetPort: 51060
+  - name: "51061"
+    port: 51061
+    targetPort: 51061
+  - name: "51062"
+    port: 51062
+    targetPort: 51062
+  - name: "51063"
+    port: 51063
+    targetPort: 51063
+  - name: "51064"
+    port: 51064
+    targetPort: 51064
+  - name: "51065"
+    port: 51065
+    targetPort: 51065
+  - name: "51066"
+    port: 51066
+    targetPort: 51066
+  - name: "51067"
+    port: 51067
+    targetPort: 51067
+  - name: "51068"
+    port: 51068
+    targetPort: 51068
+  - name: "51069"
+    port: 51069
+    targetPort: 51069
+  - name: "51070"
+    port: 51070
+    targetPort: 51070
+  - name: "51071"
+    port: 51071
+    targetPort: 51071
+  - name: "51072"
+    port: 51072
+    targetPort: 51072
+  - name: "51073"
+    port: 51073
+    targetPort: 51073
+  - name: "51074"
+    port: 51074
+    targetPort: 51074
+  - name: "51075"
+    port: 51075
+    targetPort: 51075
+  - name: "51076"
+    port: 51076
+    targetPort: 51076
+  - name: "51077"
+    port: 51077
+    targetPort: 51077
+  - name: "51078"
+    port: 51078
+    targetPort: 51078
+  - name: "51079"
+    port: 51079
+    targetPort: 51079
+  - name: "51080"
+    port: 51080
+    targetPort: 51080
+  - name: "51081"
+    port: 51081
+    targetPort: 51081
+  - name: "51082"
+    port: 51082
+    targetPort: 51082
+  - name: "51083"
+    port: 51083
+    targetPort: 51083
+  - name: "51084"
+    port: 51084
+    targetPort: 51084
+  - name: "51085"
+    port: 51085
+    targetPort: 51085
+  - name: "51086"
+    port: 51086
+    targetPort: 51086
+  - name: "51087"
+    port: 51087
+    targetPort: 51087
+  - name: "51088"
+    port: 51088
+    targetPort: 51088
+  - name: "51089"
+    port: 51089
+    targetPort: 51089
+  - name: "51090"
+    port: 51090
+    targetPort: 51090
+  - name: "51091"
+    port: 51091
+    targetPort: 51091
+  - name: "51092"
+    port: 51092
+    targetPort: 51092
+  - name: "51093"
+    port: 51093
+    targetPort: 51093
+  - name: "51094"
+    port: 51094
+    targetPort: 51094
+  - name: "51095"
+    port: 51095
+    targetPort: 51095
+  - name: "51096"
+    port: 51096
+    targetPort: 51096
+  - name: "51097"
+    port: 51097
+    targetPort: 51097
+  - name: "51098"
+    port: 51098
+    targetPort: 51098
+  - name: "51099"
+    port: 51099
+    targetPort: 51099
+  selector:
+    io.kompose.service: publisher
+status:
+  loadBalancer: {}

@@ -2,7 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: kompose convert -f docker-stack-common.yml --volumes hostPath
+    kompose.cmd: kompose convert -f docker-stack-emq.yml --volumes hostPath
     kompose.version: 1.17.0 (a74acad)
   creationTimestamp: null
   labels:
@@ -20,6 +20,10 @@ spec:
     spec:
       containers:
       - env:
+        - name: broker_hostname_key
+          value: emq
+        - name: broker_port_key
+          value: "1883"
         - name: hash_table_name
           value: publisher_hash_table
         - name: log_level_key
@@ -29,6 +33,8 @@ spec:
             "864508030027459","sensor": {"name": "cHe_AssetTracker","characteristics":
             [{"characteristicsName": "temperature","currentValue": "30.2999","readLevel":
             "R","parameterType": "Number","measurementUnit": "Celcius"}]}}'
+        - name: messages_per_second_key
+          value: "1000"
         - name: publisher_key_name
           value: publisher
         - name: redis_log_keyname_key
@@ -37,23 +43,17 @@ spec:
           value: redis
         - name: redis_server_port_key
           value: "6379"
+        - name: test_duration_in_sec_key
+          value: "100"
         - name: total_job_dequeued_count_redis_name_key
           value: total_consumed_count
         - name: total_job_enqueued_count_redis_name_key
           value: total_produced_count
-        - name: broker_hostname_key
-          value: rabbitmq
-        - name: broker_port_key
-          value: "1883"
-        - name: messages_per_second_key
-          value: "500"
-        - name: test_duration_in_sec_key
-          value: "100000"
         - name: type_of_messaging_queue_key
           value: RabbitMQ
         image: publisher:latest
-        name: publisher
         imagePullPolicy: IfNotPresent
+        name: publisher
         resources: {}
         volumeMounts:
         - mountPath: /var/run/docker.sock
@@ -67,12 +67,12 @@ spec:
       restartPolicy: Always
       volumes:
       - hostPath:
-          path: /var/run/docker.sock
+          path: /media/psf/Home/git/IOT_load_test_client/kubernetes_yaml_files/core_components/emq/var/run/docker.sock
         name: publisher-hostpath0
       - hostPath:
-          path: /etc/timezone
+          path: /media/psf/Home/git/IOT_load_test_client/kubernetes_yaml_files/core_components/emq/etc/timezone
         name: publisher-hostpath1
       - hostPath:
-          path: /etc/localtime
+          path: /media/psf/Home/git/IOT_load_test_client/kubernetes_yaml_files/core_components/emq/etc/localtime
         name: publisher-hostpath2
 status: {}

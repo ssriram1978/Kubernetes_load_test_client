@@ -2,7 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: kompose convert -f docker-stack-common.yml --volumes hostPath
+    kompose.cmd: kompose convert -f docker-stack-zeromq.yml --volumes hostPath
     kompose.version: 1.17.0 (a74acad)
   creationTimestamp: null
   labels:
@@ -32,6 +32,8 @@ spec:
           value: info
         - name: max_consumer_threads_key
           value: "1"
+        - name: publisher_hostname_key
+          value: transformer
         - name: redis_log_keyname_key
           value: consume_load_test_events
         - name: redis_server_hostname_key
@@ -44,15 +46,10 @@ spec:
           value: total_consumed_count
         - name: total_job_enqueued_count_redis_name_key
           value: total_produced_count
-        - name: broker_hostname_key
-          value: rabbitmq
-        - name: broker_port_key
-          value: "1883"
         - name: type_of_messaging_queue_key
-          value: RabbitMQ
+          value: ZeroMQ
         image: subscriber:latest
         name: subscriber
-        imagePullPolicy: IfNotPresent
         resources: {}
         volumeMounts:
         - mountPath: /var/run/docker.sock
@@ -65,13 +62,13 @@ spec:
           readOnly: true
       restartPolicy: Always
       volumes:
-        - hostPath:
-            path: /var/run/docker.sock
-          name: subscriber-hostpath0
-        - hostPath:
-            path: /etc/timezone
-          name: subscriber-hostpath1
-        - hostPath:
-            path: /etc/localtime
-          name: subscriber-hostpath2
+      - hostPath:
+          path: /media/psf/Home/git/IOT_load_test_client/kubernetes_yaml_files/core_components/zeromq/var/run/docker.sock
+        name: subscriber-hostpath0
+      - hostPath:
+          path: /media/psf/Home/git/IOT_load_test_client/kubernetes_yaml_files/core_components/zeromq/etc/timezone
+        name: subscriber-hostpath1
+      - hostPath:
+          path: /media/psf/Home/git/IOT_load_test_client/kubernetes_yaml_files/core_components/zeromq/etc/localtime
+        name: subscriber-hostpath2
 status: {}

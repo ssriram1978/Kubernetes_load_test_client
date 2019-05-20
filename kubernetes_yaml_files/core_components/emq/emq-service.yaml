@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-stack-emq.yml --volumes hostPath
+    kompose.version: 1.17.0 (a74acad)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: emq
+  name: emq
+spec:
+  ports:
+  - name: "18083"
+    port: 18083
+    targetPort: 18083
+  - name: "1883"
+    port: 1883
+    targetPort: 1883
+  - name: "4369"
+    port: 4369
+    targetPort: 4369
+  selector:
+    io.kompose.service: emq
+status:
+  loadBalancer: {}

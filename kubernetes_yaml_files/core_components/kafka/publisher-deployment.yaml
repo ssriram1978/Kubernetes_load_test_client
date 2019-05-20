@@ -2,7 +2,8 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: kompose convert -f docker-stack-common.yml --volumes hostPath
+    kompose.cmd: kompose convert -f docker-stack-wurstmeister-kafka.yml --volumes
+      hostPath
     kompose.version: 1.17.0 (a74acad)
   creationTimestamp: null
   labels:
@@ -42,37 +43,37 @@ spec:
         - name: total_job_enqueued_count_redis_name_key
           value: total_produced_count
         - name: broker_hostname_key
-          value: rabbitmq
+          value: broker
         - name: broker_port_key
-          value: "1883"
+          value: "9094"
         - name: messages_per_second_key
           value: "500"
         - name: test_duration_in_sec_key
-          value: "100000"
+          value: "10000"
         - name: type_of_messaging_queue_key
-          value: RabbitMQ
+          value: WurstMeisterKafka
         image: publisher:latest
-        name: publisher
         imagePullPolicy: IfNotPresent
+        name: publisher
         resources: {}
         volumeMounts:
-        - mountPath: /var/run/docker.sock
-          name: publisher-hostpath0
-        - mountPath: /etc/timezone
-          name: publisher-hostpath1
-          readOnly: true
-        - mountPath: /etc/localtime
-          name: publisher-hostpath2
-          readOnly: true
+            - mountPath: /var/run/docker.sock
+              name: orchestrator-hostpath0
+            - mountPath: /etc/timezone
+              name: orchestrator-hostpath1
+              readOnly: true
+            - mountPath: /etc/localtime
+              name: orchestrator-hostpath2
+              readOnly: true
       restartPolicy: Always
       volumes:
-      - hostPath:
-          path: /var/run/docker.sock
-        name: publisher-hostpath0
-      - hostPath:
-          path: /etc/timezone
-        name: publisher-hostpath1
-      - hostPath:
-          path: /etc/localtime
-        name: publisher-hostpath2
+                - hostPath:
+                    path: /var/run/docker.sock
+                  name: orchestrator-hostpath0
+                - hostPath:
+                    path: /etc/timezone
+                  name: orchestrator-hostpath1
+                - hostPath:
+                    path: /etc/localtime
+                  name: orchestrator-hostpath2
 status: {}

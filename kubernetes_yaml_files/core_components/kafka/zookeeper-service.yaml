@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-stack-wurstmeister-kafka.yml --volumes
+      hostPath
+    kompose.version: 1.17.0 (a74acad)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: zookeeper
+  name: zookeeper
+spec:
+  ports:
+  - name: "2181"
+    port: 2181
+    targetPort: 2181
+  selector:
+    io.kompose.service: zookeeper
+status:
+  loadBalancer: {}
