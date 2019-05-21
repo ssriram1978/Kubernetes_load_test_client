@@ -15,10 +15,7 @@ install_docker_ce() {
    $(lsb_release -cs) \
    stable\""
 
-	sudo add-apt-repository \
-   \"deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-   $(lsb_release -cs) \
-   stable\"
+	sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 
 	echo "sudo apt-get update"
 	sudo apt-get update
