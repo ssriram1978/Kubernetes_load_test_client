@@ -14,6 +14,7 @@ services:
       restart_policy:
         condition: none
     environment:
+      subscriber_hostname_key: "subscriber"
       publisher_key_name: "publisher"
       messages_per_second_key: "500"
       test_duration_in_sec_key: "100"

@@ -39,7 +39,7 @@ spec:
       restartPolicy: Always
       volumes:
       - hostPath:
-          path: /home/sriramsridhar/git/IOT-load-test-client/plotter/logstash
+          path: /home/ubuntu/git/IOT-load-test-client/plotter/logstash
         name: logstash-hostpath0
       - hostPath:
           path: /var/run/docker.sock

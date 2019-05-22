@@ -41,10 +41,10 @@ spec:
       restartPolicy: Always
       volumes:
       - hostPath:
-          path: /home/sriramsridhar/git/IOT_load_test_client/plotter/elasticsearch
+          path: /home/ubuntu/git/IOT_load_test_client/plotter/elasticsearch
         name: elasticsearch-hostpath0
       - hostPath:
-          path: /home/sriramsridhar/git/IOT_load_test_client/plotter/elasticsearch/config/elasticsearch.yml
+          path: /home/ubutu/git/IOT_load_test_client/plotter/elasticsearch/config/elasticsearch.yml
         name: elasticsearch-hostpath1
       - hostPath:
           path: /var/run/docker.sock

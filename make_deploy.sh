@@ -147,6 +147,13 @@ optimize_host() {
 
    echo "sysctl_tcp_kernel_optimization"
    sysctl_tcp_kernel_optimization
+
+   echo "chmod go-w plotter/filebeat/filebeat.docker.yml"
+   sudo chmod go-w plotter/filebeat/filebeat.docker.yml
+
+   echo "chown root:root plotter/filebeat/filebeat.docker.yml"
+   sudo chown root:root plotter/filebeat/filebeat.docker.yml
+
 }
 
 teardown_infrastructure() {
