@@ -44,6 +44,7 @@ spec:
         name: kibana-hostpath0
       - hostPath:
           path: /home/ubuntu/git/IOT-load-test-client/plotter/kibana/config/kibana.yml
+          type: File
         name: kibana-hostpath1
       - hostPath:
           path: /var/run/docker.sock

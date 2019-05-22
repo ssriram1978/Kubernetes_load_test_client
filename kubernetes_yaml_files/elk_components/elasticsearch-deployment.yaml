@@ -45,6 +45,7 @@ spec:
         name: elasticsearch-hostpath0
       - hostPath:
           path: /home/ubutu/git/IOT_load_test_client/plotter/elasticsearch/config/elasticsearch.yml
+          type: File
         name: elasticsearch-hostpath1
       - hostPath:
           path: /var/run/docker.sock
