@@ -142,6 +142,9 @@ deploy_infrastructure() {
 }
 
 optimize_host() {
+   echo "sudo docker container prune -f"
+   sudo docker container prune -f
+
    echo "sysctl_tcp_kernel_optimization"
    sysctl_tcp_kernel_optimization
 }
@@ -317,6 +320,29 @@ deploy_cpu_ram_monitor() {
    -v /sys/fs/cgroup/:/host/sys/fs/cgroup:ro \
    -e DD_API_KEY=34f093cb0b22208d56cd241028a632b8 \
    datadog/agent:latest
+
+#   echo "docker run -d \
+#  --name=filebeat \
+#  --user=root \
+#  --volume=\"\$(pwd)/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro\" \
+#  --volume=\"/var/lib/docker/containers:/var/lib/docker/containers:ro\" \
+#  --volume=\"/var/run/docker.sock:/var/run/docker.sock:ro\" \
+#  --volume=\"/etc/timezone:/etc/timezone:ro\" \
+#  --volume=\"/etc/localtime:/etc/localtime:ro\" \
+#  docker.elastic.co/beats/filebeat:7.1.0 filebeat -e -strict.perms=false \
+#  -E output.elasticsearch.hosts=[\"elasticsearch:9200\"]"
+
+
+#docker run -d \
+#  --name=filebeat \
+#  --user=root \
+#  --volume="$(pwd)/plotter/filebeat/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro" \
+#  --volume="/var/lib/docker/containers:/var/lib/docker/containers:ro" \
+#  --volume="/var/run/docker.sock:/var/run/docker.sock:ro" \
+#  --volume="/etc/timezone:/etc/timezone:ro" \
+#  --volume="/etc/localtime:/etc/localtime:ro" \
+#  docker.elastic.co/beats/filebeat:6.5.4 filebeat -e -strict.perms=false \
+#  -E output.elasticsearch.hosts=[\"elasticsearch:9200\"]
 
 }
 
