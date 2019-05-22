@@ -354,22 +354,22 @@ connect_to_mec() {
    echo "loadtest2:10.10.75.25"
 
    echo "kubernetes dashboard: http://localhost:30703"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastionr-vm.mec-poc.aws.oath.cloud -NL 30783:10.10.75.12:30783 &
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 30783:10.10.75.12:30783 &
 
    echo "Redis: http://localhost:32622"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastionr-vm.mec-poc.aws.oath.cloud -NL 32622:10.10.75.12:32622 &
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 32622:10.10.75.12:32622 &
 
    echo "netdata Master loadtest3: http://localhost:19999"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastionr-vm.mec-poc.aws.oath.cloud -NL 19999:10.10.75.12:19999 &
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 19999:10.10.75.12:19999 &
 
    echo "netdata loadtest4: http://localhost:20000"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastionr-vm.mec-poc.aws.oath.cloud -NL 20000:10.10.75.14:19999 &
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20000:10.10.75.14:19999 &
 
    echo "netdata loadtest1: http://localhost:20001"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastionr-vm.mec-poc.aws.oath.cloud -NL 20001:10.10.75.10:19999 &
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20001:10.10.75.10:19999 &
 
    echo "netdata loadtest2: http://localhost:20002"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastionr-vm.mec-poc.aws.oath.cloud -NL 20002:10.10.75.25:19999 &
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20002:10.10.75.25:19999 &
 
 
 }
