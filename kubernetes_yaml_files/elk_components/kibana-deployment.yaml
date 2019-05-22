@@ -40,10 +40,10 @@ spec:
       restartPolicy: Always
       volumes:
       - hostPath:
-          path: /home/ubuntu/git/IOT-load-test-client/plotter/kibana
+          path: /home/ubuntu/git/IOT_load_test_client/plotter/kibana
         name: kibana-hostpath0
       - hostPath:
-          path: /home/ubuntu/git/IOT-load-test-client/plotter/kibana/config/kibana.yml
+          path: /home/ubuntu/git/IOT_load_test_client/plotter/kibana/config/kibana.yml
           type: File
         name: kibana-hostpath1
       - hostPath:
