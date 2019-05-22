@@ -378,22 +378,23 @@ undeploy_infrastructure() {
 
 deploy_core() {
    component=$1
-   if [[ $component == "rabbitmq" ]]; then
+
+   if [[ "$component" == "rabbitmq" ]]; then
       echo "kubectl apply -f kubernetes_yaml_files/core_components/rabbitmq"
       kubectl apply -f kubernetes_yaml_files/core_components/rabbitmq
-   elif [[ $component == "kafka" ]]; then
+   elif [[ "$component" == "kafka" ]]; then
       echo "kubectl apply -f kubernetes_yaml_files/core_components/kafka"
       kubectl apply -f kubernetes_yaml_files/core_components/kafka
-   elif [[ $component == "emq" ]]; then
+   elif [[ "$component" == "emq" ]]; then
       echo "kubectl apply -f kubernetes_yaml_files/core_components/emq"
       kubectl apply -f kubernetes_yaml_files/core_components/emq
-   elif [[ $component == "zeromq" ]]; then
+   elif [[ "$component" == "zeromq" ]]; then
       echo "kubectl apply -f kubernetes_yaml_files/core_components/zeromq"
       kubectl apply -f kubernetes_yaml_files/core_components/zeromq
-   elif [[ $component == "nats" ]]; then
+   elif [[ "$component" == "nats" ]]; then
       echo "kubectl apply -f kubernetes_yaml_files/core_components/nats"
       kubectl apply -f kubernetes_yaml_files/core_components/nats
-   elif [[ $component == "pulsar" ]]; then
+   elif [[ "$component" == "pulsar" ]]; then
       echo "kubectl apply -f kubernetes_yaml_files/core_components/pulsar"
       kubectl apply -f kubernetes_yaml_files/core_components/pulsar
    fi
@@ -402,22 +403,22 @@ deploy_core() {
 
 undeploy_core() {
    component=$1
-   if [[ $component == "rabbitmq" ]]; then
+   if [[ "$component" == "rabbitmq" ]]; then
       echo "kubectl delete -f kubernetes_yaml_files/core_components/rabbitmq"
       kubectl delete -f kubernetes_yaml_files/core_components/rabbitmq
-   elif [[ $component == "kafka" ]]; then
+   elif [[ "$component" == "kafka" ]]; then
       echo "kubectl delete -f kubernetes_yaml_files/core_components/kafka"
       kubectl delete -f kubernetes_yaml_files/core_components/kafka
-   elif [[ $component == "emq" ]]; then
+   elif [[ "$component" == "emq" ]]; then
       echo "kubectl delete -f kubernetes_yaml_files/core_components/emq"
       kubectl delete -f kubernetes_yaml_files/core_components/emq
-   elif [[ $component == "zeromq" ]]; then
+   elif [[ "$component" == "zeromq" ]]; then
       echo "kubectl delete -f kubernetes_yaml_files/core_components/zeromq"
       kubectl delete -f kubernetes_yaml_files/core_components/zeromq
-   elif [[ $component == "nats" ]]; then
+   elif [[ "$component" == "nats" ]]; then
       echo "kubectl delete -f kubernetes_yaml_files/core_components/nats"
       kubectl delete -f kubernetes_yaml_files/core_components/nats
-   elif [[ $component == "pulsar" ]]; then
+   elif [[ "$component" == "pulsar" ]]; then
       echo "kubectl delete -f kubernetes_yaml_files/core_components/pulsar"
       kubectl delete -f kubernetes_yaml_files/core_components/pulsar
    fi
@@ -466,12 +467,10 @@ case "$1" in
   optimize_host) optimize_host ;;
   deploy_elk) deploy_elk ;;
   undeploy_elk) undeploy_elk ;;
-  deploy_core) deploy_core $1 ;;
-  undeploy_core) undeploy_core $1 ;;
+  deploy_core) deploy_core $2 ;;
+  undeploy_core) undeploy_core $2 ;;
   deploy_infrastructure) deploy_infrastructure ;;
   undeploy_infrastructure) undeploy_infrastructure ;;
-
-
   *) echo "usage: $0"
       echo "<build <all|directory_name> <yaml file> <tag -- optional> > |"
       echo "<deploy <yaml file> > |"
