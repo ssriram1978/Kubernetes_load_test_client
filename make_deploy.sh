@@ -353,6 +353,11 @@ deploy_cpu_ram_monitor() {
 
 }
 
+build_logstash() {
+   echo "docker-compose -f  docker-stack-infrastructure.yml  build"
+   docker-compose -f  docker-stack-infrastructure.yml  build
+}
+
 connect_to_mec() {
    echo "setting port forwarding rules for your local web browser to connect to MEC"
    echo "loadtest3:10.10.75.12"
@@ -391,6 +396,7 @@ case "$1" in
   deploy_cpu_ram_monitor) deploy_cpu_ram_monitor ;;
   connect_to_mec) connect_to_mec ;;
   optimize_host) optimize_host ;;
+  build_logstash) build_logstash ;;
   *) echo "usage: $0"
       echo "<build <all|directory_name> <yaml file> <tag -- optional> > |"
       echo "<deploy <yaml file> > |"
@@ -401,6 +407,7 @@ case "$1" in
       echo "monitor start|stop"
       echo "connect_to_mec"
       echo "optimize_host"
+      echo "build_logstash"
      exit 1
      ;;
 esac
