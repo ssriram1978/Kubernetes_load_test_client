@@ -43,19 +43,19 @@ spec:
       restartPolicy: Always
       volumes:
       - hostPath:
-          path: /home/sriramsridhar/git/IOT_load_test_client/infrastructure_components/publisher_subscriber/rabbit_msgq_api/rabbitmq_conf_plugins/enabled_plugins
+          path: /home/ubuntu/git/IOT_load_test_client/infrastructure_components/publisher_subscriber/rabbit_msgq_api/rabbitmq_conf_plugins/enabled_plugins
           type: File
         name: rabbitmq-hostpath0
       - hostPath:
-          path: /home/sriramsridhar/git/IOT_load_test_client/infrastructure_components/publisher_subscriber/rabbit_msgq_api/rabbitmq_conf_plugins/rabbitmq-env.conf
+          path: /home/ubuntu/git/IOT_load_test_client/infrastructure_components/publisher_subscriber/rabbit_msgq_api/rabbitmq_conf_plugins/rabbitmq-env.conf
           type: File
         name: rabbitmq-hostpath1
       - hostPath:
-          path: /home/sriramsridhar/git/IOT_load_test_client/infrastructure_components/publisher_subscriber/rabbit_msgq_api/rabbitmq_conf_plugins/rabbitmq-modified.conf
+          path: /home/ubuntu/git/IOT_load_test_client/infrastructure_components/publisher_subscriber/rabbit_msgq_api/rabbitmq_conf_plugins/rabbitmq-modified.conf
           type: File
         name: rabbitmq-hostpath2
       - hostPath:
-          path: /home/sriramsridhar/git/IOT_load_test_client/infrastructure_components/publisher_subscriber/rabbit_msgq_api/rabbitmq_conf_plugins/rabbitmq-definitions.json
+          path: /home/ubuntu/git/IOT_load_test_client/infrastructure_components/publisher_subscriber/rabbit_msgq_api/rabbitmq_conf_plugins/rabbitmq-definitions.json
           type: FileOrCreate
         name: rabbitmq-hostpath3
 status: {}
