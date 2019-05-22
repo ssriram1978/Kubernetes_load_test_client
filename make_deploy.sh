@@ -383,6 +383,8 @@ connect_to_mec() {
    echo "netdata loadtest2: http://localhost:20002"
    ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20002:10.10.75.25:19999 &
 
+   echo "ELK loadtest1: http://localhost:20003"
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20003:10.10.75.25:5901 &
 
 }
 
