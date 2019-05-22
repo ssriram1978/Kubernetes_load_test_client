@@ -431,8 +431,11 @@ undeploy_core() {
 
 bootup_vm() {
 
-  echo "pull https://github.com/ssriram1978/IOT_load_test_client.git \$HOME/git/IOT_load_test_client/"
-  git pull https://github.com/ssriram1978/IOT_load_test_client.git $HOME/git/IOT_load_test_client/
+  echo "cd \$HOME/git/IOT_load_test_client/"
+  cd $HOME/git/IOT_load_test_client
+
+  echo "git pull"
+  git pull
 
   echo "optimize_host"
   optimize_host
