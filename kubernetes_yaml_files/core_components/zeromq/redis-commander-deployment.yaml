@@ -27,4 +27,7 @@ spec:
         - containerPort: 8081
         resources: {}
       restartPolicy: Always
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
 status: {}
