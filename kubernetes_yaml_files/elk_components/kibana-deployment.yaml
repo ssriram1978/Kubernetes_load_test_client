@@ -20,6 +20,7 @@ spec:
     spec:
       containers:
       - image: docker.elastic.co/kibana/kibana-oss:6.7.1
+        imagePullPolicy: IfNotPresent
         name: kibana
         ports:
         - containerPort: 5601

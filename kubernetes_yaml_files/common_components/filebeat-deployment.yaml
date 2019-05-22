@@ -25,6 +25,7 @@ spec:
         - name: strict.perms
           value: "false"
         image: docker.elastic.co/beats/filebeat:6.5.4
+        imagePullPolicy: IfNotPresent
         name: filebeat
         resources: {}
         volumeMounts:
