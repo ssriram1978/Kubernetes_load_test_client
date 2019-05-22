@@ -361,6 +361,11 @@ deploy_elk() {
    kubectl apply -f kubernetes_yaml_files/elk_components/
 }
 
+build_logstash() {
+  echo "docker-compose -f  docker-stack-infrastructure.yml  build"
+   docker-compose -f  docker-stack-infrastructure.yml  build
+}
+
 undeploy_elk() {
    echo "kubectl delete -f kubernetes_yaml_files/elk_components/"
    kubectl delete -f kubernetes_yaml_files/elk_components/
@@ -471,6 +476,7 @@ case "$1" in
   undeploy_core) undeploy_core $2 ;;
   deploy_infrastructure) deploy_infrastructure ;;
   undeploy_infrastructure) undeploy_infrastructure ;;
+  build_logstash) build_logstash ;;
   *) echo "usage: $0"
       echo "<build <all|directory_name> <yaml file> <tag -- optional> > |"
       echo "<deploy <yaml file> > |"
@@ -487,6 +493,7 @@ case "$1" in
       echo "undeploy_core"
       echo "deploy_infrastructure"
       echo "undeploy_infrastructure"
+      echo "build_logstash"
      exit 1
      ;;
 esac
