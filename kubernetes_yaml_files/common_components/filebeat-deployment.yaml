@@ -9,10 +9,6 @@ metadata:
     io.kompose.service: filebeat
   name: filebeat
 spec:
-  privileged: true
-  allowPrivilegeEscalation: true
-  securityContext:
-    runAsUser: 0
   replicas: 1
   strategy:
     type: Recreate
@@ -22,6 +18,8 @@ spec:
       labels:
         io.kompose.service: filebeat
     spec:
+      securityContext:
+         runAsUser: 0
       containers:
       - env:
         - name: strict.perms
