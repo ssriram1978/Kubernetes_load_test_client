@@ -353,10 +353,76 @@ deploy_cpu_ram_monitor() {
 
 }
 
-build_logstash() {
+deploy_elk() {
    echo "docker-compose -f  docker-stack-infrastructure.yml  build"
    docker-compose -f  docker-stack-infrastructure.yml  build
+
+   echo "kubectl apply -f kubernetes_yaml_files/elk_components/"
+   kubectl apply -f kubernetes_yaml_files/elk_components/
 }
+
+undeploy_elk() {
+   echo "kubectl delete -f kubernetes_yaml_files/elk_components/"
+   kubectl delete -f kubernetes_yaml_files/elk_components/
+}
+
+deploy_infrastructure() {
+   echo "kubectl apply -f kubernetes_yaml_files/common_components/"
+   kubectl apply -f kubernetes_yaml_files/common_components/
+}
+
+undeploy_infrastructure() {
+   echo "kubectl delete -f kubernetes_yaml_files/common_components/"
+   kubectl delete -f kubernetes_yaml_files/common_components/
+}
+
+deploy_core() {
+   component=$1
+   if [[ $component == "rabbitmq" ]]; then
+      echo "kubectl apply -f kubernetes_yaml_files/core_components/rabbitmq"
+      kubectl apply -f kubernetes_yaml_files/core_components/rabbitmq
+   elif [[ $component == "kafka" ]]; then
+      echo "kubectl apply -f kubernetes_yaml_files/core_components/kafka"
+      kubectl apply -f kubernetes_yaml_files/core_components/kafka
+   elif [[ $component == "emq" ]]; then
+      echo "kubectl apply -f kubernetes_yaml_files/core_components/emq"
+      kubectl apply -f kubernetes_yaml_files/core_components/emq
+   elif [[ $component == "zeromq" ]]; then
+      echo "kubectl apply -f kubernetes_yaml_files/core_components/zeromq"
+      kubectl apply -f kubernetes_yaml_files/core_components/zeromq
+   elif [[ $component == "nats" ]]; then
+      echo "kubectl apply -f kubernetes_yaml_files/core_components/nats"
+      kubectl apply -f kubernetes_yaml_files/core_components/nats
+   elif [[ $component == "pulsar" ]]; then
+      echo "kubectl apply -f kubernetes_yaml_files/core_components/pulsar"
+      kubectl apply -f kubernetes_yaml_files/core_components/pulsar
+   fi
+}
+
+
+undeploy_core() {
+   component=$1
+   if [[ $component == "rabbitmq" ]]; then
+      echo "kubectl delete -f kubernetes_yaml_files/core_components/rabbitmq"
+      kubectl delete -f kubernetes_yaml_files/core_components/rabbitmq
+   elif [[ $component == "kafka" ]]; then
+      echo "kubectl delete -f kubernetes_yaml_files/core_components/kafka"
+      kubectl delete -f kubernetes_yaml_files/core_components/kafka
+   elif [[ $component == "emq" ]]; then
+      echo "kubectl delete -f kubernetes_yaml_files/core_components/emq"
+      kubectl delete -f kubernetes_yaml_files/core_components/emq
+   elif [[ $component == "zeromq" ]]; then
+      echo "kubectl delete -f kubernetes_yaml_files/core_components/zeromq"
+      kubectl delete -f kubernetes_yaml_files/core_components/zeromq
+   elif [[ $component == "nats" ]]; then
+      echo "kubectl delete -f kubernetes_yaml_files/core_components/nats"
+      kubectl delete -f kubernetes_yaml_files/core_components/nats
+   elif [[ $component == "pulsar" ]]; then
+      echo "kubectl delete -f kubernetes_yaml_files/core_components/pulsar"
+      kubectl delete -f kubernetes_yaml_files/core_components/pulsar
+   fi
+}
+
 
 connect_to_mec() {
    echo "setting port forwarding rules for your local web browser to connect to MEC"
@@ -398,7 +464,14 @@ case "$1" in
   deploy_cpu_ram_monitor) deploy_cpu_ram_monitor ;;
   connect_to_mec) connect_to_mec ;;
   optimize_host) optimize_host ;;
-  build_logstash) build_logstash ;;
+  deploy_elk) deploy_elk ;;
+  undeploy_elk) undeploy_elk ;;
+  deploy_core) deploy_core $1 ;;
+  undeploy_core) undeploy_core $1 ;;
+  deploy_infrastructure) deploy_infrastructure ;;
+  undeploy_infrastructure) undeploy_infrastructure ;;
+
+
   *) echo "usage: $0"
       echo "<build <all|directory_name> <yaml file> <tag -- optional> > |"
       echo "<deploy <yaml file> > |"
@@ -409,7 +482,12 @@ case "$1" in
       echo "monitor start|stop"
       echo "connect_to_mec"
       echo "optimize_host"
-      echo "build_logstash"
+      echo "deploy_elk"
+      echo "undeploy_elk"
+      echo "deploy_core"
+      echo "undeploy_core"
+      echo "deploy_infrastructure"
+      echo "undeploy_infrastructure"
      exit 1
      ;;
 esac
