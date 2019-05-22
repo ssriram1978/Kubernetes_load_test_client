@@ -141,6 +141,11 @@ deploy_infrastructure() {
    docker stack deploy --compose-file docker-stack-common.yml  -c $yaml_file $tag
 }
 
+optimize_host() {
+   echo "sysctl_tcp_kernel_optimization"
+   sysctl_tcp_kernel_optimization
+}
+
 teardown_infrastructure() {
    echo "docker stack rm load_test"
    docker stack rm load_test
@@ -282,6 +287,67 @@ create_deploy_infrastructure() {
       $tag
 }
 
+deploy_cpu_ram_monitor() {
+
+   echo "docker run -d   -p 19999:19999  \
+    -v /proc:/host/proc:ro   -v /sys:/host/sys:ro  \
+     -v /var/run/docker.sock:/var/run/docker.sock:ro  \
+      --cap-add SYS_PTRACE   \
+      --security-opt apparmor=unconfined   \
+      netdata/netdata"
+
+    docker run -d  -p 19999:19999   \
+    -v /proc:/host/proc:ro   \
+    -v /sys:/host/sys:ro   \
+    -v /var/run/docker.sock:/var/run/docker.sock:ro   \
+    --cap-add SYS_PTRACE   \
+    --security-opt apparmor=unconfined   \
+    netdata/netdata
+
+   echo "docker run -d --name dd-agent \
+   -v /var/run/docker.sock:/var/run/docker.sock:ro \
+   -v /proc/:/host/proc/:ro \
+   -v /sys/fs/cgroup/:/host/sys/fs/cgroup:ro \
+   -e DD_API_KEY=34f093cb0b22208d56cd241028a632b8 \
+   datadog/agent:latest"
+
+   docker run -d --name dd-agent \
+   -v /var/run/docker.sock:/var/run/docker.sock:ro \
+   -v /proc/:/host/proc/:ro \
+   -v /sys/fs/cgroup/:/host/sys/fs/cgroup:ro \
+   -e DD_API_KEY=34f093cb0b22208d56cd241028a632b8 \
+   datadog/agent:latest
+
+}
+
+connect_to_mec() {
+   echo "setting port forwarding rules for your local web browser to connect to MEC"
+   echo "loadtest3:10.10.75.12"
+   echo "loadtest4:10.10.75.14"
+   echo "loadtest1:10.10.75.10"
+   echo "loadtest2:10.10.75.25"
+
+   echo "kubernetes dashboard: http://localhost:30703"
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastionr-vm.mec-poc.aws.oath.cloud -NL 30783:10.10.75.12:30783 &
+
+   echo "Redis: http://localhost:32622"
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastionr-vm.mec-poc.aws.oath.cloud -NL 32622:10.10.75.12:32622 &
+
+   echo "netdata Master loadtest3: http://localhost:19999"
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastionr-vm.mec-poc.aws.oath.cloud -NL 19999:10.10.75.12:19999 &
+
+   echo "netdata loadtest4: http://localhost:20000"
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastionr-vm.mec-poc.aws.oath.cloud -NL 20000:10.10.75.14:19999 &
+
+   echo "netdata loadtest1: http://localhost:20001"
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastionr-vm.mec-poc.aws.oath.cloud -NL 20001:10.10.75.10:19999 &
+
+   echo "netdata loadtest2: http://localhost:20002"
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastionr-vm.mec-poc.aws.oath.cloud -NL 20002:10.10.75.25:19999 &
+
+
+}
+
 case "$1" in
   build) create_infrastructure $2 $3 $4 ;;
   deploy) deploy_infrastructure $2 $3;;
@@ -289,13 +355,19 @@ case "$1" in
   stop) teardown_infrastructure  ;;
   prune) docker_prune ;;
   monitor) monitor_infrastructure $2 $3 $4;;
+  deploy_cpu_ram_monitor) deploy_cpu_ram_monitor ;;
+  connect_to_mec) connect_to_mec ;;
+  optimize_host) optimize_host ;;
   *) echo "usage: $0"
       echo "<build <all|directory_name> <yaml file> <tag -- optional> > |"
       echo "<deploy <yaml file> > |"
       echo "<build_and_deploy <all|directory_name> <yaml file> <tag --optional>> | "
       echo "stop"
       echo "prune"
+      echo "deploy_cpu_ram_monitor"
       echo "monitor start|stop"
+      echo "connect_to_mec"
+      echo "optimize_host"
      exit 1
      ;;
 esac

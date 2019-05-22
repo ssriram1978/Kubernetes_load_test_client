@@ -122,6 +122,9 @@ install_kubernetes() {
      echo "kubectl apply -f \"https://cloud.weave.works/k8s/net?k8s-version=\$kubever\""
      sudo kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$kubever"
 
+     #echo "kubeadm token create --print-join-command"
+     sudo kubeadm token create --print-join-command
+
      #echo "kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/aio/deploy/recommended/kubernetes-dashboard.yaml"
      #sudo kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/aio/deploy/recommended/kubernetes-dashboard.yaml
 
