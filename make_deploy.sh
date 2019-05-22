@@ -429,6 +429,23 @@ undeploy_core() {
    fi
 }
 
+bootup_vm() {
+
+  echo "pull https://github.com/ssriram1978/IOT_load_test_client.git \$HOME/git/IOT_load_test_client/"
+  git pull https://github.com/ssriram1978/IOT_load_test_client.git $HOME/git/IOT_load_test_client/
+
+  echo "optimize_host"
+  optimize_host
+
+  echo "deploy_cpu_ram_monitor"
+  deploy_cpu_ram_monitor
+
+  echo "build_logstash"
+  build_logstash
+
+  echo "build all"
+  build all
+}
 
 connect_to_mec() {
    echo "setting port forwarding rules for your local web browser to connect to MEC"
@@ -477,6 +494,7 @@ case "$1" in
   deploy_infrastructure) deploy_infrastructure ;;
   undeploy_infrastructure) undeploy_infrastructure ;;
   build_logstash) build_logstash ;;
+  bootup_vm) bootup_vm ;;
   *) echo "usage: $0"
       echo "<build <all|directory_name> <yaml file> <tag -- optional> > |"
       echo "<deploy <yaml file> > |"
@@ -494,6 +512,7 @@ case "$1" in
       echo "deploy_infrastructure"
       echo "undeploy_infrastructure"
       echo "build_logstash"
+      echo "bootup_vm"
      exit 1
      ;;
 esac
