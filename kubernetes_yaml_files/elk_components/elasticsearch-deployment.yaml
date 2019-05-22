@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: <elk>
+  name: elk
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
