@@ -90,8 +90,8 @@ metadata:
   namespace: kube-system
 spec:
   ports:
-  - port: 30483
-    nodePort: 30483
+  - port: 30783
+    nodePort: 30783
     protocol: TCP
     targetPort: 9090
   type: NodePort
