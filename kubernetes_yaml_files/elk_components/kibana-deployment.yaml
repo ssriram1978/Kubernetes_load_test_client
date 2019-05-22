@@ -8,6 +8,7 @@ metadata:
   labels:
     io.kompose.service: kibana
   name: kibana
+  namespace: ELK
 spec:
   replicas: 1
   strategy:
