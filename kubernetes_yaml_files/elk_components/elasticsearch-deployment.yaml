@@ -47,7 +47,7 @@ spec:
           readOnly: true
       restartPolicy: Always
       nodeSelector:
-        vmname: loadtest4
+        vmname: loadtest1
       volumes:
       - hostPath:
           path: /home/ubuntu/git/IOT_load_test_client/plotter/elasticsearch

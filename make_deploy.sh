@@ -120,6 +120,34 @@ monitor_infrastructure() {
    fi
 }
 
+docker_compose_elk_infrastructure() {
+   start_stop=$1
+   yaml_file=$2
+   stack_tag=$3
+
+    if [[ -z $2 ]]; then
+        yaml_file="docker-stack-infrastructure.yml"
+    fi
+
+    if [[ -z $3 ]]; then
+        stack_tag="infrastructure"
+    fi
+
+  if [[ "$1" == "stop" ]]; then
+       echo "docker stack rm $stack_tag"
+       docker stack rm ${stack_tag}
+
+       echo "curl -XDELETE 'http://172.17.0.1:9200/*"
+       curl -XDELETE 'http://172.17.0.1:9200/*'
+  elif [[ "$1" == "start" ]]; then
+        echo "sysctl_tcp_kernel_optimization"
+        sysctl_tcp_kernel_optimization
+
+       echo "docker-compose -f $yaml_file up -d"
+       docker-compose -f $yaml_file up -d
+   fi
+}
+
 deploy_infrastructure() {
    yaml_file=$1
    tag=$2
@@ -481,8 +509,8 @@ connect_to_mec() {
    echo "netdata loadtest2: http://localhost:20002"
    ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20002:10.10.75.25:19999 &
 
-   echo "ELK loadtest1: http://localhost:20003"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20003:10.10.75.25:5901 &
+   echo "ELK loadtest1: http://localhost:20006"
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20006:10.10.75.10:5601 &
 
 }
 
@@ -519,6 +547,7 @@ case "$1" in
   build_logstash) build_logstash ;;
   bootup_vm) bootup_vm ;;
   tag_nodes) tag_nodes ;;
+  docker_elk) docker_compose_elk_infrastructure ;;
   *) echo "usage: $0"
       echo "<build <all|directory_name> <yaml file> <tag -- optional> > |"
       echo "<deploy <yaml file> > |"
@@ -538,6 +567,7 @@ case "$1" in
       echo "build_logstash"
       echo "bootup_vm"
       echo "tag_nodes"
+      echo "docker_elk start|stop"
      exit 1
      ;;
 esac
