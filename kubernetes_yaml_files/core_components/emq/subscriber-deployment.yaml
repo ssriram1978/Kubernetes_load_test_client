@@ -65,7 +65,7 @@ spec:
           readOnly: true
       restartPolicy: Always
       nodeSelector:
-        vmname: loadtest3
+        vmname: loadtest4
       volumes:
       - hostPath:
           path: /var/run/docker.sock

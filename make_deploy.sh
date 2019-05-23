@@ -547,7 +547,7 @@ case "$1" in
   build_logstash) build_logstash ;;
   bootup_vm) bootup_vm ;;
   tag_nodes) tag_nodes ;;
-  docker_elk) docker_compose_elk_infrastructure ;;
+  docker_elk) docker_compose_elk_infrastructure $2 ;;
   *) echo "usage: $0"
       echo "<build <all|directory_name> <yaml file> <tag -- optional> > |"
       echo "<deploy <yaml file> > |"

@@ -45,7 +45,7 @@ spec:
         image: transformer:latest
         imagePullPolicy: IfNotPresent
         nodeSelector:
-          vmname: loadtest2
+          vmname: loadtest3
         name: transformer
         resources: {}
         volumeMounts:
