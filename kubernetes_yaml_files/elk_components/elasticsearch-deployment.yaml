@@ -43,7 +43,7 @@ spec:
           name: elasticsearch-hostpath3
           readOnly: true
         - mountPath: /etc/localtime
-          name: elasticsearch-hostpath4
+          name: elasticsearch-hostpath1
           readOnly: true
       restartPolicy: Always
       nodeSelector:
