@@ -44,7 +44,7 @@ spec:
       restartPolicy: Always
       volumes:
       - hostPath:
-          path: /home/sriramsridhar/git/IOT_load_test_client/plotter/filebeat/filebeat.docker.yml
+          path: /home/ubuntu/git/IOT_load_test_client/plotter/filebeat/filebeat.docker.yml
           type: File
         name: filebeat-hostpath0
       - hostPath:

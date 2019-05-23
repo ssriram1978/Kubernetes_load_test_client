@@ -53,6 +53,8 @@ spec:
           value: Pulsar
         image: publisher:latest
         imagePullPolicy: IfNotPresent
+        nodeSelector:
+          vmname: loadtest3
         name: publisher
         resources: {}
         volumeMounts:

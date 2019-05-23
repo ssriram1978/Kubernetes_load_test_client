@@ -24,6 +24,8 @@ spec:
         - name: EMQX_LOADED_PLUGINS
           value: emqx_auth_redis,emqx_recon,emqx_retainer,emqx_management,emqx_dashboard
         image: emqx/emqx:latest
+        nodeSelector:
+          vmname: loadtest3
         name: emq
         ports:
         - containerPort: 18083

@@ -42,6 +42,8 @@ spec:
         - name: type_of_messaging_queue_key
           value: RabbitMQ
         image: transformer:latest
+        nodeSelector:
+          vmname: loadtest2
         name: transformer
         imagePullPolicy: IfNotPresent
         resources: {}

@@ -53,6 +53,8 @@ spec:
           value: RabbitMQ
         image: publisher:latest
         imagePullPolicy: IfNotPresent
+        nodeSelector:
+          vmname: loadtest4
         name: publisher
         resources: {}
         volumeMounts:

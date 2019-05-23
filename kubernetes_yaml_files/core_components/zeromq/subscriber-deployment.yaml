@@ -49,6 +49,8 @@ spec:
         - name: type_of_messaging_queue_key
           value: ZeroMQ
         image: subscriber:latest
+        nodeSelector:
+          vmname: loadtest4
         imagePullPolicy: IfNotPresent
         name: subscriber
         resources: {}

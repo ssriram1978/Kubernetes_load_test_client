@@ -107,16 +107,16 @@ class WebSocketAPI:
         :return:
         """
         if self.is_consumer:
-            while not self.publisher_hostname:
+            while not self.subscribe_hostname:
                 time.sleep(2)
                 logging.info("WebSocketAPI:{} "
                              "Trying to read the environment variables..."
                              .format(self.thread_identifier))
-                self.publisher_hostname = os.getenv("publisher_hostname_key", default=None)
+                self.subscribe_hostname = os.getenv("subscriber_hostname_key", default=None)
 
             logging.info("WebSocketAPI:{} publisher_hostname={}"
                          .format(self.thread_identifier,
-                                 self.publisher_hostname))
+                                 self.subscribe_hostname))
 
     def connect(self):
         """

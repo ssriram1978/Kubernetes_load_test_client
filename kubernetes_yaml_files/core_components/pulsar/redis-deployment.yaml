@@ -19,6 +19,8 @@ spec:
     spec:
       containers:
       - image: redis:latest
+        nodeSelector:
+          vmname: loadtest3
         name: redis
         ports:
         - containerPort: 6379

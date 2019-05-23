@@ -48,6 +48,8 @@ spec:
         - name: type_of_messaging_queue_key
           value: ZeroMQ
         image: publisher:latest
+        nodeSelector:
+          vmname: loadtest3
         imagePullPolicy: IfNotPresent
         name: publisher
         ports:

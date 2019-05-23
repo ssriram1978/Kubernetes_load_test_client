@@ -44,6 +44,8 @@ spec:
           value: RabbitMQ
         image: transformer:latest
         imagePullPolicy: IfNotPresent
+        nodeSelector:
+          vmname: loadtest2
         name: transformer
         resources: {}
         volumeMounts:

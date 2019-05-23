@@ -45,9 +45,8 @@ spec:
           name: filebeat-hostpath4
           readOnly: true
       restartPolicy: Always
-      tolerations:
-        - key: node-role.kubernetes.io/master
-          effect: NoSchedule
+      nodeSelector:
+         vmname: loadtest1
       volumes:
       - hostPath:
           path: /home/ubuntu/git/IOT_load_test_client/plotter/filebeat/filebeat.docker.yml

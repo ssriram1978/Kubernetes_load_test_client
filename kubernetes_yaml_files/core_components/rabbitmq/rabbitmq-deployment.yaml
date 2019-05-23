@@ -25,6 +25,8 @@ spec:
         - name: RABBITMQ_DEFAULT_USER
           value: guest
         image: rabbitmq:3.8-rc-management
+        nodeSelector:
+          vmname: loadtest3
         name: rabbitmq
         ports:
         - containerPort: 15672

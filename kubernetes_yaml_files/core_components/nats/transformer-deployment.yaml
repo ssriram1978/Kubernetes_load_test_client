@@ -43,6 +43,8 @@ spec:
         - name: type_of_messaging_queue_key
           value: NATS
         image: transformer:latest
+        nodeSelector:
+          vmname: loadtest2
         imagePullPolicy: IfNotPresent
         name: transformer
         resources: {}
