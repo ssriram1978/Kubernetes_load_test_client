@@ -78,9 +78,6 @@ install_kubernetes() {
   echo "apt-get install -y kubelet kubeadm kubectl"
   sudo apt-get install -y kubelet kubeadm kubectl
 
-  echo "apt-mark hold kubelet kubeadm kubectl"
-  sudo apt-mark hold kubelet kubeadm kubectl
-
   echo "sudo systemctl daemon-reload"
   sudo systemctl daemon-reload
 
@@ -98,6 +95,10 @@ install_kubernetes() {
   fi
 
   if [[ $master_or_worker == "master" ]]; then
+
+     echo "apt-mark hold kubelet kubeadm kubectl"
+     sudo apt-mark hold kubelet kubeadm kubectl
+
      echo "sudo kubeadm init  --ignore-preflight-errors=all"
      sudo kubeadm init  --ignore-preflight-errors=all
 
@@ -148,6 +149,9 @@ install_kubernetes() {
      #sudo kubectl -n kube-system get service kubernetes-dashboard
 
   fi
+
+   echo "kubectl apply -f \"https://cloud.weave.works/k8s/net?k8s-version=\$kubever\""
+   sudo kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$kubever"
 
   if [[ $master_or_worker == "worker" ]]; then
      echo "sudo kubeadm join --token $token --discovery-token-ca-cert-hash $hash"

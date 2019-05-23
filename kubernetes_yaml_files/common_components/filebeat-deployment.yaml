@@ -46,7 +46,7 @@ spec:
           readOnly: true
       restartPolicy: Always
       nodeSelector:
-         vmname: loadtest1
+         vmname: loadtest4
       volumes:
       - hostPath:
           path: /home/ubuntu/git/IOT_load_test_client/plotter/filebeat/filebeat.docker.yml
