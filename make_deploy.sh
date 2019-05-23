@@ -434,11 +434,17 @@ bootup_vm() {
   echo "cd \$HOME/git/IOT_load_test_client/"
   cd $HOME/git/IOT_load_test_client
 
+  echo "git checkout ."
+  git checkout .
+
   echo "git pull"
   git pull
 
   echo "optimize_host"
   optimize_host
+
+  echo "docker_prune"
+  docker_prune
 
   echo "deploy_cpu_ram_monitor"
   deploy_cpu_ram_monitor
@@ -457,7 +463,7 @@ connect_to_mec() {
    echo "loadtest1:10.10.75.10"
    echo "loadtest2:10.10.75.25"
 
-   echo "kubernetes dashboard: http://localhost:30703"
+   echo "kubernetes dashboard: http://localhost:30783"
    ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 30783:10.10.75.12:30783 &
 
    echo "Redis: http://localhost:32622"
@@ -480,6 +486,20 @@ connect_to_mec() {
 
 }
 
+tag_nodes() {
+   echo "kubectl label nodes loadtest1 vmname=loadtest1"
+   kubectl label nodes loadtest1 vmname=loadtest1
+
+   echo "kubectl label nodes loadtest2 vmname=loadtest2"
+   kubectl label nodes loadtest2 vmname=loadtest2
+
+   echo "kubectl label nodes loadtest3 vmname=loadtest3"
+   kubectl label nodes loadtest3 vmname=loadtest3
+
+   echo "kubectl label nodes loadtest4 vmname=loadtest4"
+   kubectl label nodes loadtest4 vmname=loadtest4
+}
+
 case "$1" in
   build) create_infrastructure $2 $3 $4 ;;
   deploy) deploy_infrastructure $2 $3;;
@@ -498,6 +518,7 @@ case "$1" in
   undeploy_infrastructure) undeploy_infrastructure ;;
   build_logstash) build_logstash ;;
   bootup_vm) bootup_vm ;;
+  tag_nodes) tag_nodes ;;
   *) echo "usage: $0"
       echo "<build <all|directory_name> <yaml file> <tag -- optional> > |"
       echo "<deploy <yaml file> > |"
@@ -516,6 +537,7 @@ case "$1" in
       echo "undeploy_infrastructure"
       echo "build_logstash"
       echo "bootup_vm"
+      echo "tag_nodes"
      exit 1
      ;;
 esac

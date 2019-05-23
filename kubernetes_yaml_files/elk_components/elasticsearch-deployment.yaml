@@ -53,7 +53,7 @@ spec:
           path: /home/ubuntu/git/IOT_load_test_client/plotter/elasticsearch
         name: elasticsearch-hostpath0
       - hostPath:
-          path: /home/ubutu/git/IOT_load_test_client/plotter/elasticsearch/config/elasticsearch.yml
+          path: /home/ubuntu/git/IOT_load_test_client/plotter/elasticsearch/config/elasticsearch.yml
           type: File
         name: elasticsearch-hostpath1
       - hostPath:
