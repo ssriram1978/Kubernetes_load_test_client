@@ -52,7 +52,7 @@ spec:
           value: "10000"
         - name: type_of_messaging_queue_key
           value: WurstMeisterKafka
-        image: publisher:latest
+        image: ssriram1978/publisher:latest
         imagePullPolicy: IfNotPresent
         name: publisher
         resources: {}

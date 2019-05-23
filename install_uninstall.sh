@@ -150,9 +150,6 @@ install_kubernetes() {
 
   fi
 
-   echo "kubectl apply -f \"https://cloud.weave.works/k8s/net?k8s-version=\$kubever\""
-   sudo kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$kubever"
-
   if [[ $master_or_worker == "worker" ]]; then
      echo "sudo kubeadm join --token $token --discovery-token-ca-cert-hash $hash"
      sudo kubeadm join $address --token $token --discovery-token-ca-cert-hash $hash

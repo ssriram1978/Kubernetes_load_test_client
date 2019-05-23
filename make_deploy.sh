@@ -205,6 +205,9 @@ docker_prune() {
 
 sysctl_tcp_kernel_optimization() {
 
+   echo "sudo swapoff -a"
+   sudo swapoff -a
+
     echo "fs.file-max=2097152 >> /etc/sysctl.conf"
     sudo echo "fs.file-max=2097152" >> /etc/sysctl.conf
 
