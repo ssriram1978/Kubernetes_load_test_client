@@ -53,8 +53,6 @@ spec:
           value: Pulsar
         image: publisher:latest
         imagePullPolicy: IfNotPresent
-        nodeSelector:
-          vmname: loadtest3
         name: publisher
         resources: {}
         volumeMounts:
@@ -67,6 +65,8 @@ spec:
           name: publisher-hostpath2
           readOnly: true
       restartPolicy: Always
+      nodeSelector:
+        vmname: loadtest3
       volumes:
       - hostPath:
           path: /var/run/docker.sock

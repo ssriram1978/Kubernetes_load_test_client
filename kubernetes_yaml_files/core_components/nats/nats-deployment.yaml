@@ -19,12 +19,12 @@ spec:
     spec:
       containers:
       - image: nats
-        nodeSelector:
-          vmname: loadtest3
         name: nats
         ports:
         - containerPort: 8222
         - containerPort: 4222
         resources: {}
       restartPolicy: Always
+      nodeSelector:
+        vmname: loadtest3
 status: {}

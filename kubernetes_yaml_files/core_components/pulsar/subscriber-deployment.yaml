@@ -51,8 +51,6 @@ spec:
         - name: type_of_messaging_queue_key
           value: Pulsar
         image: subscriber:latest
-        nodeSelector:
-          vmname: loadtest4
         imagePullPolicy: IfNotPresent
         name: subscriber
         resources: {}
@@ -66,6 +64,8 @@ spec:
           name: subscriber-hostpath2
           readOnly: true
       restartPolicy: Always
+      nodeSelector:
+        vmname: loadtest4
       volumes:
       - hostPath:
           path: /var/run/docker.sock

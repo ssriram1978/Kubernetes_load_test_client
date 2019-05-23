@@ -48,8 +48,6 @@ spec:
         - name: type_of_messaging_queue_key
           value: ZeroMQ
         image: publisher:latest
-        nodeSelector:
-          vmname: loadtest3
         imagePullPolicy: IfNotPresent
         name: publisher
         ports:
@@ -264,6 +262,8 @@ spec:
           name: publisher-hostpath2
           readOnly: true
       restartPolicy: Always
+      nodeSelector:
+        vmname: loadtest3
       volumes:
       - hostPath:
           path: /var/run/docker.sock

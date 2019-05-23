@@ -22,8 +22,6 @@ spec:
       containers:
       - image: logstash:latest
         imagePullPolicy: IfNotPresent
-        nodeSelector:
-          vmname: loadtest1
         name: logstash
         ports:
         - containerPort: 5044
@@ -41,6 +39,8 @@ spec:
           name: logstash-hostpath3
           readOnly: true
       restartPolicy: Always
+      nodeSelector:
+        vmname: loadtest1
       volumes:
       - hostPath:
           path: /home/ubuntu/git/IOT_load_test_client/plotter/logstash

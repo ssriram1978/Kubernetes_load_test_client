@@ -44,8 +44,6 @@ spec:
         - name: type_of_messaging_queue_key
           value: WurstMeisterKafka
         image: transformer:latest
-        nodeSelector:
-          vmname: loadtest2
         imagePullPolicy: IfNotPresent
         name: transformer
         resources: {}
@@ -59,6 +57,8 @@ spec:
             name: transformer-hostpath2
             readOnly: true
       restartPolicy: Always
+      nodeSelector:
+        vmname: loadtest2
       volumes:
             - hostPath:
                 path: /var/run/docker.sock

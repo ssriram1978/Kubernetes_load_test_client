@@ -22,8 +22,6 @@ spec:
       containers:
       - image: docker.elastic.co/kibana/kibana-oss:6.7.1
         imagePullPolicy: IfNotPresent
-        nodeSelector:
-          vmname: loadtest1
         name: kibana
         ports:
         - containerPort: 5601
@@ -42,6 +40,8 @@ spec:
           name: kibana-hostpath4
           readOnly: true
       restartPolicy: Always
+      nodeSelector:
+        vmname: loadtest1
       volumes:
       - hostPath:
           path: /home/ubuntu/git/IOT_load_test_client/plotter/kibana

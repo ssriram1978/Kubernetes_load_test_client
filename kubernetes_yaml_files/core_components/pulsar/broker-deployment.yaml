@@ -32,6 +32,8 @@ spec:
         - mountPath: /var/run/docker.sock
           name: broker-hostpath0
       restartPolicy: Always
+      nodeSelector:
+        vmname: loadtest3
       volumes:
       - hostPath:
           path: /media/psf/Home/git/IOT_load_test_client/kubernetes_yaml_files/core_components/pulsar/var/run/docker.sock

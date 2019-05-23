@@ -49,11 +49,11 @@ spec:
         - name: type_of_messaging_queue_key
           value: ZeroMQ
         image: subscriber:latest
-        nodeSelector:
-          vmname: loadtest4
         imagePullPolicy: IfNotPresent
         name: subscriber
         resources: {}
+        nodeSelector:
+          vmname: loadtest4
         volumeMounts:
         - mountPath: /var/run/docker.sock
           name: subscriber-hostpath0

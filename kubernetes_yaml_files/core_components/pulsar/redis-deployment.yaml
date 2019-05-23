@@ -19,14 +19,14 @@ spec:
     spec:
       containers:
       - image: redis:latest
-        nodeSelector:
-          vmname: loadtest3
         name: redis
         ports:
         - containerPort: 6379
         resources: {}
       restartPolicy: Always
-      tolerations:
-        - key: node-role.kubernetes.io/master
-          effect: NoSchedule
+      #tolerations:
+      #  - key: node-role.kubernetes.io/master
+      #    effect: NoSchedule
+      nodeSelector:
+        vmname: loadtest3
 status: {}

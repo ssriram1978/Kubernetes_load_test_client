@@ -25,8 +25,6 @@ spec:
         - name: RABBITMQ_DEFAULT_USER
           value: guest
         image: rabbitmq:3.8-rc-management
-        nodeSelector:
-          vmname: loadtest3
         name: rabbitmq
         ports:
         - containerPort: 15672
@@ -43,6 +41,8 @@ spec:
         - mountPath: /etc/rabbitmq/rabbitmq-definitions.json
           name: rabbitmq-hostpath3
       restartPolicy: Always
+      nodeSelector:
+        vmname: loadtest3
       volumes:
       - hostPath:
           path: /home/ubuntu/git/IOT_load_test_client/infrastructure_components/publisher_subscriber/rabbit_msgq_api/rabbitmq_conf_plugins/enabled_plugins
