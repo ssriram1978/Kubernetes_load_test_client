@@ -126,6 +126,9 @@ install_kubernetes() {
      #echo "kubeadm token create --print-join-command"
      sudo kubeadm token create --print-join-command
 
+     echo "kubectl proxy --accept-hosts="^.*$" --address='10.10.75.12' -p=8080 &"
+     kubectl proxy --accept-hosts="^.*$" --address='10.10.75.12' -p=8080 &
+
      #echo "kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/aio/deploy/recommended/kubernetes-dashboard.yaml"
      #sudo kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/aio/deploy/recommended/kubernetes-dashboard.yaml
 

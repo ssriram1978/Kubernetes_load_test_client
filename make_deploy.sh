@@ -501,6 +501,9 @@ connect_to_mec() {
    echo "loadtest1:10.10.75.10"
    echo "loadtest2:10.10.75.25"
 
+   echo "ps aux | grep id_rsa_mec |  awk '{print $2}' | xargs kill -9"
+   ps aux | grep id_rsa_mec |  awk '{print $2}' | xargs kill -9
+
    echo "kubernetes dashboard: http://localhost:30783"
    ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 30783:10.10.75.12:30783 &
 
@@ -521,6 +524,9 @@ connect_to_mec() {
 
    echo "ELK loadtest1: http://localhost:20006"
    ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20006:10.10.75.10:5601 &
+
+   echo "EMQX loadtest1: http://localhost:18083"
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 32333:10.10.75.12:32333 &
 
 }
 
