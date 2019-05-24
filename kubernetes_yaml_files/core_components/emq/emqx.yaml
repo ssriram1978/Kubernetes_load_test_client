@@ -69,7 +69,7 @@ spec:
         #  value: emqx
         tty: true
         volumeMounts:
-           - mountPath: etc/emqx.conf
+           - mountPath: /opt/emqx/etc/emqx.conf
              name: emqx-hostpath0
            - mountPath: /etc/timezone
              name: emqx-hostpath1
