@@ -46,6 +46,8 @@ spec:
         name: orchestrator
         imagePullPolicy: IfNotPresent
         resources: {}
+        nodeSelector:
+          vmname: loadtest3
         volumeMounts:
         - mountPath: /var/run/docker.sock
           name: orchestrator-hostpath0
