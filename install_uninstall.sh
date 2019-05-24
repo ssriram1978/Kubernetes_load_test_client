@@ -151,9 +151,59 @@ install_kubernetes() {
   fi
 
   if [[ $master_or_worker == "worker" ]]; then
+     echo "export kubever=$(kubectl version | base64 | tr -d '\n')"
+     export kubever=$(kubectl version | base64 | tr -d '\n')
+
+     echo "kubectl apply -f \"https://cloud.weave.works/k8s/net?k8s-version=\$kubever\""
+     sudo kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$kubever"
+
      echo "sudo kubeadm join --token $token --discovery-token-ca-cert-hash $hash"
      sudo kubeadm join $address --token $token --discovery-token-ca-cert-hash $hash
   fi
+
+  echo "sudo echo \"{\
+\"cniVersion\": \"0.3.0\", \
+\"name\": \"weave\", \
+\"plugins\": [\
+   {\
+        \"name\": \"weave\",\n\"type\": \"weave-net\",\
+        \"hairpinMode\": true \
+   },\
+   {\
+        \"type\": \"portmap\",\
+        \"capabilities\": {\"portMappings\": true},\
+        \"snat\": true\
+    }\
+]\
+}\" > /etc/cni/net.d/10-weave.conflist
+"
+sudo  echo "{\
+\"cniVersion\": \"0.3.0\", \
+\"name\": \"weave\", \
+\"plugins\": [\
+   {\
+        \"name\": \"weave\",\n\"type\": \"weave-net\",\
+        \"hairpinMode\": true \
+   },\
+   {\
+        \"type\": \"portmap\",\
+        \"capabilities\": {\"portMappings\": true},\
+        \"snat\": true\
+    }\
+]\
+}" > /etc/cni/net.d/10-weave.conflist
+
+  echo "cat /etc/cni/net.d/10-weave.conflist"
+  cat /etc/cni/net.d/10-weave.conflist
+
+  echo "sudo chown -R  ubuntu:ubuntu /var/lib/weave"
+  sudo chown -R  ubuntu:ubuntu /var/lib/weave
+
+  echo "sudo chown -R  ubuntu:ubuntu /var/lib/kubelet"
+  sudo chown -R  ubuntu:ubuntu /var/lib/kubelet
+
+  echo "sudo usermod -aG sudo ubuntu"
+  sudo usermod -aG sudo ubuntu
 
 }
 

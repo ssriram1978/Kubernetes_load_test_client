@@ -483,8 +483,12 @@ bootup_vm() {
   echo "build_logstash"
   build_logstash
 
-  echo "build all"
-  build all
+  echo "tag_nodes"
+  tag_nodes
+
+  echo "deploy_infrastructure"
+  deploy_infrastructure
+
 }
 
 connect_to_mec() {
