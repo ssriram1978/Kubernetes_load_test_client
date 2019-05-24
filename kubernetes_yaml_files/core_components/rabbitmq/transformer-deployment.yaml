@@ -41,7 +41,7 @@ spec:
           value: "1883"
         - name: type_of_messaging_queue_key
           value: RabbitMQ
-        image: transformer:latest
+        image: ssriram1978/transformer:latest
         name: transformer
         imagePullPolicy: IfNotPresent
         resources: {}
