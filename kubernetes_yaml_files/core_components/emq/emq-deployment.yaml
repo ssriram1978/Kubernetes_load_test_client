@@ -19,10 +19,8 @@ spec:
     spec:
       containers:
       - env:
-        - name: EMQX_AUTH__REDIS__SERVER
-          value: redis:6379
         - name: EMQX_LOADED_PLUGINS
-          value: emqx_auth_redis,emqx_recon,emqx_retainer,emqx_management,emqx_dashboard
+          value: emqx_management,emqx_dashboard
         image: emqx/emqx:latest
         name: emq
         ports:
