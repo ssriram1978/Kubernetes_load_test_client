@@ -48,12 +48,10 @@ spec:
           value: total_produced_count
         - name: type_of_messaging_queue_key
           value: ZeroMQ
-        image: subscriber:latest
+        image: ssriram1978/subscriber:latest
         imagePullPolicy: IfNotPresent
         name: subscriber
         resources: {}
-        nodeSelector:
-          vmname: loadtest4
         volumeMounts:
         - mountPath: /var/run/docker.sock
           name: subscriber-hostpath0
@@ -64,6 +62,8 @@ spec:
           name: subscriber-hostpath2
           readOnly: true
       restartPolicy: Always
+      nodeSelector:
+        vmname: loadtest4
       volumes:
       - hostPath:
           path: /var/run/docker.sock

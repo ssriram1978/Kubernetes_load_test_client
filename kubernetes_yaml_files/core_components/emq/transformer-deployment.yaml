@@ -44,8 +44,6 @@ spec:
           value: RabbitMQ
         image: ssriram1978/transformer:latest
         imagePullPolicy: IfNotPresent
-        nodeSelector:
-          vmname: loadtest2
         name: transformer
         resources: {}
         volumeMounts:
@@ -58,6 +56,8 @@ spec:
           name: transformer-hostpath2
           readOnly: true
       restartPolicy: Always
+      nodeSelector:
+        vmname: loadtest2
       volumes:
       - hostPath:
           path: /var/run/docker.sock
