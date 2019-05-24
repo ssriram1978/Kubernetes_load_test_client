@@ -29,10 +29,23 @@ spec:
         - name: log_level_key
           value: info
         - name: message_key
-          value: '{"lastUpdated": "2018-11-19T18:21:03Z","unitName": "VZW_LH_UNIT_01","unitMacId":
-            "864508030027459","sensor": {"name": "cHe_AssetTracker","characteristics":
-            [{"characteristicsName": "temperature","currentValue": "30.2999","readLevel":
-            "R","parameterType": "Number","measurementUnit": "Celcius"}]}}'
+          value: '{\
+                                      \"lastUpdated\": \"2018-11-19T18:21:03Z\",\
+                                      \"unitName\": \"VZW_LH_UNIT_01\",\
+                                      \"unitMacId\": \"864508030027459\",\
+                                      \"sensor\": {\
+                                        \"name\": \"cHe_AssetTracker\",\
+                                        \"characteristics\": [\
+                                          {\
+                                            \"characteristicsName\": \"temperature\",\
+                                            \"currentValue\": \"30.2999\",\
+                                            \"readLevel\": \"R\",\
+                                            \"parameterType\": \"Number\",\
+                                            \"measurementUnit\": \"Celcius\"\
+                                          }\
+                                        ]\
+                                      }\
+                                    }'
         - name: messages_per_second_key
           value: "1000"
         - name: publisher_key_name

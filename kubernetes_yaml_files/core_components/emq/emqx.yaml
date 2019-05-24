@@ -52,21 +52,21 @@ spec:
           containerPort: 8883
           containerPort: 8080
           containerPort: 8084
-        #env:
-        #- name: EMQX_CLUSTER__DISCOVERY
-        #  value: k8s
-        #- name: EMQX_NAME
-        #  value: emqx
-        #- name: EMQX_CLUSTER__K8S__APISERVER
-        #  value: http://10.10.75.12:8080
-        #- name: EMQX_CLUSTER__K8S__NAMESPACE
-        #  value: default
-        #- name: EMQX_CLUSTER__K8S__SERVICE_NAME
-        #  value: emqx
-        #- name: EMQX_CLUSTER__K8S__ADDRESS_TYPE
-        #  value: ip
-        #- name: EMQX_CLUSTER__K8S__APP_NAME
-        #  value: emqx
+        env:
+        - name: EMQX_CLUSTER__DISCOVERY
+          value: k8s
+        - name: EMQX_NAME
+          value: emqx
+        - name: EMQX_CLUSTER__K8S__APISERVER
+          value: http://10.10.75.12:8080
+        - name: EMQX_CLUSTER__K8S__NAMESPACE
+          value: default
+        - name: EMQX_CLUSTER__K8S__SERVICE_NAME
+          value: emqx
+        - name: EMQX_CLUSTER__K8S__ADDRESS_TYPE
+          value: ip
+        - name: EMQX_CLUSTER__K8S__APP_NAME
+          value: emqx
         tty: true
         volumeMounts:
            - mountPath: etc/emqx.conf
