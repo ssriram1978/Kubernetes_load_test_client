@@ -23,7 +23,7 @@ spec:
         - name: average_latency_for_n_sec_key
           value: "1"
         - name: broker_hostname_key
-          value: emq
+          value: emqx
         - name: broker_port_key
           value: "1883"
         - name: hash_table_name

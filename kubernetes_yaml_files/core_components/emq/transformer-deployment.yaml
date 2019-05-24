@@ -21,7 +21,7 @@ spec:
       containers:
       - env:
         - name: broker_hostname_key
-          value: emq
+          value: emqx
         - name: broker_port_key
           value: "1883"
         - name: hash_table_name

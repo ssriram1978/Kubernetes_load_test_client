@@ -21,7 +21,7 @@ spec:
       containers:
       - env:
         - name: broker_hostname_key
-          value: emq
+          value: emqx
         - name: broker_port_key
           value: "1883"
         - name: hash_table_name
@@ -44,7 +44,7 @@ spec:
         - name: redis_server_port_key
           value: "6379"
         - name: test_duration_in_sec_key
-          value: "100"
+          value: "10000"
         - name: total_job_dequeued_count_redis_name_key
           value: total_consumed_count
         - name: total_job_enqueued_count_redis_name_key
