@@ -4,10 +4,26 @@ metadata:
   name: emqx
 spec:
   ports:
-  - port: 32333
+  - name: "32333"
+    port: 32333
     nodePort: 32333
     targetPort:  emqx-dashboard
     protocol: TCP
+  - name: "18083"
+    port: 18083
+    targetPort: 18083
+  - name: "1883"
+    port: 1883
+    targetPort: 1883
+  - name: "8080"
+    port: 8080
+    targetPort: 8080
+  - name: "8084"
+    port: 8084
+    targetPort: 8084
+  - name: "11883"
+    port: 11883
+    targetPort: 11883
   selector:
     app: emqx
   type: NodePort
@@ -31,6 +47,11 @@ spec:
         ports:
         - name: emqx-dashboard
           containerPort: 18083
+          containerPort: 1883
+          containerPort: 11883
+          containerPort: 8883
+          containerPort: 8080
+          containerPort: 8084
         env:
         - name: EMQX_CLUSTER__DISCOVERY
           value: k8s
