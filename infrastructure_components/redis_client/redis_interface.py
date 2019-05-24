@@ -90,14 +90,14 @@ class RedisInterface(object):
                       "Incrementing total_job_enqueued_count={}"
                       .format(self.thread_identifer,
                               self.total_job_enqueued_count_redis_name))
-        self.redis_instance.increment_key_in_redis_db(self.total_job_enqueued_count_redis_name)
+        # self.redis_instance.increment_key_in_redis_db(self.total_job_enqueued_count_redis_name)
 
     def increment_dequeue_count(self):
         logging.debug("RedisInterface:{}."
                       "Incrementing total_job_dequeued_count={}"
                       .format(self.thread_identifer,
                               self.total_job_dequeued_count_redis_name))
-        self.redis_instance.increment_key_in_redis_db(self.total_job_dequeued_count_redis_name)
+        # self.redis_instance.increment_key_in_redis_db(self.total_job_dequeued_count_redis_name)
 
     def check_if_the_key_exists_in_redis_db(self, key):
         logging.debug("RedisInterface:{}."

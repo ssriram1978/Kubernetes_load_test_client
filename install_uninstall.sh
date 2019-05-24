@@ -205,6 +205,9 @@ sudo  echo "{\
   echo "sudo usermod -aG sudo ubuntu"
   sudo usermod -aG sudo ubuntu
 
+  echo "sudo chown ubuntu:ubuntu /var/lib/weave"
+  sudo chown ubuntu:ubuntu /var/lib/weave
+
 }
 
 uninstall_kubernetes() {

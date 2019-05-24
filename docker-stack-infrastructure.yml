@@ -16,7 +16,7 @@ services:
     build:
       context: ./plotter/logstash
       dockerfile: Dockerfile
-    image: logstash:latest
+    image: ssriram1978/logstash:latest
     ports:
       - "5044:5044"
       - "9600:9600"

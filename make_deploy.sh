@@ -80,6 +80,9 @@ create_infrastructure() {
 
         echo "docker-compose -f $2 build"
         docker-compose -f $2 build
+
+        echo "docker push ssriram/logstash:latest"
+        docker push $tag/logstash:latest
     else
         echo "build_push_directory $tag"
         build_push_directory \
