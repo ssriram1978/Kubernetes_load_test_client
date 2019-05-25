@@ -18,7 +18,6 @@ spec:
       creationTimestamp: null
       labels:
         io.kompose.service: publisher
-      namespace: loadtest
     spec:
       containers:
       - env:
@@ -53,9 +52,9 @@ spec:
           value: "100000"
         - name: type_of_messaging_queue_key
           value: RabbitMQ
-        #image: ssriram1978/publisher:latest
+        image: ssriram1978/publisher:latest
         name: publisher
-        imagePullPolicy: IfNotPresent
+        #imagePullPolicy: IfNotPresent
         resources: {}
         volumeMounts:
         - mountPath: /var/run/docker.sock

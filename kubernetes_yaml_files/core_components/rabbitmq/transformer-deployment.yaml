@@ -17,7 +17,6 @@ spec:
       creationTimestamp: null
       labels:
         io.kompose.service: transformer
-      namespace: loadtest
     spec:
       containers:
       - env:
@@ -43,9 +42,9 @@ spec:
           value: "1883"
         - name: type_of_messaging_queue_key
           value: RabbitMQ
-        #image: ssriram1978/transformer:latest
+        image: ssriram1978/transformer:latest
         name: transformer
-        imagePullPolicy: IfNotPresent
+        #imagePullPolicy: IfNotPresent
         resources: {}
         volumeMounts:
           - mountPath: /var/run/docker.sock
