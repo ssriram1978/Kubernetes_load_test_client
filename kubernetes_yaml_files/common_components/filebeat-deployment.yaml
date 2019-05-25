@@ -46,8 +46,6 @@ spec:
           readOnly: true
       restartPolicy: Always
       nodeSelector:
-         vmname: elk
-      nodeSelector:
         kubernetes:
           io/hostname: subscriber
       volumes:
