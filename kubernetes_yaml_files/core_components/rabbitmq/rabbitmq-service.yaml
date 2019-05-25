@@ -8,7 +8,7 @@ metadata:
   labels:
     io.kompose.service: rabbitmq
   name: rabbitmq
-  namespace: loadtest
+  namespace: common-infrastructure
 spec:
   ports:
   - name: "30104"
