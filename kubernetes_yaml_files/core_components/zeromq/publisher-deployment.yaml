@@ -37,7 +37,7 @@ spec:
         - name: redis_log_keyname_key
           value: produce_load_test_events
         - name: redis_server_hostname_key
-          value: redis
+          value: redis.common-infrastructure.svc.cluster.local
         - name: redis_server_port_key
           value: "6379"
         - name: test_duration_in_sec_key

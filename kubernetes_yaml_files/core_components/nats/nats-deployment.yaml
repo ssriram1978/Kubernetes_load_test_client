@@ -13,7 +13,7 @@ metadata:
   labels:
     io.kompose.service: nats
   name: nats
-  namespace: loadtest
+  namespace: common-infrastructure
 spec:
   replicas: 1
   strategy: {}

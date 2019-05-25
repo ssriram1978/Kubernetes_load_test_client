@@ -24,7 +24,7 @@ spec:
         - name: average_latency_for_n_sec_key
           value: "1"
         - name: broker_hostname_key
-          value: broker
+          value: broker.common-infrastructure.svc.cluster.local
         - name: broker_port_key
           value: "6650"
         - name: hash_table_name
@@ -40,7 +40,7 @@ spec:
         - name: redis_log_keyname_key
           value: consume_load_test_events
         - name: redis_server_hostname_key
-          value: redis
+          value: redis.common-infrastructure.svc.cluster.local
         - name: redis_server_port_key
           value: "6379"
         - name: subscriber_key_name

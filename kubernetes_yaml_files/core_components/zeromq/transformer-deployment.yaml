@@ -30,7 +30,7 @@ spec:
         - name: redis_log_keyname_key
           value: transformer_load_test_events
         - name: redis_server_hostname_key
-          value: redis
+          value: redis.common-infrastructure.svc.cluster.local
         - name: redis_server_port_key
           value: "6379"
         - name: total_job_dequeued_count_redis_name_key
