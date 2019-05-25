@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - image: ssriram1978/logstash:latest
-        imagePullPolicy: IfNotPresent
+        #imagePullPolicy: IfNotPresent
         name: logstash
         ports:
         - containerPort: 5044

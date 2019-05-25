@@ -44,7 +44,7 @@ spec:
           value: "false"
         image: ssriram1978/orchestrator:latest
         name: orchestrator
-        imagePullPolicy: IfNotPresent
+        #imagePullPolicy: IfNotPresent
         resources: {}
         volumeMounts:
         - mountPath: /var/run/docker.sock

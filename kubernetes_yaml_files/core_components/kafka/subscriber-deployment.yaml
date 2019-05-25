@@ -51,7 +51,7 @@ spec:
           value: "9094"
         - name: type_of_messaging_queue_key
           value: WurstMeisterKafka
-        image: ssriram1978/subscriber:latest
+        #image: ssriram1978/subscriber:latest
         imagePullPolicy: IfNotPresent
         name: subscriber
         resources: {}

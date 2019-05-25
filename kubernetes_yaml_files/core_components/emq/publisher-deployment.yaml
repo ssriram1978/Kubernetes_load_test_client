@@ -50,7 +50,7 @@ spec:
         - name: type_of_messaging_queue_key
           value: RabbitMQ
         image: ssriram1978/publisher:latest
-        imagePullPolicy: IfNotPresent
+        #imagePullPolicy: IfNotPresent
         name: publisher
         resources: {}
         volumeMounts:

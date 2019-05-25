@@ -42,7 +42,7 @@ spec:
           value: "false"
         - name: is_loopback_key
           value: "false"
-        image: ssriram1978/orchestrator:latest
+        #image: ssriram1978/orchestrator:latest
         name: orchestrator
         imagePullPolicy: IfNotPresent
         resources: {}

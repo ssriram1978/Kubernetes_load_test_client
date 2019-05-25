@@ -51,7 +51,7 @@ spec:
         - name: type_of_messaging_queue_key
           value: Pulsar
         image: ssriram1978/subscriber:latest
-        imagePullPolicy: IfNotPresent
+        #imagePullPolicy: IfNotPresent
         name: subscriber
         resources: {}
         volumeMounts:

@@ -51,7 +51,7 @@ spec:
           value: "100000"
         - name: type_of_messaging_queue_key
           value: RabbitMQ
-        image: ssriram1978/publisher:latest
+        #image: ssriram1978/publisher:latest
         name: publisher
         imagePullPolicy: IfNotPresent
         resources: {}
