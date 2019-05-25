@@ -26,6 +26,5 @@ spec:
         resources: {}
       restartPolicy: Always
       nodeSelector:
-        kubernetes:
-          io/hostname: broker
+        kubernetes.io/hostname: broker
 status: {}

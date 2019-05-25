@@ -78,8 +78,7 @@ spec:
       serviceAccountName: kubernetes-dashboard
       # Comment the following tolerations if Dashboard must not be deployed on master
       nodeSelector:
-        kubernetes:
-          io/hostname: transformer-pass
+        kubernetes.io/hostname: transformer-pass
 ---
 kind: Service
 apiVersion: v1

@@ -41,8 +41,7 @@ spec:
           readOnly: true
       restartPolicy: Always
       nodeSelector:
-        kubernetes:
-          io/hostname: elk
+        kubernetes.io/hostname: elk
       volumes:
       - hostPath:
           path: /home/ubuntu/git/IOT_load_test_client/plotter/kibana

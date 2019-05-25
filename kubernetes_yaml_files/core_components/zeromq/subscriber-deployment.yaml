@@ -63,8 +63,7 @@ spec:
           readOnly: true
       restartPolicy: Always
       nodeSelector:
-        kubernetes:
-          io/hostname: subscriber
+        kubernetes.io/hostname: subscriber
       volumes:
       - hostPath:
           path: /var/run/docker.sock

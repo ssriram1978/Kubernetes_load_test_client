@@ -66,8 +66,7 @@ spec:
           readOnly: true
       restartPolicy: Always
       nodeSelector:
-        kubernetes:
-          io/hostname: publisher
+        kubernetes.io/hostname: publisher
       volumes:
       - hostPath:
           path: /var/run/docker.sock
