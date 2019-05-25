@@ -8,6 +8,7 @@ metadata:
   labels:
     io.kompose.service: publisher
   name: publisher
+  namespace: loadtest
 spec:
   replicas: 1
   strategy:
@@ -47,8 +48,8 @@ spec:
           value: total_produced_count
         - name: type_of_messaging_queue_key
           value: ZeroMQ
-        #image: ssriram1978/publisher:latest
-        imagePullPolicy: IfNotPresent
+        image: ssriram1978/publisher:latest
+        #imagePullPolicy: IfNotPresent
         name: publisher
         ports:
         - containerPort: 50000

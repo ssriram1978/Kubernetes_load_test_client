@@ -9,6 +9,7 @@ metadata:
   labels:
     io.kompose.service: publisher
   name: publisher
+  namespace: loadtest
 spec:
   replicas: 1
   strategy:
@@ -52,8 +53,8 @@ spec:
           value: "10000"
         - name: type_of_messaging_queue_key
           value: WurstMeisterKafka
-        #image: ssriram1978/publisher:latest
-        imagePullPolicy: IfNotPresent
+        image: ssriram1978/publisher:latest
+        #imagePullPolicy: IfNotPresent
         name: publisher
         resources: {}
         volumeMounts:

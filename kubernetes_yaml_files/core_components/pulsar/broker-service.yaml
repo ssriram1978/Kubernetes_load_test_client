@@ -8,6 +8,7 @@ metadata:
   labels:
     io.kompose.service: broker
   name: broker
+  namespace: loadtest
 spec:
   ports:
   - name: "6650"

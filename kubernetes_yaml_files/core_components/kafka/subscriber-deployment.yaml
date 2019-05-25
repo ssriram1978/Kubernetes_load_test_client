@@ -9,6 +9,7 @@ metadata:
   labels:
     io.kompose.service: subscriber
   name: subscriber
+  namespace: loadtest
 spec:
   replicas: 1
   strategy:
@@ -51,8 +52,8 @@ spec:
           value: "9094"
         - name: type_of_messaging_queue_key
           value: WurstMeisterKafka
-        #image: ssriram1978/subscriber:latest
-        imagePullPolicy: IfNotPresent
+        image: ssriram1978/subscriber:latest
+        #imagePullPolicy: IfNotPresent
         name: subscriber
         resources: {}
         volumeMounts:

@@ -8,6 +8,7 @@ metadata:
   labels:
     io.kompose.service: nats
   name: nats
+  namespace: loadtest
 spec:
   ports:
   - name: "8222"

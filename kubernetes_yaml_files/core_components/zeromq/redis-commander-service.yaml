@@ -8,6 +8,7 @@ metadata:
   labels:
     io.kompose.service: redis-commander
   name: redis-commander
+  namespace: loadtest
 spec:
   ports:
   - name: "32622"

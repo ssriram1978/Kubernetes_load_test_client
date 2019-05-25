@@ -8,6 +8,7 @@ metadata:
   labels:
     io.kompose.service: subscriber
   name: subscriber
+  namespace: loadtest
 spec:
   replicas: 1
   strategy:

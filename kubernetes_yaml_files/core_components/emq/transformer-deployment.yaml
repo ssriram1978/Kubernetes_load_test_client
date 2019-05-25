@@ -44,8 +44,8 @@ spec:
           value: transformer
         - name: type_of_messaging_queue_key
           value: RabbitMQ
-        #image: ssriram1978/transformer:latest
-        imagePullPolicy: IfNotPresent
+        image: ssriram1978/transformer:latest
+        #imagePullPolicy: IfNotPresent
         name: transformer
         resources: {}
         volumeMounts:

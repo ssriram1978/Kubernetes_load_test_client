@@ -8,6 +8,7 @@ metadata:
   labels:
     io.kompose.service: orchestrator
   name: orchestrator
+  namespace: loadtest
 spec:
   replicas: 1
   strategy:
@@ -42,9 +43,9 @@ spec:
           value: "true"
         - name: is_loopback_key
           value: "false"
-        #image: ssriram1978/orchestrator:latest
+        image: ssriram1978/orchestrator:latest
         name: orchestrator
-        imagePullPolicy: IfNotPresent
+        #imagePullPolicy: IfNotPresent
         resources: {}
         volumeMounts:
         - mountPath: /var/run/docker.sock

@@ -52,8 +52,8 @@ spec:
           value: total_produced_count
         - name: type_of_messaging_queue_key
           value: RabbitMQ
-        #image: ssriram1978/subscriber:latest
-        imagePullPolicy: IfNotPresent
+        image: ssriram1978/subscriber:latest
+        #imagePullPolicy: IfNotPresent
         name: subscriber
         resources: {}
         volumeMounts:

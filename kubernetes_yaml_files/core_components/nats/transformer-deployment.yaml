@@ -8,6 +8,7 @@ metadata:
   labels:
     io.kompose.service: transformer
   name: transformer
+  namespace: loadtest
 spec:
   replicas: 1
   strategy:
@@ -42,8 +43,8 @@ spec:
           value: transformer
         - name: type_of_messaging_queue_key
           value: NATS
-        #image: ssriram1978/transformer:latest
-        imagePullPolicy: IfNotPresent
+        image: ssriram1978/transformer:latest
+        #imagePullPolicy: IfNotPresent
         name: transformer
         resources: {}
         volumeMounts:
