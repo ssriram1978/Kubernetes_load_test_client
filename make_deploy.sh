@@ -505,28 +505,34 @@ connect_to_mec() {
    ps aux | grep id_rsa_mec |  awk '{print $2}' | xargs kill -9
 
    echo "kubernetes dashboard: http://localhost:30783"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 30783:10.10.75.12:30783 &
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 30783:10.10.75.25:30783 &
 
    echo "Redis: http://localhost:32622"
    ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 32622:10.10.75.12:32622 &
 
-   echo "netdata Master loadtest3: http://localhost:19999"
+   echo "netdata master: http://localhost:19999"
    ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 19999:10.10.75.12:19999 &
 
-   echo "netdata loadtest4: http://localhost:20000"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20000:10.10.75.14:19999 &
+   echo "netdata publisher: http://localhost:20000"
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20000:10.10.75.32:19999 &
 
-   echo "netdata loadtest1: http://localhost:20001"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20001:10.10.75.10:19999 &
+   echo "netdata subscriber: http://localhost:20001"
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20001:10.10.75.6:19999 &
 
-   echo "netdata loadtest2: http://localhost:20002"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20002:10.10.75.25:19999 &
+   echo "netdata broker: http://localhost:20002"
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20002:10.10.75.14:19999 &
 
-   echo "ELK loadtest1: http://localhost:20006"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20006:10.10.75.10:5601 &
+   echo "netdata transformer: http://localhost:20003"
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20003:10.10.75.25:19999 &
 
-   echo "EMQX loadtest1: http://localhost:18083"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 32333:10.10.75.12:32333 &
+   echo "netdata elk: http://localhost:20004"
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20004:10.10.75.21:19999 &
+
+   echo "EMQX broker: http://localhost:32333"
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 32333:10.10.75.14:32333 &
+
+   echo "RabbitMQ loadtest3: http://localhost:30104"
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 30104:10.10.75.14:30104 &
 
 }
 

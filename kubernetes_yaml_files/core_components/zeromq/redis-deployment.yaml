@@ -28,5 +28,6 @@ spec:
       #  - key: node-role.kubernetes.io/master
       #    effect: NoSchedule
       nodeSelector:
-        vmname: loadtest3
+        kubernetes:
+          io/hostname: transformer-pass
 status: {}

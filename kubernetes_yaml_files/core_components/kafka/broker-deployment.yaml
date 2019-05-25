@@ -49,7 +49,8 @@ spec:
           readOnly: true
       restartPolicy: Always
       nodeSelector:
-        vmname: loadtest3
+       kubernetes:
+          io/hostname: broker
       volumes:
       - hostPath:
           path: /var/run/docker.sock

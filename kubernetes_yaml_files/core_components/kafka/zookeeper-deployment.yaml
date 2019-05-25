@@ -33,6 +33,9 @@ spec:
           name: zookeeper-hostpath1
           readOnly: true
       restartPolicy: Always
+      nodeSelector:
+        kubernetes:
+          io/hostname: transformer-pass
       volumes:
       - hostPath:
           path: /etc/timezone

@@ -42,7 +42,8 @@ spec:
           name: rabbitmq-hostpath3
       restartPolicy: Always
       nodeSelector:
-        vmname: loadtest3
+        kubernetes:
+          io/hostname: broker
       volumes:
       - hostPath:
           path: /home/ubuntu/git/IOT_load_test_client/infrastructure_components/publisher_subscriber/rabbit_msgq_api/rabbitmq_conf_plugins/enabled_plugins

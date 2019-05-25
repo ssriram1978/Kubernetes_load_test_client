@@ -46,7 +46,10 @@ spec:
           readOnly: true
       restartPolicy: Always
       nodeSelector:
-         vmname: loadtest4
+         vmname: elk
+      nodeSelector:
+        kubernetes:
+          io/hostname: subscriber
       volumes:
       - hostPath:
           path: /home/ubuntu/git/IOT_load_test_client/plotter/filebeat/filebeat.docker.yml

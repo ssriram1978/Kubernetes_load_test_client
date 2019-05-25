@@ -26,5 +26,6 @@ spec:
         resources: {}
       restartPolicy: Always
       nodeSelector:
-        vmname: loadtest3
+        kubernetes:
+          io/hostname: broker
 status: {}

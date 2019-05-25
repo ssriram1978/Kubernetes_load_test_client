@@ -56,8 +56,8 @@ spec:
           name: orchestrator-hostpath2
           readOnly: true
       restartPolicy: Always
-      nodeSelector:
-        vmname: loadtest3
+        kubernetes:
+          io/hostname: transformer-pass
       volumes:
       - hostPath:
           path: /var/run/docker.sock
