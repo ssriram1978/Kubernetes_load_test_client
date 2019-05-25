@@ -16,14 +16,18 @@
 # Kubernetes 1.6 (RBAC enabled).
 #
 # Example usage: kubectl create -f <this_file>
-
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: common-infrastructure
+---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   labels:
     k8s-app: kubernetes-dashboard
   name: kubernetes-dashboard
-  namespace: kube-system
+  namespace: common-infrastructure
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
@@ -38,7 +42,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: kubernetes-dashboard
-  namespace: kube-system
+  namespace: common-infrastructure
 ---
 kind: Deployment
 apiVersion: extensions/v1beta1
@@ -46,7 +50,7 @@ metadata:
   labels:
     k8s-app: kubernetes-dashboard
   name: kubernetes-dashboard
-  namespace: kube-system
+  namespace: common-infrastructure
 spec:
   replicas: 1
   revisionHistoryLimit: 10
@@ -86,7 +90,7 @@ metadata:
   labels:
     k8s-app: kubernetes-dashboard
   name: kubernetes-dashboard
-  namespace: kube-system
+  namespace: common-infrastructure
 spec:
   ports:
   - port: 30783
