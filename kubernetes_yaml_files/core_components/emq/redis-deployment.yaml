@@ -8,6 +8,7 @@ metadata:
   labels:
     io.kompose.service: redis
   name: redis
+  namespace: loadtest
 spec:
   replicas: 1
   strategy: {}
@@ -16,6 +17,7 @@ spec:
       creationTimestamp: null
       labels:
         io.kompose.service: redis
+      namespace: loadtest
     spec:
       containers:
       - image: redis:latest

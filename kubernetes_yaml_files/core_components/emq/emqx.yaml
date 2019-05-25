@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: emqx
+  namespace: loadtest
 spec:
   ports:
   - name: "32333"
@@ -34,12 +35,14 @@ metadata:
   name: emqx
   labels:
         app: emqx
+  namespace: loadtest
 spec:
   replicas: 2
   template:
     metadata:
       labels:
         app: emqx
+      namespace: loadtest
     spec:
       containers:
       - name: emqx

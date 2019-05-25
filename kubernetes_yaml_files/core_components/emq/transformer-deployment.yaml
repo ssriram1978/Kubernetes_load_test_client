@@ -8,6 +8,7 @@ metadata:
   labels:
     io.kompose.service: transformer
   name: transformer
+  namespace: loadtest
 spec:
   replicas: 1
   strategy:
@@ -17,6 +18,7 @@ spec:
       creationTimestamp: null
       labels:
         io.kompose.service: transformer
+      namespace: loadtest
     spec:
       containers:
       - env:
