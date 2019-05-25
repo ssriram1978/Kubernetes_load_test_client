@@ -483,11 +483,11 @@ bootup_vm() {
   echo "deploy_cpu_ram_monitor"
   deploy_cpu_ram_monitor
 
-  echo "build_logstash"
-  build_logstash
+  #echo "build_logstash"
+  #build_logstash
 
-  echo "tag_nodes"
-  tag_nodes
+  #echo "tag_nodes"
+  #tag_nodes
 
   echo "deploy_infrastructure"
   deploy_infrastructure

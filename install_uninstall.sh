@@ -111,8 +111,8 @@ install_kubernetes() {
      echo "sudo chown \$(id -u):\$(id -g) \$HOME/.kube/config"
      sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
-     echo "sudo kubectl taint nodes --all node-role.kubernetes.io/master-"
-     sudo kubectl taint nodes --all node-role.kubernetes.io/master-
+     #echo "sudo kubectl taint nodes --all node-role.kubernetes.io/master-"
+     #sudo kubectl taint nodes --all node-role.kubernetes.io/master-
 
      #echo "sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml"
      #sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
