@@ -1,0 +1,53 @@
+version: '3'
+services:
+  portainer:
+    image: portainer/portainer
+    ports:
+      - "9000:9000"
+    command: -H unix:///var/run/docker.sock
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./infrastructure_components/portainer:/data
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+  logstash:
+    #latency --> painless  --> return Float.parseFloat(doc['latency.keyword'].value);
+    #curl 'localhost:9200/_cat/indices?v'
+    build:
+      context: ./plotter/logstash
+      dockerfile: Dockerfile
+    image: ssriram1978/logstash:latest
+    ports:
+      - "5044:5044"
+      - "9600:9600"
+    depends_on:
+      - elasticsearch
+      - kibana
+    volumes:
+      - ./plotter/logstash:/usr/share/logstash/data
+      - /var/run/docker.sock:/var/run/docker.sock
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+  kibana:
+    image: docker.elastic.co/kibana/kibana-oss:6.7.1
+    depends_on:
+      - elasticsearch
+    ports:
+      - '5601:5601'
+    volumes:
+      - ./plotter/kibana:/usr/share/kibana/data
+      - ./plotter/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+      - /var/run/docker.sock:/var/run/docker.sock
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.7.1
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - ./plotter/elasticsearch:/usr/share/elasticsearch/data
+      - ./plotter/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - /var/run/docker.sock:/var/run/docker.sock
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"

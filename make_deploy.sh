@@ -81,7 +81,7 @@ create_infrastructure() {
         echo "docker-compose -f $2 build"
         docker-compose -f $2 build
 
-        echo "docker push ssriram/logstash:latest"
+        echo "docker push ssriram1978/logstash:latest"
         docker push $tag/logstash:latest
     else
         echo "build_push_directory $tag"
@@ -397,9 +397,12 @@ deploy_elk() {
 
 }
 
-build_logstash() {
-  echo "docker-compose -f  docker_stack_yml_filesdocker-stack-infrastructure.yml  build"
-   docker-compose -f  docker_stack_yml_filesdocker-stack-infrastructure.yml  build
+build_deploy_logstash() {
+  echo "docker-compose -f  docker-stack-infrastructure.yml  build"
+  docker-compose -f  docker-stack-infrastructure.yml  build
+
+  echo "docker push ssriram1978/logstash:latest"
+  docker push ssriram1978/logstash:latest
 }
 
 undeploy_elk() {
@@ -586,7 +589,7 @@ case "$1" in
   undeploy_core) undeploy_core $2 ;;
   deploy_infrastructure) deploy_infrastructure ;;
   undeploy_infrastructure) undeploy_infrastructure ;;
-  build_logstash) build_logstash ;;
+  build_logstash) build_deploy_logstash ;;
   bootup_vm) bootup_vm ;;
   tag_nodes) tag_nodes ;;
   docker_elk) docker_compose_elk_infrastructure $2 ;;
