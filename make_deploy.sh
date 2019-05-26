@@ -393,6 +393,8 @@ deploy_elk() {
 
    echo "kubectl apply -f kubernetes_yaml_files/elk_components/"
    kubectl apply -f kubernetes_yaml_files/elk_components/
+
+
 }
 
 build_logstash() {
@@ -401,6 +403,12 @@ build_logstash() {
 }
 
 undeploy_elk() {
+   echo "curl 'localhost:9200/_cat/indices?v'"
+   curl 'localhost:9200/_cat/indices?v'
+
+   echo "curl -XDELETE 'localhost:9200/*"
+   curl -XDELETE 'localhost:9200/*'
+
    echo "kubectl delete -f kubernetes_yaml_files/elk_components/"
    kubectl delete -f kubernetes_yaml_files/elk_components/
 }
