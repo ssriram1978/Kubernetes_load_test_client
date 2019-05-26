@@ -11,5 +11,7 @@ filebeat.autodiscover:
       #output.elasticsearch:
       #hosts: '${ELASTICSEARCH_HOSTS:elasticsearch:9200}'
 output.logstash:
-        hosts: ["logstash.elk.svc.cluster.local:5044"]
+        #hosts: ["logstash.elk.svc.cluster.local:5044"]
+        hosts: ["10.10.75.21:5044"]
+
 
