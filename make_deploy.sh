@@ -505,13 +505,13 @@ connect_to_mec() {
    ps aux | grep id_rsa_mec |  awk '{print $2}' | xargs kill -9
 
    echo "kubernetes dashboard: http://localhost:30783"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 30783:10.10.75.25:30783 &
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 30783:10.10.75.36:30783 &
 
    echo "Redis: http://localhost:32622"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 32622:10.10.75.12:32622 &
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 32622:10.10.75.36:32622 &
 
    echo "netdata master: http://localhost:19999"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 19999:10.10.75.12:19999 &
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 19999:10.10.75.17:19999 &
 
    echo "netdata publisher: http://localhost:20000"
    ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20000:10.10.75.32:19999 &
@@ -527,6 +527,9 @@ connect_to_mec() {
 
    echo "netdata elk: http://localhost:20004"
    ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20004:10.10.75.21:19999 &
+
+   echo "netdata common infra: http://localhost:20005"
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20005:10.10.75.36:19999 &
 
    echo "EMQX broker: http://localhost:32333"
    ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 32333:10.10.75.14:32333 &

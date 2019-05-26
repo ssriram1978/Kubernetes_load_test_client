@@ -33,5 +33,5 @@ spec:
       #  - key: node-role.kubernetes.io/master
       #    effect: NoSchedule
       nodeSelector:
-        kubernetes.io/hostname: transformer-pass
+        kubernetes.io/hostname: common-infra
 status: {}
