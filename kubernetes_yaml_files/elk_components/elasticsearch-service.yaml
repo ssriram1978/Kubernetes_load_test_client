@@ -8,6 +8,7 @@ metadata:
   labels:
     io.kompose.service: elasticsearch
   name: elasticsearch
+  namespace: elk
 spec:
   ports:
   - name: "9200"

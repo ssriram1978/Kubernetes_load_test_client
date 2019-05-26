@@ -23,7 +23,7 @@ spec:
       creationTimestamp: null
       labels:
         io.kompose.service: orchestrator
-      namespace: loadtest
+      namespace: common-infratructure
     spec:
       containers:
       - env:
@@ -64,7 +64,7 @@ spec:
           readOnly: true
       restartPolicy: Always
       nodeSelector:
-       kubernetes.io/hostname: transformer-pass
+       kubernetes.io/hostname: common-infra
       volumes:
       - hostPath:
           path: /var/run/docker.sock

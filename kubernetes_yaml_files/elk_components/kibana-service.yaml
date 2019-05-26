@@ -8,6 +8,7 @@ metadata:
   labels:
     io.kompose.service: kibana
   name: kibana
+  namespace: elk
 spec:
   ports:
   - name: "5601"

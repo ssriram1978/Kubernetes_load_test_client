@@ -8,7 +8,7 @@ metadata:
   labels:
     io.kompose.service: orchestrator
   name: orchestrator
-  namespace: loadtest
+  namespace: common-infratructure
 spec:
   replicas: 1
   strategy:
@@ -58,7 +58,7 @@ spec:
           readOnly: true
       restartPolicy: Always
       nodeSelector:
-       kubernetes.io/hostname: transformer-pass
+       kubernetes.io/hostname: common-infra
       volumes:
       - hostPath:
           path: /var/run/docker.sock

@@ -8,6 +8,7 @@ metadata:
   labels:
     io.kompose.service: logstash
   name: logstash
+  namespace: elk
 spec:
   ports:
   - name: "5044"
