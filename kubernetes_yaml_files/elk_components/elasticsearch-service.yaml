@@ -13,11 +13,13 @@ spec:
   ports:
   - name: "9200"
     port: 9200
+    nodePort: 30011
     targetPort: 9200
   - name: "9300"
     port: 9300
     targetPort: 9300
   selector:
     io.kompose.service: elasticsearch
+  type: NodePort
 status:
   loadBalancer: {}

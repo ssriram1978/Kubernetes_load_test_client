@@ -403,11 +403,11 @@ build_logstash() {
 }
 
 undeploy_elk() {
-   echo "curl 'localhost:9200/_cat/indices?v'"
-   curl 'localhost:9200/_cat/indices?v'
+   echo "curl \'localhost:30011/_cat/indices?v\'"
+   curl 'localhost:30011/_cat/indices?v'
 
-   echo "curl -XDELETE 'localhost:9200/*"
-   curl -XDELETE 'localhost:9200/*'
+   echo "curl -XDELETE 'localhost:30011/*"
+   curl -XDELETE 'localhost:30011/*'
 
    echo "kubectl delete -f kubernetes_yaml_files/elk_components/"
    kubectl delete -f kubernetes_yaml_files/elk_components/
@@ -544,6 +544,15 @@ connect_to_mec() {
 
    echo "RabbitMQ loadtest3: http://localhost:30104"
    ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 30104:10.10.75.14:30104 &
+
+   echo "Kibana elk: http://localhost:30010"
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 30010:10.10.75.21:20010 &
+
+   echo "Elasticsearch elk: http://localhost:30011"
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 30011:10.10.75.21:30011 &
+
+   echo "Logstash elk: http://localhost:30012"
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 30012:10.10.75.21:30012 &
 
 }
 

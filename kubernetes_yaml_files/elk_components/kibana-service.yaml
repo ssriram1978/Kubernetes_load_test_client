@@ -13,8 +13,10 @@ spec:
   ports:
   - name: "5601"
     port: 5601
+    nodePort: 30010
     targetPort: 5601
   selector:
     io.kompose.service: kibana
+  type: NodePort
 status:
   loadBalancer: {}

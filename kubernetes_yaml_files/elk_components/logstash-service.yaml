@@ -13,11 +13,13 @@ spec:
   ports:
   - name: "5044"
     port: 5044
+    nodePort: 30012
     targetPort: 5044
   - name: "9600"
     port: 9600
     targetPort: 9600
   selector:
     io.kompose.service: logstash
+  type: NodePort
 status:
   loadBalancer: {}
