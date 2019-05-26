@@ -75,8 +75,8 @@ create_infrastructure() {
         #displayer \
         #$tag
 
-        echo "docker-compose -f  docker_stack/docker-stack-common.yml build"
-        docker-compose -f docker_stack/docker-stack-common.yml build
+        echo "docker-compose -f  docker_stack_yml_filesdocker-stack-common.yml build"
+        docker-compose -f docker_stack_yml_filesdocker-stack-common.yml build
 
         echo "docker-compose -f $2 build"
         docker-compose -f $2 build
@@ -98,7 +98,7 @@ monitor_infrastructure() {
    stack_tag=$3
 
     if [[ -z $2 ]]; then
-        yaml_file="docker_stack/docker-stack-infrastructure.yml"
+        yaml_file="docker_stack_yml_filesdocker-stack-infrastructure.yml"
     fi
 
     if [[ -z $3 ]]; then
@@ -129,7 +129,7 @@ docker_compose_elk_infrastructure() {
    stack_tag=$3
 
     if [[ -z $2 ]]; then
-        yaml_file="docker_stack/docker-stack-infrastructure.yml"
+        yaml_file="docker_stack_yml_filesdocker-stack-infrastructure.yml"
     fi
 
     if [[ -z $3 ]]; then
@@ -168,8 +168,8 @@ deploy_infrastructure() {
    echo "chown root:root plotter/filebeat/filebeat.docker.yml"
    sudo chown root:root plotter/filebeat/filebeat.docker.yml
 
-   echo "docker stack deploy --compose-file docker_stack/docker-stack-common.yml -c $yaml_file $tag"
-   docker stack deploy --compose-file docker_stack/docker-stack-common.yml  -c $yaml_file $tag
+   echo "docker stack deploy --compose-file docker_stack_yml_filesdocker-stack-common.yml -c $yaml_file $tag"
+   docker stack deploy --compose-file docker_stack_yml_filesdocker-stack-common.yml  -c $yaml_file $tag
 }
 
 optimize_host() {
@@ -398,8 +398,8 @@ deploy_elk() {
 }
 
 build_logstash() {
-  echo "docker-compose -f  docker_stack/docker-stack-infrastructure.yml  build"
-   docker-compose -f  docker_stack/docker-stack-infrastructure.yml  build
+  echo "docker-compose -f  docker_stack_yml_filesdocker-stack-infrastructure.yml  build"
+   docker-compose -f  docker_stack_yml_filesdocker-stack-infrastructure.yml  build
 }
 
 undeploy_elk() {
