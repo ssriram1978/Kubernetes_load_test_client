@@ -23,7 +23,7 @@ spec:
       creationTimestamp: null
       labels:
         io.kompose.service: orchestrator
-      namespace: common-infratructure
+      namespace: common-infrastructure
     spec:
       containers:
       - env:

@@ -8,7 +8,7 @@ metadata:
   labels:
     io.kompose.service: orchestrator
   name: orchestrator
-  namespace: common-infratructure
+  namespace: common-infrastructure
 spec:
   replicas: 1
   strategy:

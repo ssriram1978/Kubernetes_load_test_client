@@ -388,8 +388,8 @@ deploy_cpu_ram_monitor() {
 }
 
 deploy_elk() {
-   echo "docker-compose -f  docker-stack-infrastructure.yml  build"
-   docker-compose -f  docker-stack-infrastructure.yml  build
+   #echo "docker-compose -f  docker-stack-infrastructure.yml  build"
+   #docker-compose -f  docker-stack-infrastructure.yml  build
 
    echo "kubectl apply -f kubernetes_yaml_files/elk_components/"
    kubectl apply -f kubernetes_yaml_files/elk_components/

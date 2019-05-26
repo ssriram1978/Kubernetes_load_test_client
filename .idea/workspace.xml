@@ -3,7 +3,12 @@
   <component name="ChangeListManager">
     <list default="true" id="a412cb8e-0925-41a1-9e4d-6db89dfd400b" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kubernetes_yaml_files/common_components/kube-dashboard.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/kubernetes_yaml_files/common_components/kube-dashboard.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kubernetes_yaml_files/core_components/emq/orchestrator-deployment.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/kubernetes_yaml_files/core_components/emq/orchestrator-deployment.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/orchestrator-deployment.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/orchestrator-deployment.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kubernetes_yaml_files/core_components/nats/orchestrator-deployment.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/kubernetes_yaml_files/core_components/nats/orchestrator-deployment.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kubernetes_yaml_files/core_components/pulsar/orchestrator-deployment.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/kubernetes_yaml_files/core_components/pulsar/orchestrator-deployment.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kubernetes_yaml_files/core_components/rabbitmq/orchestrator-deployment.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/kubernetes_yaml_files/core_components/rabbitmq/orchestrator-deployment.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kubernetes_yaml_files/core_components/zeromq/orchestrator-deployment.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/kubernetes_yaml_files/core_components/zeromq/orchestrator-deployment.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/make_deploy.sh" beforeDir="false" afterPath="$PROJECT_DIR$/make_deploy.sh" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -17,80 +22,86 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/make_deploy.sh">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="649">
-              <caret line="531" column="102" selection-start-line="531" selection-start-column="102" selection-end-line="531" selection-end-column="102" />
+            <state relative-caret-position="-2556">
+              <caret line="392" lean-forward="true" selection-start-line="392" selection-end-line="392" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/common_components/docker-stack-common_yml">
-          <provider selected="true" editor-type-id="text-editor" />
+        <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/emq/orchestrator-deployment.yaml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="194">
+              <caret line="25" column="38" selection-start-line="25" selection-start-column="24" selection-end-line="25" selection-end-column="38" />
+            </state>
+          </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/common_components/filebeat-deployment.yaml">
+        <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/orchestrator-deployment.yaml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-975" />
+            <state relative-caret-position="220">
+              <caret line="10" column="34" selection-start-line="10" selection-start-column="34" selection-end-line="10" selection-end-column="34" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/nats/orchestrator-deployment.yaml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="220">
+              <caret line="10" column="34" selection-start-line="10" selection-start-column="34" selection-end-line="10" selection-end-column="34" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/pulsar/orchestrator-deployment.yaml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="220">
+              <caret line="10" column="34" selection-start-line="10" selection-start-column="34" selection-end-line="10" selection-end-column="34" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/rabbitmq/orchestrator-deployment.yaml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="220">
+              <caret line="10" column="34" selection-start-line="10" selection-start-column="34" selection-end-line="10" selection-end-column="34" />
+            </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/common_components/kube-dashboard.yaml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="502">
-              <caret line="80" column="44" selection-start-line="80" selection-start-column="44" selection-end-line="80" selection-end-column="44" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/zeromq/publisher-deployment.yaml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1514">
-              <caret line="39" column="62" selection-start-line="39" selection-start-column="62" selection-end-line="39" selection-end-column="62" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/zeromq/publisher-service.yaml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-12921" />
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/zeromq/subscriber-deployment.yaml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="431">
-              <caret line="36" column="28" selection-start-line="36" selection-start-column="28" selection-end-line="36" selection-end-column="28" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/zeromq/transformer-deployment.yaml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="385">
-              <caret line="32" column="62" selection-start-line="32" selection-start-column="62" selection-end-line="32" selection-end-column="62" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/zeromq/orchestrator-deployment.yaml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-271">
-              <caret line="30" column="62" selection-start-line="30" selection-start-column="62" selection-end-line="30" selection-end-column="62" />
+            <state relative-caret-position="220">
+              <caret line="10" column="34" selection-start-line="10" selection-start-column="34" selection-end-line="10" selection-end-column="34" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/install_uninstall.sh">
+        <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/elk_components/kibana-service.yaml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-4202" />
+            <state relative-caret-position="220">
+              <caret line="10" column="16" selection-start-line="10" selection-start-column="16" selection-end-line="10" selection-end-column="16" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/elk_components/logstash-deployment.yaml">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/elk_components/logstash-service.yaml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="220">
+              <caret line="10" column="16" selection-start-line="10" selection-start-column="16" selection-end-line="10" selection-end-column="16" />
+            </state>
           </provider>
         </entry>
       </file>
@@ -122,12 +133,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/emq/redis-commander-service.yaml" />
-        <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/emq/redis-deployment.yaml" />
-        <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/emq/redis-service.yaml" />
-        <option value="$PROJECT_DIR$/kubernetes_yaml_files/common_components/filebeat-deployment.yaml" />
-        <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/redis-commander-deployment.yaml" />
-        <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/redis-commander-service.yaml" />
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/redis-deployment.yaml" />
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/redis-service.yaml" />
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/zeromq/publisher-service.yaml" />
@@ -141,7 +146,6 @@
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/rabbitmq/publisher-deployment.yaml" />
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/rabbitmq/subscriber-deployment.yaml" />
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/rabbitmq/transformer-deployment.yaml" />
-        <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/rabbitmq/orchestrator-deployment.yaml" />
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/broker-service.yaml" />
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/broker-deployment.yaml" />
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/zookeeper-deployment.yaml" />
@@ -154,25 +158,32 @@
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/emq/publisher-deployment.yaml" />
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/emq/subscriber-deployment.yaml" />
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/emq/transformer-deployment.yaml" />
-        <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/emq/orchestrator-deployment.yaml" />
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/publisher-deployment.yaml" />
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/subscriber-deployment.yaml" />
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/transformer-deployment.yaml" />
-        <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/orchestrator-deployment.yaml" />
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/nats/publisher-deployment.yaml" />
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/nats/subscriber-deployment.yaml" />
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/nats/transformer-deployment.yaml" />
-        <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/nats/orchestrator-deployment.yaml" />
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/pulsar/publisher-deployment.yaml" />
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/pulsar/subscriber-deployment.yaml" />
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/pulsar/transformer-deployment.yaml" />
-        <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/pulsar/orchestrator-deployment.yaml" />
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/zeromq/publisher-deployment.yaml" />
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/zeromq/subscriber-deployment.yaml" />
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/zeromq/transformer-deployment.yaml" />
-        <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/zeromq/orchestrator-deployment.yaml" />
-        <option value="$PROJECT_DIR$/make_deploy.sh" />
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/common_components/kube-dashboard.yaml" />
+        <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/emq/redis-commander-deployment.yaml" />
+        <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/emq/redis-deployment.yaml" />
+        <option value="$PROJECT_DIR$/kubernetes_yaml_files/elk_components/elasticsearch-deployment.yaml" />
+        <option value="$PROJECT_DIR$/kubernetes_yaml_files/elk_components/elasticsearch-service.yaml" />
+        <option value="$PROJECT_DIR$/kubernetes_yaml_files/elk_components/kibana-service.yaml" />
+        <option value="$PROJECT_DIR$/kubernetes_yaml_files/elk_components/logstash-service.yaml" />
+        <option value="$PROJECT_DIR$/make_deploy.sh" />
+        <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/emq/orchestrator-deployment.yaml" />
+        <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/orchestrator-deployment.yaml" />
+        <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/nats/orchestrator-deployment.yaml" />
+        <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/pulsar/orchestrator-deployment.yaml" />
+        <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/rabbitmq/orchestrator-deployment.yaml" />
+        <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/zeromq/orchestrator-deployment.yaml" />
       </list>
     </option>
   </component>
@@ -191,93 +202,7 @@
     </navigator>
     <panes>
       <pane id="Scope" />
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="IOT_load_test_client" type="b2602c69:ProjectViewProjectNode" />
-              <item name="IOT_load_test_client" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="IOT_load_test_client" type="b2602c69:ProjectViewProjectNode" />
-              <item name="IOT_load_test_client" type="462c0819:PsiDirectoryNode" />
-              <item name="kubernetes_yaml_files" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="IOT_load_test_client" type="b2602c69:ProjectViewProjectNode" />
-              <item name="IOT_load_test_client" type="462c0819:PsiDirectoryNode" />
-              <item name="kubernetes_yaml_files" type="462c0819:PsiDirectoryNode" />
-              <item name="common_components" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="IOT_load_test_client" type="b2602c69:ProjectViewProjectNode" />
-              <item name="IOT_load_test_client" type="462c0819:PsiDirectoryNode" />
-              <item name="kubernetes_yaml_files" type="462c0819:PsiDirectoryNode" />
-              <item name="core_components" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="IOT_load_test_client" type="b2602c69:ProjectViewProjectNode" />
-              <item name="IOT_load_test_client" type="462c0819:PsiDirectoryNode" />
-              <item name="kubernetes_yaml_files" type="462c0819:PsiDirectoryNode" />
-              <item name="core_components" type="462c0819:PsiDirectoryNode" />
-              <item name="emq" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="IOT_load_test_client" type="b2602c69:ProjectViewProjectNode" />
-              <item name="IOT_load_test_client" type="462c0819:PsiDirectoryNode" />
-              <item name="kubernetes_yaml_files" type="462c0819:PsiDirectoryNode" />
-              <item name="core_components" type="462c0819:PsiDirectoryNode" />
-              <item name="kafka" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="IOT_load_test_client" type="b2602c69:ProjectViewProjectNode" />
-              <item name="IOT_load_test_client" type="462c0819:PsiDirectoryNode" />
-              <item name="kubernetes_yaml_files" type="462c0819:PsiDirectoryNode" />
-              <item name="core_components" type="462c0819:PsiDirectoryNode" />
-              <item name="nats" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="IOT_load_test_client" type="b2602c69:ProjectViewProjectNode" />
-              <item name="IOT_load_test_client" type="462c0819:PsiDirectoryNode" />
-              <item name="kubernetes_yaml_files" type="462c0819:PsiDirectoryNode" />
-              <item name="core_components" type="462c0819:PsiDirectoryNode" />
-              <item name="pulsar" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="IOT_load_test_client" type="b2602c69:ProjectViewProjectNode" />
-              <item name="IOT_load_test_client" type="462c0819:PsiDirectoryNode" />
-              <item name="kubernetes_yaml_files" type="462c0819:PsiDirectoryNode" />
-              <item name="core_components" type="462c0819:PsiDirectoryNode" />
-              <item name="rabbitmq" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="IOT_load_test_client" type="b2602c69:ProjectViewProjectNode" />
-              <item name="IOT_load_test_client" type="462c0819:PsiDirectoryNode" />
-              <item name="kubernetes_yaml_files" type="462c0819:PsiDirectoryNode" />
-              <item name="core_components" type="462c0819:PsiDirectoryNode" />
-              <item name="zeromq" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="IOT_load_test_client" type="b2602c69:ProjectViewProjectNode" />
-              <item name="IOT_load_test_client" type="462c0819:PsiDirectoryNode" />
-              <item name="kubernetes_yaml_files" type="462c0819:PsiDirectoryNode" />
-              <item name="elk_components" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="IOT_load_test_client" type="b2602c69:ProjectViewProjectNode" />
-              <item name="IOT_load_test_client" type="462c0819:PsiDirectoryNode" />
-              <item name="plotter" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="IOT_load_test_client" type="b2602c69:ProjectViewProjectNode" />
-              <item name="IOT_load_test_client" type="462c0819:PsiDirectoryNode" />
-              <item name="plotter" type="462c0819:PsiDirectoryNode" />
-              <item name="filebeat" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
+      <pane id="ProjectPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -292,10 +217,10 @@
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/kubernetes_yaml_files/core_components/zeromq" />
+      <recent name="$PROJECT_DIR$/kubernetes_yaml_files/core_components/rabbitmq" />
       <recent name="$PROJECT_DIR$/kubernetes_yaml_files/core_components/pulsar" />
       <recent name="$PROJECT_DIR$/kubernetes_yaml_files/core_components/nats" />
       <recent name="$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka" />
-      <recent name="$PROJECT_DIR$/kubernetes_yaml_files/core_components/emq" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/kubernetes_yaml_files/common_components" />
@@ -333,7 +258,7 @@
       <workItem from="1556039498645" duration="15621000" />
       <workItem from="1556113863926" duration="9787000" />
       <workItem from="1558733612968" duration="1963000" />
-      <workItem from="1558785869466" duration="14159000" />
+      <workItem from="1558785869466" duration="15632000" />
     </task>
     <task id="LOCAL-00001" summary="Optimizing RabbitMQ by setting RAM limits.">
       <created>1558788254478</created>
@@ -440,15 +365,28 @@
       <option name="project" value="LOCAL" />
       <updated>1558820997600</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="Moved redis and kubernetes dashboard to common-infra node.">
+      <created>1558874191310</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1558874191310</updated>
+    </task>
+    <task id="LOCAL-00017" summary="Moved orchestrator to common-infrastructure namespace and common-infra node.&#10;Moved elk services to elk namespace.">
+      <created>1558874890220</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1558874890220</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="76076000" />
+    <option name="totallyTimeSpent" value="77549000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1680" height="947" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.15873016" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -492,103 +430,11 @@
     <MESSAGE value="loadtest namespace shall be created when creating infrastructure." />
     <MESSAGE value="Trying to move out redis and rabbitmq to common-infrastructure namespace for easier debugging." />
     <MESSAGE value="Moved out redis and broker to a different namespace." />
-    <option name="LAST_COMMIT_MESSAGE" value="Moved out redis and broker to a different namespace." />
+    <MESSAGE value="Moved redis and kubernetes dashboard to common-infra node." />
+    <MESSAGE value="Moved orchestrator to common-infrastructure namespace and common-infra node.&#10;Moved elk services to elk namespace." />
+    <option name="LAST_COMMIT_MESSAGE" value="Moved orchestrator to common-infrastructure namespace and common-infra node.&#10;Moved elk services to elk namespace." />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/rabbitmq/orchestrator-deployment.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="477">
-          <caret line="30" column="62" lean-forward="true" selection-start-line="30" selection-start-column="22" selection-end-line="30" selection-end-column="62" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/redis-commander-deployment.yaml">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/nats/redis-commander-deployment.yaml">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/pulsar/redis-commander-deployment.yaml">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/zeromq/redis-commander-deployment.yaml">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/emq/redis-commander-deployment.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="220">
-          <caret line="10" column="34" lean-forward="true" selection-start-line="10" selection-start-column="2" selection-end-line="10" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/broker-deployment.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="230">
-          <caret line="16" column="34" lean-forward="true" selection-start-line="16" selection-start-column="2" selection-end-line="16" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/broker-service.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="242">
-          <caret line="11" column="34" selection-start-line="11" selection-start-column="34" selection-end-line="11" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/namespace-loadtest.yaml">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/zookeeper-service.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="242">
-          <caret line="11" column="34" selection-start-line="11" selection-start-column="34" selection-end-line="11" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/zookeeper-deployment.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="242">
-          <caret line="11" column="34" selection-start-line="11" selection-start-column="34" selection-end-line="11" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/nats/namespace-loadtest.yaml">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/nats/nats-deployment.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="191">
-          <caret line="15" column="34" selection-start-line="15" selection-start-column="34" selection-end-line="15" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/nats/nats-service.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="220">
-          <caret line="10" column="34" selection-start-line="10" selection-start-column="34" selection-end-line="10" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/pulsar/broker-deployment.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="15" column="34" selection-start-line="15" selection-start-column="34" selection-end-line="15" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/rabbitmq/docker-stack-rabbitmq_yml">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/rabbitmq/namespace-loadtest.yaml">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/rabbitmq/rabbitmq-deployment.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="169">
-          <caret line="15" column="34" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/rabbitmq/rabbitmq-service.yaml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="220">
@@ -597,9 +443,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/zeromq/namespace-loadtest.yaml">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/emq/emq-service_yml">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/emq/emqx.yaml">
@@ -637,13 +480,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/emq/orchestrator-deployment.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="309">
-          <caret line="36" column="62" selection-start-line="36" selection-start-column="62" selection-end-line="36" selection-end-column="62" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/publisher-deployment.yaml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="463">
@@ -665,13 +501,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/orchestrator-deployment.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="56">
-          <caret line="30" column="62" selection-start-line="30" selection-start-column="62" selection-end-line="30" selection-end-column="62" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/nats/publisher-deployment.yaml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="426">
@@ -690,13 +519,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="443">
           <caret line="34" column="62" selection-start-line="34" selection-start-column="62" selection-end-line="34" selection-end-column="62" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/nats/orchestrator-deployment.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="535">
-          <caret line="30" column="62" selection-start-line="30" selection-start-column="62" selection-end-line="30" selection-end-column="62" />
         </state>
       </provider>
     </entry>
@@ -731,13 +553,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/pulsar/orchestrator-deployment.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-38">
-          <caret line="30" column="62" selection-start-line="30" selection-start-column="62" selection-end-line="30" selection-end-column="62" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/zeromq/publisher-deployment.yaml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1514">
@@ -764,23 +579,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/zeromq/orchestrator-deployment.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-271">
-          <caret line="30" column="62" selection-start-line="30" selection-start-column="62" selection-end-line="30" selection-end-column="62" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/install_uninstall.sh">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-4202" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/make_deploy.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="649">
-          <caret line="531" column="102" selection-start-line="531" selection-start-column="102" selection-end-line="531" selection-end-column="102" />
-        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/common_components/docker-stack-common_yml">
@@ -793,8 +594,141 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/common_components/kube-dashboard.yaml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="502">
-          <caret line="80" column="44" selection-start-line="80" selection-start-column="44" selection-end-line="80" selection-end-column="44" />
+        <state relative-caret-position="1760">
+          <caret line="80" column="44" lean-forward="true" selection-start-line="80" selection-start-column="32" selection-end-line="80" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/common_components/namespace-common-infrastructure.yaml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/emq/emq-service_yml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/emq/redis-commander-deployment.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="609">
+          <caret line="35" column="44" selection-start-line="35" selection-start-column="44" selection-end-line="35" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/emq/redis-deployment.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="704">
+          <caret line="32" column="44" selection-start-line="32" selection-start-column="44" selection-end-line="32" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/emq/redis-commander-service.yaml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/emq/redis-service.yaml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/redis-commander-deployment.yaml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/nats/redis-commander-deployment.yaml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/pulsar/redis-commander-deployment.yaml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/rabbitmq/redis-commander-deployment.yaml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/zeromq/redis-commander-deployment.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-59" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/rabbitmq/rabbitmq-deployment.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="88">
+          <caret line="4" column="3" lean-forward="true" selection-end-line="4" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/elk_components/elasticsearch-deployment.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="200">
+          <caret line="15" column="16" lean-forward="true" selection-start-line="15" selection-start-column="2" selection-end-line="15" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/elk_components/elasticsearch-service.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="220">
+          <caret line="10" column="16" selection-start-line="10" selection-start-column="16" selection-end-line="10" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/elk_components/kibana-deployment.yaml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/elk_components/kibana-service.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="220">
+          <caret line="10" column="16" selection-start-line="10" selection-start-column="16" selection-end-line="10" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/elk_components/logstash-deployment.yaml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/elk_components/logstash-service.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="220">
+          <caret line="10" column="16" selection-start-line="10" selection-start-column="16" selection-end-line="10" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/make_deploy.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2556">
+          <caret line="392" lean-forward="true" selection-start-line="392" selection-end-line="392" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/emq/orchestrator-deployment.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="194">
+          <caret line="25" column="38" selection-start-line="25" selection-start-column="24" selection-end-line="25" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/orchestrator-deployment.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="220">
+          <caret line="10" column="34" selection-start-line="10" selection-start-column="34" selection-end-line="10" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/nats/orchestrator-deployment.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="220">
+          <caret line="10" column="34" selection-start-line="10" selection-start-column="34" selection-end-line="10" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/pulsar/orchestrator-deployment.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="220">
+          <caret line="10" column="34" selection-start-line="10" selection-start-column="34" selection-end-line="10" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/rabbitmq/orchestrator-deployment.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="220">
+          <caret line="10" column="34" selection-start-line="10" selection-start-column="34" selection-end-line="10" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/zeromq/orchestrator-deployment.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="220">
+          <caret line="10" column="34" selection-start-line="10" selection-start-column="34" selection-end-line="10" selection-end-column="34" />
         </state>
       </provider>
     </entry>
