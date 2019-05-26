@@ -14,8 +14,8 @@ services:
     #latency --> painless  --> return Float.parseFloat(doc['latency.keyword'].value);
     #curl 'localhost:9200/_cat/indices?v'
     build:
-      context: ./plotter/logstash
-      dockerfile: Dockerfile
+      context: ../plotter/logstash
+      dockerfile: ../plotter/logstash/Dockerfile
     image: ssriram1978/logstash:latest
     ports:
       - "5044:5044"
