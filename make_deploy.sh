@@ -559,6 +559,31 @@ connect_to_mec() {
 
 }
 
+deploy_prometheus_grafana() {
+   echo "kubectl apply \
+  --filename https://raw.githubusercontent.com/giantswarm/kubernetes-prometheus/master/manifests-all.yaml"
+  kubectl apply \
+  --filename https://raw.githubusercontent.com/giantswarm/kubernetes-prometheus/master/manifests-all.yaml
+
+  echo "ps aux | grep grafana |  awk '{print $2}' | xargs kill -9"
+   ps aux | grep grafana |  awk '{print $2}' | xargs kill -9
+
+  echo "kubectl port-forward --namespace monitoring service/grafana 3000:3000 &"
+  kubectl port-forward --namespace monitoring service/grafana 3000:3000 &
+
+
+}
+
+undeploy_prometheus_grafana() {
+   echo "kubectl delete namespace monitoring"
+   kubectl delete namespace monitoring
+
+   echo "ps aux | grep grafana |  awk '{print $2}' | xargs kill -9"
+   ps aux | grep grafana |  awk '{print $2}' | xargs kill -9
+
+}
+
+
 tag_nodes() {
    echo "kubectl label nodes loadtest1 vmname=loadtest1"
    kubectl label nodes loadtest1 vmname=loadtest1
@@ -593,6 +618,8 @@ case "$1" in
   bootup_vm) bootup_vm ;;
   tag_nodes) tag_nodes ;;
   docker_elk) docker_compose_elk_infrastructure $2 ;;
+  deploy_prometheus_grafana) deploy_prometheus_grafana ;;
+  undeploy_prometheus_grafana) undeploy_prometheus_grafana ;;
   *) echo "usage: $0"
       echo "<build <all|directory_name> <yaml file> <tag -- optional> > |"
       echo "<deploy <yaml file> > |"
@@ -613,6 +640,8 @@ case "$1" in
       echo "bootup_vm"
       echo "tag_nodes"
       echo "docker_elk start|stop"
+      echo "deploy_prometheus_grafana"
+      echo "undeploy_prometheus_grafana"
      exit 1
      ;;
 esac
