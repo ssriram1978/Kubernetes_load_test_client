@@ -507,55 +507,65 @@ bootup_vm() {
 
 connect_to_mec() {
    echo "setting port forwarding rules for your local web browser to connect to MEC"
-   echo "loadtest3:10.10.75.12"
-   echo "loadtest4:10.10.75.14"
-   echo "loadtest1:10.10.75.10"
-   echo "loadtest2:10.10.75.25"
+   echo "master:10.10.75.17"
+   echo "common-infra:10.10.75.36"
+   echo "publisher:10.10.75.17"
+   echo "subscriber:10.10.75.6"
+   echo "broker:10.10.75.14"
+   echo "transformer:10.10.75.25"
+   echo "elk:10.10.75.21"
 
    echo "ps aux | grep id_rsa_mec |  awk '{print $2}' | xargs kill -9"
    ps aux | grep id_rsa_mec |  awk '{print $2}' | xargs kill -9
 
    echo "kubernetes dashboard: http://localhost:30783"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 30783:10.10.75.36:30783 &
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 30783:10.10.75.17:30783 &
 
    echo "Redis: http://localhost:32622"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 32622:10.10.75.36:32622 &
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 32622:10.10.75.17:32622 &
 
    echo "netdata master: http://localhost:19999"
    ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 19999:10.10.75.17:19999 &
 
    echo "netdata publisher: http://localhost:20000"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20000:10.10.75.32:19999 &
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20000:10.10.75.17:19999 &
 
    echo "netdata subscriber: http://localhost:20001"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20001:10.10.75.6:19999 &
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20001:10.10.75.17:19999 &
 
    echo "netdata broker: http://localhost:20002"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20002:10.10.75.14:19999 &
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20002:10.10.75.17:19999 &
 
    echo "netdata transformer: http://localhost:20003"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20003:10.10.75.25:19999 &
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20003:10.10.75.17:19999 &
 
    echo "netdata elk: http://localhost:20004"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20004:10.10.75.21:19999 &
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20004:10.10.75.17:19999 &
 
    echo "netdata common infra: http://localhost:20005"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20005:10.10.75.36:19999 &
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20005:10.10.75.17:19999 &
 
    echo "EMQX broker: http://localhost:32333"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 32333:10.10.75.14:32333 &
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 32333:10.10.75.17:32333 &
 
    echo "RabbitMQ loadtest3: http://localhost:30104"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 30104:10.10.75.14:30104 &
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 30104:10.10.75.17:30104 &
 
    echo "Kibana elk: http://localhost:30010"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 30010:10.10.75.21:30010 &
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 30010:10.10.75.17:30010 &
 
    echo "Elasticsearch elk: http://localhost:30011"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 30011:10.10.75.21:30011 &
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 30011:10.10.75.17:30011 &
 
    echo "Logstash elk: http://localhost:30012"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 30012:10.10.75.21:30012 &
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 30012:10.10.75.17:30012 &
+
+   echo "grafana elk: http://localhost:30580"
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 30580:10.10.75.17:30580 &
+
+   echo "prometheus elk: http://localhost:31905"
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 31905:10.10.75.17:31905 &
+
 
 }
 
@@ -568,8 +578,8 @@ deploy_prometheus_grafana() {
   echo "ps aux | grep grafana |  awk '{print $2}' | xargs kill -9"
    ps aux | grep grafana |  awk '{print $2}' | xargs kill -9
 
-  echo "kubectl port-forward --namespace monitoring service/grafana 3000:3000 &"
-  kubectl port-forward --namespace monitoring service/grafana 3000:3000 &
+  #echo "kubectl port-forward --namespace monitoring service/grafana 3000:3000 &"
+  #kubectl port-forward --namespace monitoring service/grafana 3000:3000 &
 
 
 }
