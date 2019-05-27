@@ -549,7 +549,7 @@ connect_to_mec() {
    ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 30104:10.10.75.14:30104 &
 
    echo "Kibana elk: http://localhost:30010"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 30010:10.10.75.21:20010 &
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 30010:10.10.75.21:30010 &
 
    echo "Elasticsearch elk: http://localhost:30011"
    ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 30011:10.10.75.21:30011 &
