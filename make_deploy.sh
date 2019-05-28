@@ -548,7 +548,7 @@ connect_to_mec() {
    echo "EMQX broker: http://localhost:32333"
    ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 32333:10.10.75.17:32333 &
 
-   echo "RabbitMQ loadtest3: http://localhost:30104"
+   echo "RabbitMQ broker: http://localhost:30104"
    ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 30104:10.10.75.17:30104 &
 
    echo "Kibana elk: http://localhost:30010"
@@ -571,9 +571,9 @@ connect_to_mec() {
 
 deploy_prometheus_grafana() {
    echo "kubectl apply \
-  --filename https://raw.githubusercontent.com/giantswarm/kubernetes-prometheus/master/manifests-all.yaml"
+  --filename plotter/prometheus/manifests-all.yaml"
   kubectl apply \
-  --filename https://raw.githubusercontent.com/giantswarm/kubernetes-prometheus/master/manifests-all.yaml
+  --filename plotter/prometheus/manifests-all.yaml
 
   echo "ps aux | grep grafana |  awk '{print $2}' | xargs kill -9"
    ps aux | grep grafana |  awk '{print $2}' | xargs kill -9
