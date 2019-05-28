@@ -509,7 +509,7 @@ connect_to_mec() {
    echo "setting port forwarding rules for your local web browser to connect to MEC"
    echo "master:10.10.75.17"
    echo "common-infra:10.10.75.36"
-   echo "publisher:10.10.75.17"
+   echo "publisher:10.10.75.32"
    echo "subscriber:10.10.75.6"
    echo "broker:10.10.75.14"
    echo "transformer:10.10.75.25"
@@ -548,8 +548,8 @@ connect_to_mec() {
    echo "EMQX broker: http://localhost:32333"
    ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 32333:10.10.75.17:32333 &
 
-   echo "RabbitMQ broker: http://localhost:30104"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 30104:10.10.75.17:30104 &
+   echo "RabbitMQ broker: http://localhost:31672"
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 31672:10.10.75.17:31672 &
 
    echo "Kibana elk: http://localhost:30010"
    ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 30010:10.10.75.17:30010 &
