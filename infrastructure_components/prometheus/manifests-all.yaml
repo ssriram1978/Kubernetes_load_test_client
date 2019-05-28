@@ -2422,8 +2422,9 @@ metadata:
 spec:
   type: NodePort
   ports:
-    - port: 3000
-    nodePort: 30580
+    - name: "30580"
+      port: 3000
+      nodePort: 30580
   selector:
     app: grafana
     component: core
@@ -2895,10 +2896,10 @@ metadata:
 spec:
   type: NodePort
   ports:
-    - port: 9090
+    - name: "webui"
+      port: 9090
       nodePort: 31905
       protocol: TCP
-      name: webui
   selector:
     app: prometheus
     component: core
