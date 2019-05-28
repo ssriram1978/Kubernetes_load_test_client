@@ -2736,8 +2736,6 @@ spec:
             mv /tmp/metrics-temp /tmp/metrics
             sleep 300
           end
-        nodeSelector:
-          kubernetes.io/hostname: elk
         volumeMounts:
         - name: host-fs-var
           mountPath: /mnt/var
@@ -2755,8 +2753,6 @@ spec:
         volumeMounts:
         - name: metrics
           mountPath: /var/www
-      nodeSelector:
-        kubernetes.io/hostname: elk
       volumes:
       - name: host-fs-var
         hostPath:

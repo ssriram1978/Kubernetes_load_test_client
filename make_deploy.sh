@@ -575,8 +575,8 @@ deploy_prometheus_grafana() {
   kubectl apply \
   --filename infrastructure_components/prometheus/manifests-all.yaml
 
-  echo "ps aux | grep grafana |  awk '{print $2}' | xargs kill -9"
-   ps aux | grep grafana |  awk '{print $2}' | xargs kill -9
+  #echo "ps aux | grep grafana |  awk '{print $2}' | xargs kill -9"
+  #ps aux | grep grafana |  awk '{print $2}' | xargs kill -9
 
   #echo "kubectl port-forward --namespace monitoring service/grafana 3000:3000 &"
   #kubectl port-forward --namespace monitoring service/grafana 3000:3000 &
@@ -588,8 +588,8 @@ undeploy_prometheus_grafana() {
    echo "kubectl delete namespace monitoring"
    kubectl delete namespace monitoring
 
-   echo "ps aux | grep grafana |  awk '{print $2}' | xargs kill -9"
-   ps aux | grep grafana |  awk '{print $2}' | xargs kill -9
+   #echo "ps aux | grep grafana |  awk '{print $2}' | xargs kill -9"
+   #ps aux | grep grafana |  awk '{print $2}' | xargs kill -9
 
 }
 
