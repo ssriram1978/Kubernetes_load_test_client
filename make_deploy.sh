@@ -571,9 +571,9 @@ connect_to_mec() {
 
 deploy_prometheus_grafana() {
    echo "kubectl apply \
-  --filename plotter/prometheus/manifests-all.yaml"
+  --filename infrastructure_components/prometheus/manifests-all.yaml"
   kubectl apply \
-  --filename plotter/prometheus/manifests-all.yaml
+  --filename infrastructure_components/prometheus/manifests-all.yaml
 
   echo "ps aux | grep grafana |  awk '{print $2}' | xargs kill -9"
    ps aux | grep grafana |  awk '{print $2}' | xargs kill -9
