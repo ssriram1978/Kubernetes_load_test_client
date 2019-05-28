@@ -2423,6 +2423,7 @@ spec:
   type: NodePort
   ports:
     - port: 3000
+    nodePort: 30580
   selector:
     app: grafana
     component: core
@@ -2895,6 +2896,7 @@ spec:
   type: NodePort
   ports:
     - port: 9090
+      nodePort: 31905
       protocol: TCP
       name: webui
   selector:
