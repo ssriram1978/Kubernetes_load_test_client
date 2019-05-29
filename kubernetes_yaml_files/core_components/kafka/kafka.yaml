@@ -111,7 +111,7 @@ spec:
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       nodeSelector:
-        kubernetes.io/hostname: common-infra
+        kubernetes.io/hostname: broker
       schedulerName: default-scheduler
       securityContext: {}
       terminationGracePeriodSeconds: 60
