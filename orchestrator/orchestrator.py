@@ -59,6 +59,7 @@ class Orchestrator:
         self.subscriber_key_name = None
         self.transformer_key_name = None
         self.distribute_ports = None
+        self.assign_static_topics = False
         self.redis_instance = RedisInterface("Orchestrator")
         self.load_environment_variables()
         self.pub_message_port = Orchestrator.publisher_message_starting_port
@@ -100,6 +101,8 @@ class Orchestrator:
                                                          default=None)
             self.distribute_ports = os.getenv("distribute_ports",
                                               default=None)
+            self.assign_static_topics = os.getenv("assign_static_topics_key",
+                                                  default=None)
 
             time.sleep(1)
         logging.info("is_loopback={},\n"
@@ -109,6 +112,7 @@ class Orchestrator:
                      "publisher_hash_table_name={},\n"
                      "subscriber_hash_table_name={},\n"
                      "distribute_ports={},\n"
+                     "assign_static_topics={},\n"
                      "transformer_hash_table_name={},\n"
                      .format(self.is_loopback,
                              self.publisher_key_name,
@@ -117,6 +121,7 @@ class Orchestrator:
                              self.publisher_hash_table_name,
                              self.subscriber_hash_table_name,
                              self.distribute_ports,
+                             self.assign_static_topics,
                              self.transformer_hash_table_name))
 
     def read_all_containers_from_redis(self, key):
@@ -199,6 +204,52 @@ class Orchestrator:
                         trans_container_id,
                         str({"subscriber": "pub_{}".format(pub_container_id),
                              "publisher": "sub_{}".format(sub_container_id)}))
+                    break
+                break
+
+    def populate_publishers_subscribers_and_transformers_hash_tables_with_static_topics(self,
+                                                                                        pub_list,
+                                                                                        sub_list,
+                                                                                        trans_list):
+        for pub_container_id in self.yield_non_assigned_container(
+                pub_list,
+                self.publisher_hash_table_name):
+            for sub_container_id in self.yield_non_assigned_container(
+                    sub_list,
+                    self.subscriber_hash_table_name):
+                for trans_container_id in self.yield_non_assigned_container(
+                        trans_list,
+                        self.transformer_hash_table_name):
+                    logging.info("Assigning {} to key {} in hash table {}."
+                                 .format(str({"publisher": "{}".format("ThingspaceSDK/864508030155813/UNITOnBoard")}),
+                                         pub_container_id,
+                                         self.publisher_hash_table_name))
+                    self.redis_instance.set_key_to_value_within_name(
+                        self.publisher_hash_table_name,
+                        pub_container_id,
+                        str({"publisher": "{}".format("ThingspaceSDK/864508030155813/UNITOnBoard")}))
+
+                    logging.info("Assigning {} to key {} in hash table {}."
+                                 .format(str({"subscriber": "{}".format("ts/camel")}),
+                                         sub_container_id,
+                                         self.subscriber_hash_table_name))
+
+                    self.redis_instance.set_key_to_value_within_name(
+                        self.subscriber_hash_table_name,
+                        sub_container_id,
+                        str({"subscriber": "{}".format("ts/camel")}))
+
+                    logging.info("Assigning {} to key {} in hash table {}."
+                                 .format(str({"subscriber": "{}".format("ThingspaceSDK/864508030155813/UNITOnBoard"),
+                                              "publisher": "{}".format("ts/camel")}),
+                                         trans_container_id,
+                                         self.transformer_hash_table_name))
+
+                    self.redis_instance.set_key_to_value_within_name(
+                        self.transformer_hash_table_name,
+                        trans_container_id,
+                        str({"subscriber": "{}".format("ThingspaceSDK/864508030155813/UNITOnBoard"),
+                             "publisher": "{}".format("ts/camel")}))
                     break
                 break
 
@@ -297,6 +348,11 @@ class Orchestrator:
             elif self.is_loopback and self.is_loopback == "true":
                 self.populate_publishers_subscribers_hash_tables_with_loopback(publishers,
                                                                                subscribers)
+            elif self.assign_static_topics and self.assign_static_topics == "true":
+                transformers = self.read_all_containers_from_redis(self.transformer_key_name)
+                self.populate_publishers_subscribers_and_transformers_hash_tables_with_static_topics(publishers,
+                                                                                                     subscribers,
+                                                                                                     transformers)
             else:
                 transformers = self.read_all_containers_from_redis(self.transformer_key_name)
                 self.populate_publishers_subscribers_and_transformers_hash_tables(publishers,
