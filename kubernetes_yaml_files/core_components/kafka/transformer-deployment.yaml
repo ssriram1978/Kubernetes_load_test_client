@@ -39,9 +39,9 @@ spec:
         - name: transformer_key_name
           value: transformer
         - name: broker_hostname_key
-          value: broker.common-infrastructure.svc.cluster.local
+          value: kafka.common-infrastructure.svc.cluster.local
         - name: broker_port_key
-          value: "9094"
+          value: "9092"
         - name: type_of_messaging_queue_key
           value: WurstMeisterKafka
         image: ssriram1978/transformer:latest
