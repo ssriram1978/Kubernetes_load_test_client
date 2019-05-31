@@ -59,6 +59,8 @@ class Orchestrator:
         self.subscriber_key_name = None
         self.transformer_key_name = None
         self.distribute_ports = None
+        self.static_publisher_topic = None
+        self.static_subscriber_topic = None
         self.assign_static_topics = False
         self.redis_instance = RedisInterface("Orchestrator")
         self.load_environment_variables()
@@ -103,6 +105,10 @@ class Orchestrator:
                                               default=None)
             self.assign_static_topics = os.getenv("assign_static_topics_key",
                                                   default=None)
+            self.static_publisher_topic = os.getenv("static_publisher_topic_key",
+                                                    default=None)
+            self.static_subscriber_topic = os.getenv("static_subscriber_topic_key",
+                                                     default=None)
 
             time.sleep(1)
         logging.info("is_loopback={},\n"
@@ -113,6 +119,8 @@ class Orchestrator:
                      "subscriber_hash_table_name={},\n"
                      "distribute_ports={},\n"
                      "assign_static_topics={},\n"
+                     "static_publisher_topic={},\n"
+                     "static_subscriber_topic={},\n"
                      "transformer_hash_table_name={},\n"
                      .format(self.is_loopback,
                              self.publisher_key_name,
@@ -122,6 +130,8 @@ class Orchestrator:
                              self.subscriber_hash_table_name,
                              self.distribute_ports,
                              self.assign_static_topics,
+                             self.static_publisher_topic,
+                             self.static_subscriber_topic,
                              self.transformer_hash_table_name))
 
     def read_all_containers_from_redis(self, key):
@@ -221,35 +231,35 @@ class Orchestrator:
                         trans_list,
                         self.transformer_hash_table_name):
                     logging.info("Assigning {} to key {} in hash table {}."
-                                 .format(str({"publisher": "{}".format("ThingspaceSDK/864508030155813/UNITOnBoard")}),
+                                 .format(str({"publisher": "{}".format(self.static_publisher_topic)}),
                                          pub_container_id,
                                          self.publisher_hash_table_name))
                     self.redis_instance.set_key_to_value_within_name(
                         self.publisher_hash_table_name,
                         pub_container_id,
-                        str({"publisher": "{}".format("ThingspaceSDK/864508030155813/UNITOnBoard")}))
+                        str({"publisher": "{}".format(self.static_publisher_topic)}))
 
                     logging.info("Assigning {} to key {} in hash table {}."
-                                 .format(str({"subscriber": "{}".format("ts/camel")}),
+                                 .format(str({"subscriber": "{}".format(self.static_subscriber_topic)}),
                                          sub_container_id,
                                          self.subscriber_hash_table_name))
 
                     self.redis_instance.set_key_to_value_within_name(
                         self.subscriber_hash_table_name,
                         sub_container_id,
-                        str({"subscriber": "{}".format("ts/camel")}))
+                        str({"subscriber": "{}".format(self.static_subscriber_topic)}))
 
                     logging.info("Assigning {} to key {} in hash table {}."
-                                 .format(str({"subscriber": "{}".format("ThingspaceSDK/864508030155813/UNITOnBoard"),
-                                              "publisher": "{}".format("ts/camel")}),
+                                 .format(str({"subscriber": "{}".format(self.static_publisher_topic),
+                                              "publisher": "{}".format(self.static_subscriber_topic)}),
                                          trans_container_id,
                                          self.transformer_hash_table_name))
 
                     self.redis_instance.set_key_to_value_within_name(
                         self.transformer_hash_table_name,
                         trans_container_id,
-                        str({"subscriber": "{}".format("ThingspaceSDK/864508030155813/UNITOnBoard"),
-                             "publisher": "{}".format("ts/camel")}))
+                        str({"subscriber": "{}".format(self.static_publisher_topic),
+                             "publisher": "{}".format(self.static_subscriber_topic)}))
                     break
                 break
 

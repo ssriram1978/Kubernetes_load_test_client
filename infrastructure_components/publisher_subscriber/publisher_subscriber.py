@@ -27,10 +27,8 @@ def import_all_modules():
 import_all_modules()
 
 from infrastructure_components.publisher_subscriber.rabbit_msgq_api.rabbit_msgq_api import RabbitMsgQAPI
-from infrastructure_components.publisher_subscriber.confluent_kafka_msgq_api.confluent_kafka_msgq_api import \
-    ConfluentKafkaMsgQAPI
-from infrastructure_components.publisher_subscriber.wurstmeister_kafka_msgq_api.wurstmeister_kafka_msgq_api import \
-    WurstMeisterKafkaMsgQAPI
+from infrastructure_components.publisher_subscriber.kafka_msgq_api.kafka_msgq_api import \
+    KafkaMsgQAPI
 from infrastructure_components.publisher_subscriber.pulsar_msgq_api.pulsar_msgq_api import \
     PulsarMsgQAPI
 from infrastructure_components.publisher_subscriber.nats_msgq_api.nats_msgq_api import \
@@ -50,8 +48,7 @@ class PublisherSubscriberAPI:
     3. Pulsar Message Queue.
     """
     rabbitMsgQType = "RabbitMQ"
-    confluentKafkaMsgQType = "ConfluentKafka"
-    wurstmeisterKafakMsqQType = "WurstMeisterKafka"
+    kafkaMsqQType = "Kafka"
     pulsarMsgQType = "Pulsar"
     natsMsgQType = "NATS"
     zeroMQType = "ZeroMQ"
@@ -140,17 +137,12 @@ class PublisherSubscriberAPI:
                                                                 thread_identifier=self.thread_identifier,
                                                                 subscription_cb=self.subscription_cb,
                                                                 queue_name=queue_name)
-                elif self.type_of_messaging_queue == PublisherSubscriberAPI.confluentKafkaMsgQType:
-                    self.message_queue_instance = ConfluentKafkaMsgQAPI(is_producer=self.is_producer,
-                                                                        is_consumer=self.is_consumer,
-                                                                        thread_identifier=self.thread_identifier,
-                                                                        subscription_cb=self.subscription_cb)
-                elif self.type_of_messaging_queue == PublisherSubscriberAPI.wurstmeisterKafakMsqQType:
-                    self.message_queue_instance = WurstMeisterKafkaMsgQAPI(is_producer=self.is_producer,
-                                                                           is_consumer=self.is_consumer,
-                                                                           thread_identifier=self.thread_identifier,
-                                                                           subscription_cb=self.subscription_cb,
-                                                                           queue_name=queue_name)
+                elif self.type_of_messaging_queue == PublisherSubscriberAPI.kafkaMsqQType:
+                    self.message_queue_instance = KafkaMsgQAPI(is_producer=self.is_producer,
+                                                               is_consumer=self.is_consumer,
+                                                               thread_identifier=self.thread_identifier,
+                                                               subscription_cb=self.subscription_cb,
+                                                               queue_name=queue_name)
                 elif self.type_of_messaging_queue == PublisherSubscriberAPI.pulsarMsgQType:
                     self.message_queue_instance = PulsarMsgQAPI(is_producer=self.is_producer,
                                                                 is_consumer=self.is_consumer,

@@ -29,7 +29,7 @@ import_all_modules()
 from infrastructure_components.publisher_subscriber.rabbit_msgq_api.rabbit_msgq_api import RabbitMsgQAPI
 from infrastructure_components.publisher_subscriber.confluent_kafka_msgq_api.confluent_kafka_msgq_api import \
     ConfluentKafkaMsgQAPI
-from infrastructure_components.publisher_subscriber.wurstmeister_kafka_msgq_api.wurstmeister_kafka_msgq_api import \
+from infrastructure_components.publisher_subscriber.kafka_msgq_api.kafka_msgq_api import \
     WurstMeisterKafkaMsgQAPI
 from infrastructure_components.publisher_subscriber.pulsar_msgq_api.pulsar_msgq_api import \
     PulsarMsgQAPI
