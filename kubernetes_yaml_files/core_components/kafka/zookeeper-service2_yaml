@@ -1,0 +1,46 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-stack-wurstmeister-kafka.yml --volumes
+      hostPath
+    kompose.version: 1.17.0 (a74acad)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: zookeeper
+  name: zookeeper
+  namespace: common-infrastructure
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: zookeeper
+    spec:
+      containers:
+      - image: wurstmeister/zookeeper
+        name: zookeeper
+        ports:
+        - containerPort: 2181
+        resources: {}
+        volumeMounts:
+        - mountPath: /etc/timezone
+          name: zookeeper-hostpath0
+          readOnly: true
+        - mountPath: /etc/localtime
+          name: zookeeper-hostpath1
+          readOnly: true
+      restartPolicy: Always
+      nodeSelector:
+        kubernetes.io/hostname: transformer-pass
+      volumes:
+      - hostPath:
+          path: /etc/timezone
+        name: zookeeper-hostpath0
+      - hostPath:
+          path: /etc/localtime
+        name: zookeeper-hostpath1
+status: {}

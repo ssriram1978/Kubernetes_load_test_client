@@ -44,9 +44,9 @@ spec:
         - name: total_job_enqueued_count_redis_name_key
           value: total_produced_count
         - name: broker_hostname_key
-          value: broker.common-infrastructure.svc.cluster.local
+          value: kafka.common-infrastructure.svc.cluster.local
         - name: broker_port_key
-          value: "9094"
+          value: "9092"
         - name: messages_per_second_key
           value: "500"
         - name: test_duration_in_sec_key
