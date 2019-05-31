@@ -41,7 +41,7 @@ metadata:
   namespace: common-infrastructure
 spec:
   podManagementPolicy: OrderedReady
-  replicas: 3
+  replicas: 1
   revisionHistoryLimit: 1
   selector:
     matchLabels:
@@ -74,7 +74,7 @@ spec:
         - name: KAFKA_LOG_DIRS
           value: /opt/kafka/data/logs
         - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
-          value: "3"
+          value: "1"
         - name: KAFKA_JMX_PORT
           value: "5555"
         image: confluentinc/cp-kafka:latest
@@ -86,7 +86,7 @@ spec:
             - sh
             - -ec
             - /usr/bin/jps | /bin/grep -q SupportedKafka
-          failureThreshold: 3
+          failureThreshold: 1
           initialDelaySeconds: 30
           periodSeconds: 10
           successThreshold: 1
@@ -97,7 +97,7 @@ spec:
           name: kafka
           protocol: TCP
         readinessProbe:
-          failureThreshold: 3
+          failureThreshold: 1
           initialDelaySeconds: 30
           periodSeconds: 10
           successThreshold: 1

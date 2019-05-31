@@ -45,7 +45,7 @@ spec:
         - name: type_of_messaging_queue_key
           value: Kafka
         - name: kafka_type_key
-          value: ConfluentKafka
+          value: Kafka
         image: ssriram1978/transformer:latest
         #imagePullPolicy: IfNotPresent
         name: transformer
