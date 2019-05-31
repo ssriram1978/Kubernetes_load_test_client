@@ -43,6 +43,12 @@ spec:
           value: "false"
         - name: is_loopback_key
           value: "false"
+        - name: assign_static_topics_key
+          value: "true"
+        - name: static_publisher_topic_key
+          value: "PUBLISHER"
+        - name: static_subscriber_topic_key
+          value: "SUBSCRIBER"
         image: ssriram1978/orchestrator:latest
         name: orchestrator
         #imagePullPolicy: IfNotPresent

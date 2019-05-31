@@ -51,7 +51,9 @@ spec:
         - name: broker_port_key
           value: "9092"
         - name: type_of_messaging_queue_key
-          value: WurstMeisterKafka
+          value: Kafka
+        - name: kafka_type_key
+          value: ConfluentKafka
         image: ssriram1978/subscriber:latest
         #imagePullPolicy: IfNotPresent
         name: subscriber
