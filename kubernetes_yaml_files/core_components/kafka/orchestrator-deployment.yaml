@@ -42,7 +42,7 @@ spec:
         - name: distribute_ports
           value: "false"
         - name: is_loopback_key
-          value: "true"
+          value: "false"
         image: ssriram1978/orchestrator:latest
         name: orchestrator
         #imagePullPolicy: IfNotPresent

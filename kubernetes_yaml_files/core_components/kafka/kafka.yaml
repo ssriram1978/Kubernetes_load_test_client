@@ -7,12 +7,13 @@ spec:
   ports:
   - name: broker
     port: 9092
+    nodePort: 32000
     protocol: TCP
     targetPort: kafka
   selector:
     app: kafka
   sessionAffinity: None
-  type: ClusterIP
+  type: NodePort
 ---
 apiVersion: v1
 kind: Service
@@ -20,16 +21,16 @@ metadata:
   name: kafka-headless
   namespace: common-infrastructure
 spec:
-  clusterIP: None
   ports:
   - name: broker
     port: 9092
+    nodePort: 32001
     protocol: TCP
     targetPort: 9092
   selector:
     app: kafka
   sessionAffinity: None
-  type: ClusterIP
+  type: NodePort
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -76,7 +77,8 @@ spec:
           value: "3"
         - name: KAFKA_JMX_PORT
           value: "5555"
-        image: confluentinc/cp-kafka:4.1.2-2
+        image: confluentinc/cp-kafka:latest
+        #image: confluentinc/cp-kafka:4.1.2-2
         imagePullPolicy: IfNotPresent
         livenessProbe:
           exec:
