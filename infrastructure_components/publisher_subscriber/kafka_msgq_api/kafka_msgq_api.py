@@ -269,13 +269,13 @@ class KafkaMsgQAPI(object):
                 if self.kafka_type == "ConfluentKafka":
                     self.consumer_instance = Consumer({
                         'bootstrap.servers': '{}:{}'.format(self.broker_hostname, self.broker_port),
-                        'group.id': 'kafka-consumer',
+                        'group.id': 'kafka-consumer-{}'.format(self.cont_id[-12:]),
                         'auto.offset.reset': 'earliest'
                     })
                 else:
                     self.consumer_instance = KafkaConsumer(
                         bootstrap_servers='{}:{}'.format(self.broker_hostname, self.broker_port),
-                        group_id="kafka-consumer")
+                        group_id="kafka-consumer-{}".format(self.cont_id[-12:]))
 
                 logging.info("Consumer:{}:Consumer Successfully "
                              "connected to broker_hostname={}"
