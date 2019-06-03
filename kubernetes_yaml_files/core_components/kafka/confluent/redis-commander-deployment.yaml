@@ -1,0 +1,37 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-stack-common.yml --volumes hostPath
+    kompose.version: 1.17.0 (a74acad)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: redis-commander
+  name: redis-commander
+  namespace: common-infrastructure
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: redis-commander
+      namespace: loadtest
+    spec:
+      containers:
+      - env:
+        - name: REDIS_HOSTS
+          value: redis:redis:6379
+        image: rediscommander/redis-commander:latest
+        name: redis-commander
+        ports:
+        - containerPort: 8081
+        resources: {}
+      restartPolicy: Always
+      #tolerations:
+      #  - key: node-role.kubernetes.io/master
+      #    effect: NoSchedule
+      nodeSelector:
+        kubernetes.io/hostname: common-infra
+status: {}

@@ -432,9 +432,12 @@ deploy_core() {
    if [[ "$component" == "rabbitmq" ]]; then
       echo "kubectl apply -f kubernetes_yaml_files/core_components/rabbitmq"
       kubectl apply -f kubernetes_yaml_files/core_components/rabbitmq
-   elif [[ "$component" == "kafka" ]]; then
-      echo "kubectl apply -f kubernetes_yaml_files/core_components/kafka"
-      kubectl apply -f kubernetes_yaml_files/core_components/kafka
+   elif [[ "$component" == "confluent-kafka" ]]; then
+      echo "kubectl apply -f kubernetes_yaml_files/core_components/kafka/confluent"
+      kubectl apply -f kubernetes_yaml_files/core_components/kafka/confluent
+   elif [[ "$component" == "apache-kafka" ]]; then
+      echo "kubectl apply -f kubernetes_yaml_files/core_components/kafka/apache"
+      kubectl apply -f kubernetes_yaml_files/core_components/kafka/apache
    elif [[ "$component" == "emq" ]]; then
       echo "kubectl apply -f kubernetes_yaml_files/core_components/emq"
       kubectl apply -f kubernetes_yaml_files/core_components/emq
@@ -456,9 +459,12 @@ undeploy_core() {
    if [[ "$component" == "rabbitmq" ]]; then
       echo "kubectl delete -f kubernetes_yaml_files/core_components/rabbitmq"
       kubectl delete -f kubernetes_yaml_files/core_components/rabbitmq
-   elif [[ "$component" == "kafka" ]]; then
-      echo "kubectl delete -f kubernetes_yaml_files/core_components/kafka"
-      kubectl delete -f kubernetes_yaml_files/core_components/kafka
+   elif [[ "$component" == "confluent-kafka" ]]; then
+      echo "kubectl delete -f kubernetes_yaml_files/core_components/kafka/confluent"
+      kubectl delete -f kubernetes_yaml_files/core_components/kafka/confluent
+   elif [[ "$component" == "apache-kafka" ]]; then
+      echo "kubectl delete -f kubernetes_yaml_files/core_components/kafka/apache"
+      kubectl delete -f kubernetes_yaml_files/core_components/kafka/apache
    elif [[ "$component" == "emq" ]]; then
       echo "kubectl delete -f kubernetes_yaml_files/core_components/emq"
       kubectl delete -f kubernetes_yaml_files/core_components/emq
