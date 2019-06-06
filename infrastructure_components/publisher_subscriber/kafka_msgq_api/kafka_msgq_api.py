@@ -325,9 +325,18 @@ class KafkaMsgQAPI(object):
                 for msg in msgs.values():
                     msg = msg[0].value.decode('utf-8')
                     if msg:
-                        logging.debug("msg.value()={}".format(msg))
+                        logging.debug("msg={}".format(msg))
                         consumer_instance.redis_instance.increment_dequeue_count()
-                        consumer_instance.subscription_cb(msg)
+                        if msg.find("metadata=") == -1:
+                            consumer_instance.subscription_cb(msg)
+                        else:
+                            # This is from SNAPLOGIC which adds extra headers. Skip them.
+                            value_index = msg.find("value=")
+                            if value_index:
+                                value_index += len("value=")
+                                msg = msg[value_index:-1]
+                                logging.debug("post-formatted msg={}".format(msg))
+                                consumer_instance.subscription_cb(msg)
             except:
                 logging.debug("Exception occured when trying to poll a kafka topic.")
         logging.info("Consumer {}: Exiting"
