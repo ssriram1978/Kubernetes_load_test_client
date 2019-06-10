@@ -82,7 +82,7 @@ class KafkaMsgQAPI(object):
         self.producer_conf = None
         self.consumer_conf = None
         self.partitions_per_topic = 10
-        self.is_topic_created = False
+        self.is_topic_created = True # Do not try to create a topic in the zookeeper.
         self.subscription_cb = None
         self.consumer_thread = None
         self.is_producer_connected = False
