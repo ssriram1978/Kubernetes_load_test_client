@@ -7,8 +7,10 @@ import time
 import traceback
 from pprint import pformat
 
-from kafka import KafkaProducer, KafkaConsumer
-from confluent_kafka import Producer, Consumer, KafkaException, admin
+from kafka import KafkaProducer, KafkaConsumer, admin
+
+
+# from confluent_kafka import Producer, Consumer, KafkaException, admin
 
 
 # sys.path.append("..")  # Adds higher directory to python modules path.
@@ -79,19 +81,18 @@ class KafkaMsgQAPI(object):
             self.subscriber_topic = queue_name
         self.producer_conf = None
         self.consumer_conf = None
+        self.partitions_per_topic = 10
         self.is_topic_created = False
         self.subscription_cb = None
         self.consumer_thread = None
         self.is_producer_connected = False
         self.is_consumer_connected = False
-        self.is_topic_created = False
         self.kafka_type = None
         self.thread_identifier = thread_identifier
         self.redis_instance = RedisInterface(self.thread_identifier)
         self.__read_environment_variables()
         if is_producer:
             self.__producer_connect()
-            # self.__create_topic()
         elif is_consumer:
             self.subscription_cb = subscription_cb
             self.create_consumer_thread()
@@ -132,29 +133,80 @@ class KafkaMsgQAPI(object):
                           (msg.topic(), msg.partition(), str(msg.offset())))
 
     def create_topic(self):
+        logging.info("Entering create_topic fn.")
         if not self.is_topic_created:
             topic = None
             if self.is_producer:
                 topic = self.publisher_topic
             elif self.is_consumer:
                 topic = self.subscriber_topic
+
             try:
-                kafka_admin_client = admin.AdminClient({'bootstrap.servers': '{}:{}'
-                                                       .format(self.broker_hostname, self.broker_port)})
-                logging.info("Creating topic {}."
-                             .format(topic))
-                ret = kafka_admin_client.create_topics(new_topics=[admin.NewTopic(topic=topic,
-                                                                                  num_partitions=1)],
-                                                       operation_timeout=1.0)
-                logging.info("ret = {}".format(ret))
-            except KafkaException:
-                logging.info("Caught an exception when trying to create topic.")
-            finally:
-                if self.producer_instance.list_topics(topic,
-                                                      timeout=1.0):
-                    logging.info("Found topic name = {} in the zookeeper."
+                if self.kafka_type == "ConfluentKafka":
+                    kafka_admin_client = admin.AdminClient({'bootstrap.servers': '{}:{}'
+                                                           .format(self.broker_hostname, self.broker_port)})
+
+                    logging.info("Creating topic {}."
                                  .format(topic))
+                    ret = kafka_admin_client.create_topics(new_topics=[
+                        admin.NewTopic(topic=topic,
+                                       timeout_ms=5000,
+                                       num_partitions=self.partitions_per_topic)],
+                        operation_timeout=1.0)
+                    logging.info("ret = {}".format(ret))
+                    if self.producer_instance.list_topics(topic,
+                                                          timeout=1.0):
+                        logging.info("Found topic name = {} in the zookeeper."
+                                     .format(topic))
+                else:
+                    try:
+                        kafka_admin_client = admin.KafkaAdminClient(
+                            bootstrap_servers='{}:{}'.format(self.broker_hostname, self.broker_port))
+                    except:
+                        logging.info("Caught an exception while trying to invoke admin.KafkaAdminClient.")
+
+                    else:
+                        try:
+                            logging.info("Creating topic {}."
+                                         .format(topic))
+                            ret = kafka_admin_client.create_topics(new_topics=[
+                                admin.NewTopic(name=topic,
+                                               num_partitions=self.partitions_per_topic,
+                                               replication_factor=1)]
+                            )
+                            logging.info("ret = {}".format(ret))
+                        except:
+                            logging.info("Caught an exception while trying to create a topic.")
+                            #print("-" * 60)
+                            # traceback.print_exc(file=sys.stdout)
+                            #traceback.print_last()
+                            # traceback.print_stack()
+                            print("-" * 60)
+                        try:
+                            logging.info(
+                                "Trying to create {} partitions in a topic.".format(self.partitions_per_topic))
+                            ret = kafka_admin_client.create_partitions(
+                                topic_partitions={topic: admin.NewPartitions(self.partitions_per_topic)})
+                            logging.info("ret = {}".format(ret))
+                        except:
+                            logging.info("Caught an exception while trying to increase "
+                                         "the number of partitions a topic.")
+                            #print("-" * 60)
+                            # traceback.print_exc(file=sys.stdout)
+                            #traceback.print_last()
+                            # traceback.print_stack()
+                            #print("-" * 60)
+            except:
+                logging.info("Caught an exception.")
+                print("-" * 60)
+                # traceback.print_exc(file=sys.stdout)
+                traceback.print_last()
+                # traceback.print_stack()
+                print("-" * 60)
+            finally:
                 self.is_topic_created = True
+        else:
+            logging.info("self.is_topic_created is already set to True.")
 
     def __producer_connect(self):
         """
@@ -167,7 +219,6 @@ class KafkaMsgQAPI(object):
                 if self.kafka_type == "ConfluentKafka":
                     self.producer_instance = Producer({'bootstrap.servers': '{}:{}'
                                                       .format(self.broker_hostname, self.broker_port)})
-                    self.create_topic()
                 else:
                     self.producer_instance = KafkaProducer(
                         bootstrap_servers='{}:{}'
@@ -202,6 +253,8 @@ class KafkaMsgQAPI(object):
 
         if not self.is_producer_connected:
             self.__producer_connect()
+        if not self.is_topic_created:
+            self.create_topic()
 
         # Asynchronously produce a message, the delivery report callback
         # will be triggered from poll() above, or flush() below, when the message has
@@ -269,13 +322,13 @@ class KafkaMsgQAPI(object):
                 if self.kafka_type == "ConfluentKafka":
                     self.consumer_instance = Consumer({
                         'bootstrap.servers': '{}:{}'.format(self.broker_hostname, self.broker_port),
-                        'group.id': 'kafka-consumer-{}'.format(self.cont_id[-12:]),
+                        'group.id': 'kafka-consumer',
                         'auto.offset.reset': 'earliest'
                     })
                 else:
                     self.consumer_instance = KafkaConsumer(
                         bootstrap_servers='{}:{}'.format(self.broker_hostname, self.broker_port),
-                        group_id="kafka-consumer-{}".format(self.cont_id[-12:]))
+                        group_id="kafka-consumer")
 
                 logging.info("Consumer:{}:Consumer Successfully "
                              "connected to broker_hostname={}"
