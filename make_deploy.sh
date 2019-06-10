@@ -416,6 +416,15 @@ undeploy_elk() {
    kubectl delete -f kubernetes_yaml_files/elk_components/
 }
 
+delete_logstash_index() {
+   echo "curl \'localhost:30011/_cat/indices?v\'"
+   curl 'localhost:30011/_cat/indices?v'
+
+   echo "curl -XDELETE 'localhost:30011/*"
+   curl -XDELETE 'localhost:30011/*'
+}
+
+
 deploy_infrastructure() {
    echo "kubectl apply -f kubernetes_yaml_files/common_components/"
    kubectl apply -f kubernetes_yaml_files/common_components/
@@ -636,6 +645,7 @@ case "$1" in
   docker_elk) docker_compose_elk_infrastructure $2 ;;
   deploy_prometheus_grafana) deploy_prometheus_grafana ;;
   undeploy_prometheus_grafana) undeploy_prometheus_grafana ;;
+  delete_logstash_index)   delete_logstash_index;;
   *) echo "usage: $0"
       echo "<build <all|directory_name> <yaml file> <tag -- optional> > |"
       echo "<deploy <yaml file> > |"
@@ -658,6 +668,8 @@ case "$1" in
       echo "docker_elk start|stop"
       echo "deploy_prometheus_grafana"
       echo "undeploy_prometheus_grafana"
+      echo "delete_logstash_index"
+
      exit 1
      ;;
 esac
