@@ -224,44 +224,42 @@ class Orchestrator:
         for pub_container_id in self.yield_non_assigned_container(
                 pub_list,
                 self.publisher_hash_table_name):
-            for sub_container_id in self.yield_non_assigned_container(
+            logging.info("Assigning {} to key {} in hash table {}."
+                         .format(str({"publisher": "{}".format(self.static_publisher_topic)}),
+                                 pub_container_id,
+                                 self.publisher_hash_table_name))
+            self.redis_instance.set_key_to_value_within_name(
+                self.publisher_hash_table_name,
+                pub_container_id,
+                str({"publisher": "{}".format(self.static_publisher_topic)}))
+
+        for sub_container_id in self.yield_non_assigned_container(
                     sub_list,
                     self.subscriber_hash_table_name):
-                for trans_container_id in self.yield_non_assigned_container(
-                        trans_list,
-                        self.transformer_hash_table_name):
-                    logging.info("Assigning {} to key {} in hash table {}."
-                                 .format(str({"publisher": "{}".format(self.static_publisher_topic)}),
-                                         pub_container_id,
-                                         self.publisher_hash_table_name))
-                    self.redis_instance.set_key_to_value_within_name(
-                        self.publisher_hash_table_name,
-                        pub_container_id,
-                        str({"publisher": "{}".format(self.static_publisher_topic)}))
+            logging.info("Assigning {} to key {} in hash table {}."
+                         .format(str({"subscriber": "{}".format(self.static_subscriber_topic)}),
+                                 sub_container_id,
+                                 self.subscriber_hash_table_name))
 
-                    logging.info("Assigning {} to key {} in hash table {}."
-                                 .format(str({"subscriber": "{}".format(self.static_subscriber_topic)}),
-                                         sub_container_id,
-                                         self.subscriber_hash_table_name))
+            self.redis_instance.set_key_to_value_within_name(
+                self.subscriber_hash_table_name,
+                sub_container_id,
+                str({"subscriber": "{}".format(self.static_subscriber_topic)}))
 
-                    self.redis_instance.set_key_to_value_within_name(
-                        self.subscriber_hash_table_name,
-                        sub_container_id,
-                        str({"subscriber": "{}".format(self.static_subscriber_topic)}))
+        for trans_container_id in self.yield_non_assigned_container(
+                trans_list,
+                self.transformer_hash_table_name):
+            logging.info("Assigning {} to key {} in hash table {}."
+                         .format(str({"subscriber": "{}".format(self.static_publisher_topic),
+                                      "publisher": "{}".format(self.static_subscriber_topic)}),
+                                 trans_container_id,
+                                 self.transformer_hash_table_name))
 
-                    logging.info("Assigning {} to key {} in hash table {}."
-                                 .format(str({"subscriber": "{}".format(self.static_publisher_topic),
-                                              "publisher": "{}".format(self.static_subscriber_topic)}),
-                                         trans_container_id,
-                                         self.transformer_hash_table_name))
-
-                    self.redis_instance.set_key_to_value_within_name(
-                        self.transformer_hash_table_name,
-                        trans_container_id,
-                        str({"subscriber": "{}".format(self.static_publisher_topic),
-                             "publisher": "{}".format(self.static_subscriber_topic)}))
-                    break
-                break
+            self.redis_instance.set_key_to_value_within_name(
+                self.transformer_hash_table_name,
+                trans_container_id,
+                str({"subscriber": "{}".format(self.static_publisher_topic),
+                     "publisher": "{}".format(self.static_subscriber_topic)}))
 
     def populate_publishers_subscribers_with_loopback_ports(self,
                                                             pub_list,
