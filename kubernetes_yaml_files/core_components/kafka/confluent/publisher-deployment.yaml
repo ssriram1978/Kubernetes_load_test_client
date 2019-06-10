@@ -54,7 +54,7 @@ spec:
         - name: type_of_messaging_queue_key
           value: Kafka
         - name: kafka_type_key
-          value: Kafka
+          value: ConfluentKafka
         image: ssriram1978/publisher:latest
         #imagePullPolicy: IfNotPresent
         name: publisher

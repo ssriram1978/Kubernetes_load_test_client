@@ -623,6 +623,17 @@ tag_nodes() {
    kubectl label nodes loadtest4 vmname=loadtest4
 }
 
+change_kafka_partition() {
+   topic_name=$1
+   partition_count=$2
+
+   echo "kubectl exec kafka-0 -n common-infrastructure -it ./opt/kafka_2.11-0.10.2.1/bin/kafka-topics.sh --alter --partitions $3  --topic $2 --zookeeper zookeeper.common-infrastructure.svc.cluster.local:2181"
+   kubectl exec kafka-0 -n common-infrastructure -it ./opt/kafka_2.11-0.10.2.1/bin/kafka-topics.sh --alter --partitions $3  --topic $2 --zookeeper zookeeper.common-infrastructure.svc.cluster.local:2181
+
+   echo "kubectl exec kafka-0 -n common-infrastructure -it ./opt/kafka_2.11-0.10.2.1/bin/kafka-topics.sh --describe --topic $2 --zookeeper zookeeper.common-infrastructure.svc.cluster.local:2181"
+   kubectl exec kafka-0 -n common-infrastructure -it ./opt/kafka_2.11-0.10.2.1/bin/kafka-topics.sh --describe --topic $2 --zookeeper zookeeper.common-infrastructure.svc.cluster.local:2181
+}
+
 case "$1" in
   build) create_infrastructure $2 $3 $4 ;;
   deploy) deploy_infrastructure $2 $3;;
@@ -645,7 +656,8 @@ case "$1" in
   docker_elk) docker_compose_elk_infrastructure $2 ;;
   deploy_prometheus_grafana) deploy_prometheus_grafana ;;
   undeploy_prometheus_grafana) undeploy_prometheus_grafana ;;
-  delete_logstash_index)   delete_logstash_index;;
+  delete_logstash_index)   delete_logstash_index $2 $3;;
+  change_kafka_partition) change_kafka_partition ;;
   *) echo "usage: $0"
       echo "<build <all|directory_name> <yaml file> <tag -- optional> > |"
       echo "<deploy <yaml file> > |"
@@ -669,6 +681,7 @@ case "$1" in
       echo "deploy_prometheus_grafana"
       echo "undeploy_prometheus_grafana"
       echo "delete_logstash_index"
+      echo "change_kafka_partition <topic_name> <partition_count>"
 
      exit 1
      ;;

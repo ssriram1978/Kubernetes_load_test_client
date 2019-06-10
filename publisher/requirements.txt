@@ -2,6 +2,7 @@ paho-mqtt
 datetime
 python-dateutil
 redis
+confluent-kafka
 kafka-python
 pulsar-client
 asyncio-nats-client

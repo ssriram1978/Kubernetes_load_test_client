@@ -5,7 +5,13 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/infrastructure_components.tar.gz" beforeDir="false" afterPath="$PROJECT_DIR$/infrastructure_components.tar.gz" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/infrastructure_components/publisher_subscriber/kafka_msgq_api/kafka_msgq_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/infrastructure_components/publisher_subscriber/kafka_msgq_api/kafka_msgq_api.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orchestrator/orchestrator.py" beforeDir="false" afterPath="$PROJECT_DIR$/orchestrator/orchestrator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/apache/transformer-deployment.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/apache/transformer-deployment.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/confluent/publisher-deployment.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/confluent/publisher-deployment.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/confluent/transformer-deployment.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/confluent/transformer-deployment.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/make_deploy.sh" beforeDir="false" afterPath="$PROJECT_DIR$/make_deploy.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/publisher/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/publisher/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/subscriber/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/subscriber/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/transformer/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/transformer/requirements.txt" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -15,47 +21,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/plotter/logstash/config/logstash.yml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="154">
-              <caret line="7" selection-start-line="7" selection-end-line="7" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/subscriber/subscriber.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1790">
-              <caret line="18" column="41" lean-forward="true" selection-start-line="18" selection-start-column="41" selection-end-line="18" selection-end-column="41" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/orchestrator/orchestrator.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="155">
-              <caret line="226" selection-start-line="226" selection-end-line="226" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/plotter/logstash/pipeline/logstash.conf">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
-              <caret line="15" column="24" selection-start-line="15" selection-start-column="24" selection-end-line="15" selection-end-column="24" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/infrastructure_components/publisher_subscriber/kafka_msgq_api/kafka_msgq_api.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="540">
-              <caret line="337" column="62" selection-start-line="337" selection-start-column="62" selection-end-line="337" selection-end-column="62" />
+            <state relative-caret-position="632">
+              <caret line="411" column="41" lean-forward="true" selection-start-line="411" selection-start-column="41" selection-end-line="411" selection-end-column="41" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -64,47 +34,81 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/plotter/filebeat/filebeat.docker.yml">
+        <entry file="file://$USER_HOME$/Library/Caches/PyCharm2019.1/python_stubs/-1199943126/confluent_kafka/cimpl.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="352">
-              <caret line="16" selection-start-line="16" selection-end-line="16" />
+            <state relative-caret-position="267">
+              <caret line="231" column="8" selection-start-line="231" selection-start-column="8" selection-end-line="231" selection-end-column="8" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/docker-stack-infrastructure.yml">
+        <entry file="file://$PROJECT_DIR$/publisher/requirements.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="17" column="18" selection-start-line="17" selection-start-column="18" selection-end-line="17" selection-end-column="18" />
+            <state relative-caret-position="88">
+              <caret line="4" selection-start-line="4" selection-end-line="4" selection-end-column="15" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/docker_stack_yml_files/docker-stack-common.yml">
+        <entry file="file://$PROJECT_DIR$/transformer/requirements.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1254">
-              <caret line="57" column="35" selection-start-line="57" selection-start-column="35" selection-end-line="57" selection-end-column="35" />
+            <state relative-caret-position="176">
+              <caret line="8" column="5" selection-start-line="8" selection-start-column="5" selection-end-line="8" selection-end-column="5" />
             </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/subscriber/requirements.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="88">
+              <caret line="4" column="15" selection-start-line="4" selection-start-column="15" selection-end-line="4" selection-end-column="15" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/confluent/orchestrator-deployment.yaml">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/confluent/transformer-deployment.yaml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="286">
+              <caret line="13" column="13" selection-start-line="13" selection-start-column="13" selection-end-line="13" selection-end-column="13" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/confluent/publisher-deployment.yaml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="485">
+              <caret line="56" column="26" selection-start-line="56" selection-start-column="26" selection-end-line="56" selection-end-column="26" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/confluent/confluent_kafka.yml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-2156" />
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/infrastructure_components/publisher_subscriber/publisher_subscriber.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2860">
-              <caret line="134" column="93" selection-start-line="134" selection-start-column="93" selection-end-line="134" selection-end-column="93" />
+            <state relative-caret-position="150">
+              <caret line="73" column="1" selection-start-line="73" selection-start-column="1" selection-end-line="73" selection-end-column="1" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
             </state>
           </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/install_uninstall.sh">
-          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
     </leaf>
@@ -129,7 +133,9 @@
       <find>directory-size</find>
       <find>DaemonSet</find>
       <find>WurstMeisterKafkaMsgQAPI</find>
+      <find>create_topic</find>
       <find>NewTopic</find>
+      <find>is_topic_created</find>
     </findStrings>
     <replaceStrings>
       <replace>WurstMeisterKafkaMsgQAPI</replace>
@@ -144,13 +150,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/zookeeper-service.yaml" />
-        <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/nats/nats-deployment.yaml" />
-        <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/nats/nats-service.yaml" />
-        <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/pulsar/broker-service.yaml" />
-        <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/pulsar/broker-deployment.yaml" />
-        <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/emq/emqx.yaml" />
-        <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/emq/publisher-deployment.yaml" />
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/emq/subscriber-deployment.yaml" />
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/emq/transformer-deployment.yaml" />
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/nats/publisher-deployment.yaml" />
@@ -184,7 +183,6 @@
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/common_components/filebeat-deployment.yaml" />
         <option value="$PROJECT_DIR$/plotter/prometheus/manifests-all.yaml" />
         <option value="$PROJECT_DIR$/infrastructure_components/prometheus/manifests-all.yaml" />
-        <option value="$PROJECT_DIR$/make_deploy.sh" />
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/rabbitmq/rabbitmq-deployment_yaml" />
         <option value="$PROJECT_DIR$/reverse_bfs.py" />
         <option value="$PROJECT_DIR$/infrastructure_components/publisher_subscriber/wurstmeister_kafka_msgq_api/wurstmeister_kafka_msgq_api.py" />
@@ -192,15 +190,24 @@
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/transformer-deployment.yaml" />
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/publisher-deployment.yaml" />
         <option value="$PROJECT_DIR$/infrastructure_components/publisher_subscriber/publisher_subscriber.py" />
-        <option value="$PROJECT_DIR$/infrastructure_components/publisher_subscriber/kafka_msgq_api/kafka_msgq_api.py" />
         <option value="$PROJECT_DIR$/subscriber/subscriber.py" />
         <option value="$PROJECT_DIR$/orchestrator/orchestrator.py" />
+        <option value="$PROJECT_DIR$/make_deploy.sh" />
+        <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/apache/publisher-deployment.yaml" />
+        <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/apache/transformer-deployment.yaml" />
+        <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/confluent/transformer-deployment.yaml" />
+        <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/confluent/publisher-deployment.yaml" />
+        <option value="$PROJECT_DIR$/publisher/requirements.txt" />
+        <option value="$PROJECT_DIR$/subscriber/requirements.txt" />
+        <option value="$PROJECT_DIR$/transformer/requirements.txt" />
+        <option value="$PROJECT_DIR$/infrastructure_components/publisher_subscriber/kafka_msgq_api/kafka_msgq_api.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" fullScreen="true">
+  <component name="ProjectFrameBounds">
+    <option name="y" value="23" />
     <option name="width" value="1920" />
-    <option name="height" value="1080" />
+    <option name="height" value="977" />
   </component>
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -245,24 +252,24 @@
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/confluent" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="two.files.diff.last.used.file" value="$PROJECT_DIR$/docker-stack-rabbitmq.yml" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/kubernetes_yaml_files/core_components/zeromq" />
-      <recent name="$PROJECT_DIR$/kubernetes_yaml_files/core_components/rabbitmq" />
-      <recent name="$PROJECT_DIR$/kubernetes_yaml_files/core_components/pulsar" />
-      <recent name="$PROJECT_DIR$/kubernetes_yaml_files/core_components/nats" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/docker_stack" />
       <recent name="$PROJECT_DIR$/kubernetes_yaml_files/common_components" />
       <recent name="$PROJECT_DIR$" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/confluent" />
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/kubernetes_yaml_files/core_components/zeromq" />
+      <recent name="$PROJECT_DIR$/kubernetes_yaml_files/core_components/rabbitmq" />
+      <recent name="$PROJECT_DIR$/kubernetes_yaml_files/core_components/pulsar" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -334,7 +341,10 @@
       <workItem from="1559296965078" duration="7668000" />
       <workItem from="1559408787492" duration="3000" />
       <workItem from="1559569075824" duration="7389000" />
-      <workItem from="1559827650955" duration="1306000" />
+      <workItem from="1559827650955" duration="2881000" />
+      <workItem from="1559832334798" duration="10106000" />
+      <workItem from="1560046894051" duration="5188000" />
+      <workItem from="1560174013092" duration="7386000" />
     </task>
     <task id="LOCAL-00001" summary="Optimizing RabbitMQ by setting RAM limits.">
       <created>1558788254478</created>
@@ -602,16 +612,44 @@
       <option name="project" value="LOCAL" />
       <updated>1559570496823</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="Made SNAPLOGIC iPASS work with loadtest tool.&#10;Snaplogic adds extra headers which is neither JSON nor dict. Had to get rid off these extra headers. Will come up with a proper fix soon.">
+      <created>1559830760363</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1559830760363</updated>
+    </task>
+    <task id="LOCAL-00040" summary="Assigning static topics to iPASS (SNAPLOGIC).">
+      <created>1560175835243</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1560175835243</updated>
+    </task>
+    <task id="LOCAL-00041" summary="Dynamically wipe off all logstash indexes without stopping ELK stack.">
+      <created>1560176270145</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1560176270145</updated>
+    </task>
+    <task id="LOCAL-00042" summary="Do not try to create a topic in Zookeeper for now.">
+      <created>1560184511130</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1560184511130</updated>
+    </task>
+    <option name="localTasksCounter" value="43" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="123346000" />
+    <option name="totallyTimeSpent" value="147601000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1920" height="1080" extended-state="0" />
+    <frame x="0" y="23" width="1920" height="977" extended-state="0" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.22151224" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.22896698" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -639,10 +677,6 @@
     <option name="version" value="1" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Isolating components to individual namespaces." />
-    <MESSAGE value="Namespace is specified in filebeat.yml file as well." />
-    <MESSAGE value="Made all adapters fall in line with namespace loadtest." />
-    <MESSAGE value="loadtest namespace shall be created when creating infrastructure." />
     <MESSAGE value="Trying to move out redis and rabbitmq to common-infrastructure namespace for easier debugging." />
     <MESSAGE value="Moved out redis and broker to a different namespace." />
     <MESSAGE value="Moved redis and kubernetes dashboard to common-infra node." />
@@ -664,96 +698,16 @@
     <MESSAGE value="Assign static topics to a group of producers and consumers and orchestrators." />
     <MESSAGE value="Trying to make Confluent kafka work with a static topic for producers and consumers. This is done to evaluate an iPass vendor." />
     <MESSAGE value="Making each kafka subscriber have it's unique group identifier." />
-    <option name="LAST_COMMIT_MESSAGE" value="Making each kafka subscriber have it's unique group identifier." />
+    <MESSAGE value="Made SNAPLOGIC iPASS work with loadtest tool.&#10;Snaplogic adds extra headers which is neither JSON nor dict. Had to get rid off these extra headers. Will come up with a proper fix soon." />
+    <MESSAGE value="Assigning static topics to iPASS (SNAPLOGIC)." />
+    <MESSAGE value="Dynamically wipe off all logstash indexes without stopping ELK stack." />
+    <MESSAGE value="Do not try to create a topic in Zookeeper for now." />
+    <option name="LAST_COMMIT_MESSAGE" value="Do not try to create a topic in Zookeeper for now." />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/IOT_load_test_client$reverse_bfs.coverage" NAME="reverse_bfs Coverage Results" MODIFIED="1559224151010" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/docker_stack_yml_files/docker-stack-infrastructure.yml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="424">
-          <caret line="21" column="19" lean-forward="true" selection-start-line="21" selection-start-column="19" selection-end-line="21" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/elk_components/logstash-deployment.yaml">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/elk_components/kibana-deployment.yaml">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/elk_components/logstash-service.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="484">
-          <caret line="22" column="16" selection-start-line="22" selection-start-column="16" selection-end-line="22" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/plotter/kibana/config/kibana.yml">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/plotter/prometheus/manifests-all.yaml" />
-    <entry file="file://$PROJECT_DIR$/infrastructure_components/prometheus/manifests-all.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="53460">
-          <caret line="2430" column="3" selection-start-line="2430" selection-start-column="3" selection-end-line="2430" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/plotter/logstash/Dockerfile">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/common_components/filebeat-deployment.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1210">
-          <caret line="55" column="42" selection-start-line="55" selection-start-column="42" selection-end-line="55" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/elk_components/namespace-elk.yaml">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/plotter/elasticsearch/config/elasticsearch.yml">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/elk_components/elasticsearch-service.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="396">
-          <caret line="18" column="14" selection-start-line="18" selection-start-column="14" selection-end-line="18" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/elk_components/elasticsearch-deployment.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="532">
-          <caret line="49" column="20" selection-start-line="48" selection-start-column="6" selection-end-line="49" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/rabbitmq/rabbitmq-deployment.yaml" />
-    <entry file="file://$PROJECT_DIR$/infrastructure_components/publisher_subscriber/rabbit_msgq_api/rabbit_msgq_api.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/infrastructure_components/publisher_subscriber/rabbit_msgq_api/rabbitmq_conf_plugins/enabled_plugins">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="24" selection-start-column="21" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/infrastructure_components/publisher_subscriber/rabbit_msgq_api/rabbitmq_conf_plugins/rabbitmq-definitions.json">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/infrastructure_components/publisher_subscriber/rabbit_msgq_api/rabbitmq_conf_plugins/rabbitmq-env.conf">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/rabbitmq/rabbitmq-service.yaml" />
     <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/rabbitmq/publisher-deployment.yaml">
       <provider selected="true" editor-type-id="text-editor" />
@@ -809,20 +763,10 @@
     <entry file="file://$PROJECT_DIR$/publisher/Dockerfile">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/publisher/requirements.txt">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/publisher-deployment.yaml" />
     <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/subscriber-deployment.yaml" />
     <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/transformer-deployment.yaml" />
     <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/kafka.yaml" />
-    <entry file="file://$USER_HOME$/Library/Caches/PyCharm2019.1/python_stubs/-1199943126/confluent_kafka/cimpl.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="23496">
-          <caret line="1068" column="32" selection-start-line="1068" selection-start-column="32" selection-end-line="1068" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/infrastructure_components/publisher_subscriber/publisher_subscriber_mec.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2838">
@@ -830,13 +774,6 @@
           <folding>
             <element signature="e#0#14#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/make_deploy.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3124">
-          <caret line="142" column="31" selection-start-line="142" selection-start-column="31" selection-end-line="142" selection-end-column="31" />
         </state>
       </provider>
     </entry>
@@ -851,6 +788,20 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="330">
           <caret line="15" column="24" selection-start-line="15" selection-start-column="24" selection-end-line="15" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/subscriber/subscriber.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="176">
+          <caret line="18" column="41" selection-start-line="18" selection-start-column="41" selection-end-line="18" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python3.7/site-packages/confluent_kafka/admin/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5962">
+          <caret line="290" selection-start-line="290" selection-end-line="290" />
         </state>
       </provider>
     </entry>
@@ -875,37 +826,152 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/install_uninstall.sh">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$USER_HOME$/Library/Python/3.7/lib/python/site-packages/kafka/consumer/group.py" />
+    <entry file="file://$USER_HOME$/Library/Python/3.7/lib/python/site-packages/kafka/producer/kafka.py" />
+    <entry file="file:///usr/local/lib/python3.7/site-packages/kafka/admin/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="e#0#38#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/Cellar/python/3.7.3/Frameworks/Python.framework/Versions/3.7/lib/python3.7/traceback.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3894">
+          <caret line="180" column="15" selection-start-line="180" selection-start-column="4" selection-end-line="180" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python3.7/site-packages/kafka/admin/new_partitions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="264">
+          <caret line="12" column="8" selection-start-line="12" selection-start-column="8" selection-end-line="12" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python3.7/site-packages/kafka/admin/new_topic.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="17" column="7" selection-start-line="17" selection-start-column="7" selection-end-line="17" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python3.7/site-packages/kafka/admin/client.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="11616">
+          <caret line="549" column="8" selection-start-line="549" selection-start-column="8" selection-end-line="549" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python3.7/site-packages/kafka/consumer/group.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="6336">
+          <caret line="308" column="8" selection-start-line="308" selection-start-column="8" selection-end-line="308" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/orchestrator/orchestrator.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="461">
+          <caret line="276" column="37" selection-start-line="276" selection-start-column="37" selection-end-line="276" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/make_deploy.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="559">
+          <caret line="645" column="33" selection-start-line="645" selection-start-column="33" selection-end-line="645" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/apache/publisher-deployment.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="400">
+          <caret line="46" column="37" selection-start-line="46" selection-start-column="37" selection-end-line="46" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/apache/transformer-deployment.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-122">
+          <caret line="13" column="13" selection-start-line="13" selection-start-column="13" selection-end-line="13" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/apache/orchestrator-deployment.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-580" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/confluent/orchestrator-deployment.yaml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/confluent/transformer-deployment.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="286">
+          <caret line="13" column="13" selection-start-line="13" selection-start-column="13" selection-end-line="13" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/confluent/publisher-deployment.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="485">
+          <caret line="56" column="26" selection-start-line="56" selection-start-column="26" selection-end-line="56" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/confluent/confluent_kafka.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2156" />
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/infrastructure_components/publisher_subscriber/publisher_subscriber.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2860">
-          <caret line="134" column="93" selection-start-line="134" selection-start-column="93" selection-end-line="134" selection-end-column="93" />
+        <state relative-caret-position="150">
+          <caret line="73" column="1" selection-start-line="73" selection-start-column="1" selection-end-line="73" selection-end-column="1" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/install_uninstall.sh">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/subscriber/subscriber.py">
+    <entry file="file://$PROJECT_DIR$/publisher/requirements.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1790">
-          <caret line="18" column="41" lean-forward="true" selection-start-line="18" selection-start-column="41" selection-end-line="18" selection-end-column="41" />
+        <state relative-caret-position="88">
+          <caret line="4" selection-start-line="4" selection-end-line="4" selection-end-column="15" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/orchestrator/orchestrator.py">
+    <entry file="file://$PROJECT_DIR$/subscriber/requirements.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="155">
-          <caret line="226" selection-start-line="226" selection-end-line="226" />
+        <state relative-caret-position="88">
+          <caret line="4" column="15" selection-start-line="4" selection-start-column="15" selection-end-line="4" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/transformer/requirements.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="176">
+          <caret line="8" column="5" selection-start-line="8" selection-start-column="5" selection-end-line="8" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Library/Caches/PyCharm2019.1/python_stubs/-1199943126/confluent_kafka/cimpl.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="267">
+          <caret line="231" column="8" selection-start-line="231" selection-start-column="8" selection-end-line="231" selection-end-column="8" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/infrastructure_components/publisher_subscriber/kafka_msgq_api/kafka_msgq_api.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="337" column="62" selection-start-line="337" selection-start-column="62" selection-end-line="337" selection-end-column="62" />
+        <state relative-caret-position="632">
+          <caret line="411" column="41" lean-forward="true" selection-start-line="411" selection-start-column="41" selection-end-line="411" selection-end-column="41" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>

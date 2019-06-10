@@ -7,10 +7,8 @@ import time
 import traceback
 from pprint import pformat
 
-from kafka import KafkaProducer, KafkaConsumer, admin
-
-
-# from confluent_kafka import Producer, Consumer, KafkaException, admin
+import kafka
+import confluent_kafka
 
 
 # sys.path.append("..")  # Adds higher directory to python modules path.
@@ -82,7 +80,7 @@ class KafkaMsgQAPI(object):
         self.producer_conf = None
         self.consumer_conf = None
         self.partitions_per_topic = 10
-        self.is_topic_created = True # Do not try to create a topic in the zookeeper.
+        self.is_topic_created = True  # Do not try to create a topic in the zookeeper.
         self.subscription_cb = None
         self.consumer_thread = None
         self.is_producer_connected = False
@@ -143,15 +141,16 @@ class KafkaMsgQAPI(object):
 
             try:
                 if self.kafka_type == "ConfluentKafka":
-                    kafka_admin_client = admin.AdminClient({'bootstrap.servers': '{}:{}'
-                                                           .format(self.broker_hostname, self.broker_port)})
+                    kafka_admin_client = confluent_kafka.admin.AdminClient({'bootstrap.servers': '{}:{}'
+                                                                           .format(self.broker_hostname,
+                                                                                   self.broker_port)})
 
                     logging.info("Creating topic {}."
                                  .format(topic))
                     ret = kafka_admin_client.create_topics(new_topics=[
-                        admin.NewTopic(topic=topic,
-                                       timeout_ms=5000,
-                                       num_partitions=self.partitions_per_topic)],
+                        confluent_kafka.admin.NewTopic(topic=topic,
+                                                       timeout_ms=5000,
+                                                       num_partitions=self.partitions_per_topic)],
                         operation_timeout=1.0)
                     logging.info("ret = {}".format(ret))
                     if self.producer_instance.list_topics(topic,
@@ -160,7 +159,7 @@ class KafkaMsgQAPI(object):
                                      .format(topic))
                 else:
                     try:
-                        kafka_admin_client = admin.KafkaAdminClient(
+                        kafka_admin_client = kafka.admin.KafkaAdminClient(
                             bootstrap_servers='{}:{}'.format(self.broker_hostname, self.broker_port))
                     except:
                         logging.info("Caught an exception while trying to invoke admin.KafkaAdminClient.")
@@ -170,32 +169,33 @@ class KafkaMsgQAPI(object):
                             logging.info("Creating topic {}."
                                          .format(topic))
                             ret = kafka_admin_client.create_topics(new_topics=[
-                                admin.NewTopic(name=topic,
-                                               num_partitions=self.partitions_per_topic,
-                                               replication_factor=1)]
+                                confluent_kafka.admin.NewTopic(name=topic,
+                                                               num_partitions=self.partitions_per_topic,
+                                                               replication_factor=1)]
                             )
                             logging.info("ret = {}".format(ret))
                         except:
                             logging.info("Caught an exception while trying to create a topic.")
-                            #print("-" * 60)
+                            # print("-" * 60)
                             # traceback.print_exc(file=sys.stdout)
-                            #traceback.print_last()
+                            # traceback.print_last()
                             # traceback.print_stack()
                             print("-" * 60)
                         try:
                             logging.info(
                                 "Trying to create {} partitions in a topic.".format(self.partitions_per_topic))
                             ret = kafka_admin_client.create_partitions(
-                                topic_partitions={topic: admin.NewPartitions(self.partitions_per_topic)})
+                                topic_partitions={
+                                    topic: confluent_kafka.admin.NewPartitions(self.partitions_per_topic)})
                             logging.info("ret = {}".format(ret))
                         except:
                             logging.info("Caught an exception while trying to increase "
                                          "the number of partitions a topic.")
-                            #print("-" * 60)
+                            # print("-" * 60)
                             # traceback.print_exc(file=sys.stdout)
-                            #traceback.print_last()
+                            # traceback.print_last()
                             # traceback.print_stack()
-                            #print("-" * 60)
+                            # print("-" * 60)
             except:
                 logging.info("Caught an exception.")
                 print("-" * 60)
@@ -217,10 +217,10 @@ class KafkaMsgQAPI(object):
             try:
                 # Create Producer instance
                 if self.kafka_type == "ConfluentKafka":
-                    self.producer_instance = Producer({'bootstrap.servers': '{}:{}'
-                                                      .format(self.broker_hostname, self.broker_port)})
+                    self.producer_instance = confluent_kafka.Producer({'bootstrap.servers': '{}:{}'
+                                                                      .format(self.broker_hostname, self.broker_port)})
                 else:
-                    self.producer_instance = KafkaProducer(
+                    self.producer_instance = kafka.KafkaProducer(
                         bootstrap_servers='{}:{}'
                             .format(self.broker_hostname, self.broker_port),
                         acks=0)
@@ -320,13 +320,13 @@ class KafkaMsgQAPI(object):
                                      self.broker_port))
                 # Create Consumer instance
                 if self.kafka_type == "ConfluentKafka":
-                    self.consumer_instance = Consumer({
+                    self.consumer_instance = confluent_kafka.Consumer({
                         'bootstrap.servers': '{}:{}'.format(self.broker_hostname, self.broker_port),
                         'group.id': 'kafka-consumer',
                         'auto.offset.reset': 'earliest'
                     })
                 else:
-                    self.consumer_instance = KafkaConsumer(
+                    self.consumer_instance = kafka.KafkaConsumer(
                         bootstrap_servers='{}:{}'.format(self.broker_hostname, self.broker_port),
                         group_id="kafka-consumer")
 
@@ -359,6 +359,21 @@ class KafkaMsgQAPI(object):
             time.sleep(5)
 
     @staticmethod
+    def process_subscriber_message(consumer_instance, msg):
+        logging.debug("msg={}".format(msg))
+        consumer_instance.redis_instance.increment_dequeue_count()
+        if msg.find("metadata=") == -1:
+            consumer_instance.subscription_cb(msg)
+        else:
+            # This is from SNAPLOGIC which adds extra headers. Skip them.
+            value_index = msg.find("value=")
+            if value_index:
+                value_index += len("value=")
+                msg = msg[value_index:-1]
+                logging.debug("post-formatted msg={}".format(msg))
+                consumer_instance.subscription_cb(msg)
+
+    @staticmethod
     def run_consumer_thread(*args, **kwargs):
         logging.info("Starting {}".format(threading.current_thread().getName()))
         consumer_instance = None
@@ -372,24 +387,26 @@ class KafkaMsgQAPI(object):
         while getattr(t, "do_run", True):
             t = threading.currentThread()
             try:
-                msgs = consumer_instance.consumer_instance.poll(timeout_ms=10,
-                                                                max_records=100
-                                                                )
-                for msg in msgs.values():
-                    msg = msg[0].value.decode('utf-8')
+                if consumer_instance.kafka_type == "ConfluentKafka":
+                    msg = consumer_instance.consumer_instance.poll(1.0)
+                    if msg is None:
+                        logging.info("No messages.")
+                        continue
+                    if msg.error():
+                        logging.info("Consumer error: {}".format(msg.error()))
+                        continue
                     if msg:
-                        logging.debug("msg={}".format(msg))
-                        consumer_instance.redis_instance.increment_dequeue_count()
-                        if msg.find("metadata=") == -1:
-                            consumer_instance.subscription_cb(msg)
-                        else:
-                            # This is from SNAPLOGIC which adds extra headers. Skip them.
-                            value_index = msg.find("value=")
-                            if value_index:
-                                value_index += len("value=")
-                                msg = msg[value_index:-1]
-                                logging.debug("post-formatted msg={}".format(msg))
-                                consumer_instance.subscription_cb(msg)
+                        logging.info("msg={}.".format(msg.value.decode('utf-8')))
+                        KafkaMsgQAPI.process_subscriber_message(consumer_instance,
+                                                                msg.value.decode('utf-8'))
+                else:
+                    msgs = consumer_instance.consumer_instance.poll(timeout_ms=10,
+                                                                    max_records=1000
+                                                                    )
+                    for msg in msgs.values():
+                        msg = msg[0].value.decode('utf-8')
+                        if msg:
+                            KafkaMsgQAPI.process_subscriber_message(consumer_instance, msg)
             except:
                 logging.debug("Exception occured when trying to poll a kafka topic.")
         logging.info("Consumer {}: Exiting"
