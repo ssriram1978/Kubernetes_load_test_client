@@ -75,8 +75,8 @@ create_infrastructure() {
         #displayer \
         #$tag
 
-        echo "docker-compose -f  docker_stack_yml_filesdocker-stack-common.yml build"
-        docker-compose -f docker_stack_yml_filesdocker-stack-common.yml build
+        echo "docker-compose -f  docker_stack_yml_files/docker-stack-common.yml build"
+        docker-compose -f docker_stack_yml_files/docker-stack-common.yml build
 
         echo "docker-compose -f $2 build"
         docker-compose -f $2 build
