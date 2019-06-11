@@ -661,8 +661,8 @@ case "$1" in
   docker_elk) docker_compose_elk_infrastructure $2 ;;
   deploy_prometheus_grafana) deploy_prometheus_grafana ;;
   undeploy_prometheus_grafana) undeploy_prometheus_grafana ;;
-  delete_logstash_index)   delete_logstash_index $2 $3;;
-  change_kafka_partition) change_kafka_partition ;;
+  delete_logstash_index)   delete_logstash_index ;;
+  change_kafka_partition) change_kafka_partition $2 $3 ;;
   *) echo "usage: $0"
       echo "<build <all|directory_name> <yaml file> <tag -- optional> > |"
       echo "<deploy <yaml file> > |"
