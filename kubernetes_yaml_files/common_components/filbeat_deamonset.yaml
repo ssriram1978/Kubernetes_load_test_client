@@ -2,7 +2,7 @@ apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
   name: filebeat
-  namespace: kube-system
+  namespace: common-infrastructure
   labels:
     k8s-app: filebeat
 spec:
