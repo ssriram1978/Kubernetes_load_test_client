@@ -627,11 +627,16 @@ change_kafka_partition() {
    topic_name=$1
    partition_count=$2
 
-   echo "kubectl exec kafka-0 -n common-infrastructure -it ./opt/kafka_2.11-0.10.2.1/bin/kafka-topics.sh --alter --partitions $3  --topic $2 --zookeeper zookeeper.common-infrastructure.svc.cluster.local:2181"
-   kubectl exec kafka-0 -n common-infrastructure -it ./opt/kafka_2.11-0.10.2.1/bin/kafka-topics.sh --alter --partitions $3  --topic $2 --zookeeper zookeeper.common-infrastructure.svc.cluster.local:2181
+   echo "Before:"
+   echo "kubectl exec kafka-0 -n common-infrastructure -it -- /bin/bash ./opt/kafka_2.11-0.10.2.1/bin/kafka-topics.sh --describe --topic PUBLISHER --zookeeper zookeeper.common-infrastructure.svc.cluster.local:2181"
+   kubectl exec kafka-0 -n common-infrastructure -it -- /bin/bash ./opt/kafka_2.11-0.10.2.1/bin/kafka-topics.sh --describe --topic PUBLISHER --zookeeper zookeeper.common-infrastructure.svc.cluster.local:2181
 
-   echo "kubectl exec kafka-0 -n common-infrastructure -it ./opt/kafka_2.11-0.10.2.1/bin/kafka-topics.sh --describe --topic $2 --zookeeper zookeeper.common-infrastructure.svc.cluster.local:2181"
-   kubectl exec kafka-0 -n common-infrastructure -it ./opt/kafka_2.11-0.10.2.1/bin/kafka-topics.sh --describe --topic $2 --zookeeper zookeeper.common-infrastructure.svc.cluster.local:2181
+   echo "kubectl exec kafka-0 -n common-infrastructure -it -- /bin/bash ./opt/kafka_2.11-0.10.2.1/bin/kafka-topics.sh --alter --partitions $3  --topic $2 --zookeeper zookeeper.common-infrastructure.svc.cluster.local:2181"
+   kubectl exec kafka-0 -n common-infrastructure -it -- /bin/bash ./opt/kafka_2.11-0.10.2.1/bin/kafka-topics.sh --alter --partitions $3  --topic $2 --zookeeper zookeeper.common-infrastructure.svc.cluster.local:2181
+
+   echo "After:"
+   echo "kubectl exec kafka-0 -n common-infrastructure -it -- /bin/bash ./opt/kafka_2.11-0.10.2.1/bin/kafka-topics.sh --describe --topic $2 --zookeeper zookeeper.common-infrastructure.svc.cluster.local:2181"
+   kubectl exec kafka-0 -n common-infrastructure -it -- /bin/bash ./opt/kafka_2.11-0.10.2.1/bin/kafka-topics.sh --describe --topic $2 --zookeeper zookeeper.common-infrastructure.svc.cluster.local:2181
 }
 
 case "$1" in
