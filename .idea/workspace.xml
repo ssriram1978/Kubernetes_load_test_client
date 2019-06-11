@@ -2,10 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a412cb8e-0925-41a1-9e4d-6db89dfd400b" name="Default Changelist" comment="DaemonSet cannot be pinned to a node.">
-      <change afterPath="$PROJECT_DIR$/kubernetes_yaml_files/common_components/filbeat_deamonset.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/kubernetes_yaml_files/common_components/filebeat_configmap.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/infrastructure_components.tar.gz" beforeDir="false" afterPath="$PROJECT_DIR$/infrastructure_components.tar.gz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/publisher/publisher.py" beforeDir="false" afterPath="$PROJECT_DIR$/publisher/publisher.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -16,66 +15,78 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/infrastructure_components/publisher_subscriber/kafka_msgq_api/kafka_msgq_api.py">
+        <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/common_components/filebeat-deployment_yaml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="522">
-              <caret line="406" column="58" selection-start-line="406" selection-start-column="58" selection-end-line="406" selection-end-column="58" />
-              <folding>
-                <element signature="e#0#11#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="232">
+              <caret line="33" column="53" lean-forward="true" selection-start-line="33" selection-start-column="53" selection-end-line="33" selection-end-column="53" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/infrastructure_components/redis_client/redis_interface.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="483">
-              <caret line="99" column="10" selection-start-line="99" selection-start-column="10" selection-end-line="99" selection-end-column="10" />
-              <folding>
-                <element signature="e#0#14#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/make_deploy.sh">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-11060">
-              <caret line="69" column="22" lean-forward="true" selection-start-line="69" selection-start-column="22" selection-end-line="69" selection-end-column="22" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/common_components/filebeat-deployment.yaml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="665">
-              <caret line="53" selection-start-line="37" selection-end-line="53" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/infrastructure_components/prometheus/manifests-all.yaml">
+        <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/common_components/docker-stack-common_yml">
           <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/common_components/filbeat_deamonset.yaml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="552">
-              <caret line="49" lean-forward="true" selection-start-line="49" selection-end-line="49" />
+            <state relative-caret-position="332">
+              <caret line="39" column="20" lean-forward="true" selection-start-line="39" selection-start-column="20" selection-end-line="39" selection-end-column="20" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/publisher/publisher.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="66">
+              <caret line="9" column="40" selection-start-line="9" selection-start-column="40" selection-end-line="9" selection-end-column="40" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/subscriber/subscriber.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="66">
+              <caret line="13" column="40" selection-start-line="13" selection-start-column="20" selection-end-line="13" selection-end-column="40" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/common_components/filebeat_configmap.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="434">
-              <caret line="27" column="8" selection-start-line="27" selection-start-column="8" selection-end-line="27" selection-end-column="8" />
+            <state relative-caret-position="528">
+              <caret line="24" column="23" lean-forward="true" selection-start-line="24" selection-start-column="23" selection-end-line="24" selection-end-column="23" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/common_components/filebeat_role_binding.yaml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="154">
+              <caret line="7" column="34" selection-start-line="7" selection-start-column="34" selection-end-line="7" selection-end-column="34" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/common_components/filebeat_role.yaml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="308">
+              <caret line="14" column="8" selection-start-line="14" selection-start-column="8" selection-end-line="14" selection-end-column="8" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/common_components/filebeat_service.yaml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="88">
+              <caret line="4" column="34" selection-start-line="4" selection-start-column="34" selection-end-line="4" selection-end-column="34" />
             </state>
           </provider>
         </entry>
@@ -83,24 +94,6 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/plotter/filebeat/filebeat.docker.yml">
           <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/publisher/publisher.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="384">
-              <caret line="164" column="34" selection-start-line="164" selection-start-column="22" selection-end-line="164" selection-end-column="34" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/plotter/logstash/pipeline/logstash.conf">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="308">
-              <caret line="14" column="10" selection-start-line="14" selection-start-column="10" selection-end-line="14" selection-end-column="10" />
-            </state>
-          </provider>
         </entry>
       </file>
     </leaf>
@@ -143,10 +136,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/pulsar/publisher-deployment.yaml" />
-        <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/pulsar/subscriber-deployment.yaml" />
-        <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/pulsar/transformer-deployment.yaml" />
-        <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/zeromq/publisher-deployment.yaml" />
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/zeromq/subscriber-deployment.yaml" />
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/core_components/zeromq/transformer-deployment.yaml" />
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/common_components/kube-dashboard.yaml" />
@@ -186,14 +175,18 @@
         <option value="$PROJECT_DIR$/transformer/requirements.txt" />
         <option value="$PROJECT_DIR$/infrastructure_components/publisher_subscriber/kafka_msgq_api/kafka_msgq_api.py" />
         <option value="$PROJECT_DIR$/infrastructure_components/redis_client/redis_interface.py" />
-        <option value="$PROJECT_DIR$/publisher/publisher.py" />
         <option value="$PROJECT_DIR$/plotter/logstash/pipeline/logstash.conf" />
         <option value="$PROJECT_DIR$/make_deploy.sh" />
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/common_components/filebeat-deployment.yaml" />
         <option value="$PROJECT_DIR$/plotter/filebeat/filbeat_deamonset.yaml" />
         <option value="$PROJECT_DIR$/plotter/filebeat/filebeat.docker.yml" />
-        <option value="$PROJECT_DIR$/kubernetes_yaml_files/common_components/filbeat_deamonset.yaml" />
+        <option value="$PROJECT_DIR$/kubernetes_yaml_files/common_components/filebeat_role.yaml" />
+        <option value="$PROJECT_DIR$/kubernetes_yaml_files/common_components/filebeat-deployment_yaml" />
+        <option value="$PROJECT_DIR$/kubernetes_yaml_files/common_components/filebeat_role_binding.yaml" />
+        <option value="$PROJECT_DIR$/kubernetes_yaml_files/common_components/filebeat_service.yaml" />
         <option value="$PROJECT_DIR$/kubernetes_yaml_files/common_components/filebeat_configmap.yml" />
+        <option value="$PROJECT_DIR$/kubernetes_yaml_files/common_components/filbeat_deamonset.yaml" />
+        <option value="$PROJECT_DIR$/publisher/publisher.py" />
       </list>
     </option>
   </component>
@@ -219,24 +212,12 @@
             <path>
               <item name="IOT_load_test_client" type="b2602c69:ProjectViewProjectNode" />
               <item name="IOT_load_test_client" type="462c0819:PsiDirectoryNode" />
-              <item name="kubernetes_yaml_files" type="462c0819:PsiDirectoryNode" />
+              <item name="publisher" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="IOT_load_test_client" type="b2602c69:ProjectViewProjectNode" />
               <item name="IOT_load_test_client" type="462c0819:PsiDirectoryNode" />
-              <item name="kubernetes_yaml_files" type="462c0819:PsiDirectoryNode" />
-              <item name="common_components" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="IOT_load_test_client" type="b2602c69:ProjectViewProjectNode" />
-              <item name="IOT_load_test_client" type="462c0819:PsiDirectoryNode" />
-              <item name="plotter" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="IOT_load_test_client" type="b2602c69:ProjectViewProjectNode" />
-              <item name="IOT_load_test_client" type="462c0819:PsiDirectoryNode" />
-              <item name="plotter" type="462c0819:PsiDirectoryNode" />
-              <item name="filebeat" type="462c0819:PsiDirectoryNode" />
+              <item name="subscriber" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -340,28 +321,7 @@
       <workItem from="1559827650955" duration="2881000" />
       <workItem from="1559832334798" duration="10106000" />
       <workItem from="1560046894051" duration="5188000" />
-      <workItem from="1560174013092" duration="13794000" />
-    </task>
-    <task id="LOCAL-00001" summary="Optimizing RabbitMQ by setting RAM limits.">
-      <created>1558788254478</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1558788254478</updated>
-    </task>
-    <task id="LOCAL-00002" summary="Wiped off all VM's in MEC and created new VM's. Modified yaml files to pick the correct node selectors.">
-      <created>1558806458704</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1558806458704</updated>
-    </task>
-    <task id="LOCAL-00003" summary="Duplicate node selectors.">
-      <created>1558806644966</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1558806644966</updated>
+      <workItem from="1560174013092" duration="15550000" />
     </task>
     <task id="LOCAL-00004" summary="kubernetes.io/hostname: xyz has to be on a single line.">
       <created>1558807470447</created>
@@ -678,15 +638,42 @@
       <option name="project" value="LOCAL" />
       <updated>1560280013433</updated>
     </task>
-    <option name="localTasksCounter" value="49" />
+    <task id="LOCAL-00049" summary="Deamonizing filebeat in Kubernetes.">
+      <created>1560281324289</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1560281324289</updated>
+    </task>
+    <task id="LOCAL-00050" summary="Setting filebeat namespace to be common-infrastructure.">
+      <created>1560281523369</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1560281523369</updated>
+    </task>
+    <task id="LOCAL-00051" summary="filebeat configmap.">
+      <created>1560282172952</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1560282172952</updated>
+    </task>
+    <task id="LOCAL-00052" summary="mounting filebeat.yml in the correct location.">
+      <created>1560282737111</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1560282737111</updated>
+    </task>
+    <option name="localTasksCounter" value="53" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="154009000" />
+    <option name="totallyTimeSpent" value="155765000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1920" height="1080" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.22896698" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -716,10 +703,6 @@
     <option name="version" value="1" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Reorganizing docker_stack yml files into another directory." />
-    <MESSAGE value="Trying to make ELK work with Kubernetes." />
-    <MESSAGE value="Still need to find out why logstash.elk.svc.cluster.local:5044 doesn't work." />
-    <MESSAGE value="FIXED make_deploy to build logstash." />
     <MESSAGE value="Filebeat is able to talk to logstash successfully." />
     <MESSAGE value="Trying out prometheus and grafana." />
     <MESSAGE value="Got prometheus and grafana to work." />
@@ -741,22 +724,16 @@
     <MESSAGE value="Change kafka partitions dynamically." />
     <MESSAGE value="Dynamically change any kafka topic partitions size. Note that you can only increase not decrease a partition size." />
     <MESSAGE value="Trying to get the publisher throughput in ELK." />
-    <option name="LAST_COMMIT_MESSAGE" value="Trying to get the publisher throughput in ELK." />
+    <MESSAGE value="Deamonizing filebeat in Kubernetes." />
+    <MESSAGE value="Setting filebeat namespace to be common-infrastructure." />
+    <MESSAGE value="filebeat configmap." />
+    <MESSAGE value="mounting filebeat.yml in the correct location." />
+    <option name="LAST_COMMIT_MESSAGE" value="mounting filebeat.yml in the correct location." />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/IOT_load_test_client$reverse_bfs.coverage" NAME="reverse_bfs Coverage Results" MODIFIED="1559224151010" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/reverse_bfs.py" />
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/redis-commander-deployment.yaml" />
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/kafka/redis-service.yaml" />
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/rabbitmq/rabbitmq_statefulsets.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2948">
-          <caret line="134" column="33" selection-start-line="134" selection-start-column="33" selection-end-line="134" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/core_components/rabbitmq/redis-deployment.yaml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="704">
@@ -800,13 +777,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="154">
           <caret line="7" selection-start-line="7" selection-end-line="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/subscriber/subscriber.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="176">
-          <caret line="18" column="41" selection-start-line="18" selection-start-column="41" selection-end-line="18" selection-end-column="41" />
         </state>
       </provider>
     </entry>
@@ -976,13 +946,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/publisher/publisher.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="384">
-          <caret line="164" column="34" selection-start-line="164" selection-start-column="22" selection-end-line="164" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/plotter/logstash/pipeline/logstash.conf">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="308">
@@ -1010,17 +973,27 @@
     <entry file="file://$PROJECT_DIR$/infrastructure_components/prometheus/manifests-all.yaml">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/common_components/filbeat_deamonset.yaml">
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/common_components/docker-stack-common_yml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/common_components/filebeat_role.yaml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="552">
-          <caret line="49" lean-forward="true" selection-start-line="49" selection-end-line="49" />
+        <state relative-caret-position="308">
+          <caret line="14" column="8" selection-start-line="14" selection-start-column="8" selection-end-line="14" selection-end-column="8" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/common_components/filebeat-deployment.yaml">
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/common_components/filebeat_role_binding.yaml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="665">
-          <caret line="53" selection-start-line="37" selection-end-line="53" />
+        <state relative-caret-position="154">
+          <caret line="7" column="34" selection-start-line="7" selection-start-column="34" selection-end-line="7" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/common_components/filebeat_service.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="88">
+          <caret line="4" column="34" selection-start-line="4" selection-start-column="34" selection-end-line="4" selection-end-column="34" />
         </state>
       </provider>
     </entry>
@@ -1029,8 +1002,36 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/common_components/filebeat_configmap.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="434">
-          <caret line="27" column="8" selection-start-line="27" selection-start-column="8" selection-end-line="27" selection-end-column="8" />
+        <state relative-caret-position="528">
+          <caret line="24" column="23" lean-forward="true" selection-start-line="24" selection-start-column="23" selection-end-line="24" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/common_components/filebeat-deployment_yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="232">
+          <caret line="33" column="53" lean-forward="true" selection-start-line="33" selection-start-column="53" selection-end-line="33" selection-end-column="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kubernetes_yaml_files/common_components/filbeat_deamonset.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="332">
+          <caret line="39" column="20" lean-forward="true" selection-start-line="39" selection-start-column="20" selection-end-line="39" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/subscriber/subscriber.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="66">
+          <caret line="13" column="40" selection-start-line="13" selection-start-column="20" selection-end-line="13" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/publisher/publisher.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="66">
+          <caret line="9" column="40" selection-start-line="9" selection-start-column="40" selection-end-line="9" selection-end-column="40" />
         </state>
       </provider>
     </entry>

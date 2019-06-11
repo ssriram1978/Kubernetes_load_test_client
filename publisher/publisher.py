@@ -7,7 +7,7 @@ import traceback
 from datetime import datetime
 import threading, time
 
-logging.basicConfig(format='%(levelname)s:%(asctime)s:%(message)s',
+logging.basicConfig(format='%(message)s',
                     level=logging.INFO)
 
 import json
