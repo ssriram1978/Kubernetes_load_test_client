@@ -162,7 +162,7 @@ class Publisher:
         json.dump(self.json_parsed_data, io)
         logging.debug("enqueuing message {}."
                       .format(io.getvalue()))
-        logging.info("published_ts={}.".format(self.json_parsed_data['lastUpdated']))
+        logging.info("published_ts={}".format(self.json_parsed_data['lastUpdated']))
         self.producer_consumer_instance.publish(io.getvalue())
 
     def exec_every_n_milliseconds(self):
