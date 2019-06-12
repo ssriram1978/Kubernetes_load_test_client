@@ -8,6 +8,7 @@ metadata:
   creationTimestamp: null
   labels:
     io.kompose.service: subscriber
+    app: subscriber
   name: subscriber
   namespace: loadtest
 spec:
@@ -19,6 +20,7 @@ spec:
       creationTimestamp: null
       labels:
         io.kompose.service: subscriber
+        app: subscriber
     spec:
       containers:
       - env:
