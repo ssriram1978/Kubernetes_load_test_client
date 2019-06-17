@@ -755,16 +755,16 @@ Latency Results of EMQ will be published soon.
 
 3. It is possible to achieve single digit end-to-end latency with EMQ.
 
-	./make_deploy.sh undeploy_core emq
-	kubectl delete -f kubernetes_yaml_files/core_components/emq
-	namespace "loadtest" deleted
-	service "emqx" deleted
-	deployment.extensions "emqx" deleted
-	deployment.extensions "orchestrator" deleted
-	deployment.extensions "publisher" deleted
-	deployment.extensions "redis-commander" deleted
-	service "redis-commander" deleted
-	deployment.extensions "redis" deleted
-	service "redis" deleted
-	deployment.extensions "subscriber" deleted
-	deployment.extensions "transformer" deleted
+		./make_deploy.sh undeploy_core emq
+		kubectl delete -f kubernetes_yaml_files/core_components/emq
+		namespace "loadtest" deleted
+		service "emqx" deleted
+		deployment.extensions "emqx" deleted
+		deployment.extensions "orchestrator" deleted
+		deployment.extensions "publisher" deleted
+		deployment.extensions "redis-commander" deleted
+		service "redis-commander" deleted
+		deployment.extensions "redis" deleted
+		service "redis" deleted
+		deployment.extensions "subscriber" deleted
+		deployment.extensions "transformer" deleted
