@@ -506,8 +506,8 @@ bootup_vm() {
   echo "docker_prune"
   docker_prune
 
-  echo "deploy_cpu_ram_monitor"
-  deploy_cpu_ram_monitor
+  #echo "deploy_cpu_ram_monitor"
+  #deploy_cpu_ram_monitor
 
   #echo "build_logstash"
   #build_logstash
@@ -515,8 +515,8 @@ bootup_vm() {
   #echo "tag_nodes"
   #tag_nodes
 
-  echo "deploy_infrastructure"
-  deploy_infrastructure
+  #echo "deploy_infrastructure"
+  #deploy_infrastructure
 
 }
 
