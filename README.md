@@ -182,6 +182,8 @@ output.logstash:
 ./make_deploy.sh build_and_deploy all docker-stack-rabbitmq.yml
 	This command will build docker images of all directories and deploy the containers specified in docker-stack-rabbitmq.yml and docker-stack-common.yml files.
 
+./make_deploy.sh build all docker-stack-infrastructure.yml ssriram1978
+This command will build docker images of producer, consumer, plotter and transformer directories and will also build Logstash with GROK filter plugin and tag the docker images with the passed in tag and push it to docker hub registry.
 
 6. Kibana Port number is 5601. Open web browser and go to ip-address-of-elk:5601 to view Kibana dashboard.
 
@@ -211,3 +213,558 @@ output.logstash:
 	
 	j. elasticsearch – creates a container to handle the elastic search of all the logstash.
 	
+Strategy to evaluate various message queues:
+--------------------------------------------
+![](strategy.png)
+
+Run load test via kubernetes:
+-----------------------------
+	1. git clone https://github.com/ssriram1978/IOT_load_test_client.git
+	
+	2. cd git/IOT_load_test
+	
+	3. Install Docker and Kubernetes Master or worker by running this script.
+	./install_uninstall.sh usage: ./install_uninstall.sh <install_docker|uninstall_docker|install_kubernetes|uninstall_kubernetes|install_kompose|kompose_convert>
+
+	4. ./make_deploy.sh <deploy_infrastructure|undeploy_infrastructure> – Deploy/Undeploy Filebeat as a DeamonSet, Kubernetes Dashboard and creates namespace "common-infrastructure".
+   
+	5. ./make_deploy.sh deploy_infrastructure
+	kubectl apply -f kubernetes_yaml_files/common_components/
+	daemonset.extensions/filebeat configured
+	configmap/filebeat-config configured
+	configmap/filebeat-inputs configured
+	clusterrole.rbac.authorization.k8s.io/filebeat configured
+	clusterrolebinding.rbac.authorization.k8s.io/filebeat configured
+	serviceaccount/filebeat configured
+	serviceaccount/kubernetes-dashboard configured
+	clusterrolebinding.rbac.authorization.k8s.io/kubernetes-dashboard configured
+	deployment.extensions/kubernetes-dashboard configured
+	service/kubernetes-dashboard configured
+	namespace/common-infrastructure configured
+
+	6. ./make_deploy.sh <deploy_elk|undeploy_elk> - Deploy Elasticsearch, Logsearch, Kibana in "elk" namespace.
+	delete_logstash_index - Deleting all logstash indexes in the node to clear up space.
+	
+	./make_deploy.sh delete_logstash_index 
+	curl \'localhost:30011/_cat/indices?v\' 
+	health status index uuid pri rep docs.count docs.deleted store.size pri.store.size 
+	green open .kibana Fs1yUY8EQNqdyiXdQ46J8w 1 0 2 0 11.8kb 11.8kb 
+	yellow open logstash-2019.06.13 KaCbGRKST9mHwsvdYP8_2w 5 1 19050045 0 2gb 2gb 
+	yellow open logstash-2019.06.14 4-NYBYH6SxCPoBXYRS8fCQ 5 1 29432130 0 3.8gb 3.8gb 
+	yellow open {sss1234} hr-irUQPRXKPw1lhEfpjhA 5 1 48482250 0 6.7gb 6.7gb 
+	curl -XDELETE 'localhost:30011/*
+
+	deploy_prometheus_grafana|undeploy_prometheus_grafana - Deploy|Undeploy Prometheus and Grafana in "monitoring" namespace. Prometheus-node-exporter runs as deamonset in all the nodes.
+	
+	kubectl get svc -n monitoring NAME TYPE CLUSTER-IP EXTERNAL-IP PORT(S) AGE 
+	alertmanager NodePort 10.100.44.179 <none> 9093:30268/TCP 67s 
+	grafana NodePort 10.99.122.71 <none> 3000:30580/TCP 67s 
+	kube-state-metrics ClusterIP 10.101.180.78 <none> 8080/TCP 67s 
+	prometheus NodePort 10.105.50.214 <none> 9090:31905/TCP 67s 
+	prometheus-node-exporter ClusterIP None <none> 9100/TCP 67s
+	
+	Set Prometheus as data source and IP as http://localhost:31905 in Grafana.
+
+
+Load Test results:
+------------------
+Apache Kafka Broker + SNAPLOGIC  (100k messages per second)
+-----------------------------------------------------------
+Test Setup:
+1. Apache Kafka - on "Broker" Node.
+
+2. Topic: "PUBLISHER" and "SUBSCRIBER" each with 100 partitions.
+
+3. 100 PUBLISHER PODS publishing 1000 messages per second to PUBLISHER topic.
+
+4. 100 CONSUMER PODS belonging to one consumer group and subscribe to "SUBSCRIBER" topic.
+
+		./make_deploy.sh deploy_core apache-kafka 
+		kubectl apply -f kubernetes_yaml_files/core_components/kafka/apache 
+		poddisruptionbudget.policy/kafka-pdb created service/kafka created 
+		statefulset.apps/kafka created namespace/loadtest created 
+		deployment.extensions/orchestrator created deployment.extensions/publisher created 
+		deployment.extensions/redis-commander created service/redis-commander created 
+		deployment.extensions/redis created service/redis created 
+		deployment.extensions/subscriber created 
+		deployment.extensions/transformer created 
+		service/zookeeper created poddisruptionbudget.policy/zk-pdb created 
+		statefulset.apps/zookeeper created
+
+5. We tried to evaluate SNAPLOGIC vs CAMEL PODS which act as "Transformer" PODS. These PODS consume message from the "PUBLISHER" topic and produce transformed message to the "SUBSCRIBER" topic.
+
+6. order to evaluate SNAPLOGIC, we had to stick to one KAFKA topic for PUBLISHER and one KAFKA topic for SUBSCRIBER and create 100 partitions to distribute the work load across 100 PUBLISHER and 100 CONSUMER PODS.
+
+change_kafka_partition <topic_name> <partition_count> - Dynamically increase Kafka partition size. Used while testing Kafka Broker.
+
+	./make_deploy.sh change_kafka_partition SUBSCRIBER 100
+	Before:
+	kubectl exec kafka-0 -n common-infrastructure -it -- /bin/bash ./opt/kafka_2.11-0.10.2.1/bin/kafka-topics.sh --describe --topic SUBSCRIBER --zookeeper zookeeper.common-infrastructure.svc.cluster.local:2181
+	Topic:SUBSCRIBER PartitionCount:1 ReplicationFactor:1 Configs:
+	Topic: SUBSCRIBER Partition: 0 Leader: 0 Replicas: 0 Isr: 0
+	kubectl exec kafka-0 -n common-infrastructure -it -- /bin/bash ./opt/kafka_2.11-0.10.2.1/bin/kafka-topics.sh --alter --partitions 10  --topic SUBSCRIBER --zookeeper zookeeper.common-infrastructure.svc.cluster.local:2181
+	WARNING: If partitions are increased for a topic that has a key, the partition logic or ordering of the messages will be affected
+	Adding partitions succeeded!
+	After:
+	kubectl exec kafka-0 -n common-infrastructure -it -- /bin/bash ./opt/kafka_2.11-0.10.2.1/bin/kafka-topics.sh --describe --topic SUBSCRIBER --zookeeper zookeeper.common-infrastructure.svc.cluster.local:2181
+	Topic:SUBSCRIBER PartitionCount:10 ReplicationFactor:1 Configs:
+	Topic: SUBSCRIBER Partition: 0 Leader: 0 Replicas: 0 Isr: 0
+	Topic: SUBSCRIBER Partition: 1 Leader: 0 Replicas: 0 Isr: 0
+	Topic: SUBSCRIBER Partition: 2 Leader: 0 Replicas: 0 Isr: 0
+	Topic: SUBSCRIBER Partition: 3 Leader: 0 Replicas: 0 Isr: 0
+	Topic: SUBSCRIBER Partition: 4 Leader: 0 Replicas: 0 Isr: 0
+	...
+	...
+	Do the same thing for PUBLISHER topic.
+
+![](snap_deploy.png)
+
+Latency results viewed in REDIS Database via REDIS COMMANDER: 
+![](snap_redis.png)
+
+View the graphical plot of Latency in milliseconds vs the original timestamp when the message was sent by the PUBLISHER pod.
+
+ELK stack consolidates all these 100,000 latency points and plots it graphically over the original timestamp embedded in the message sent by the PUBLISHER pod.
+
+This end-to-end latency is computed by the SUBSCRIBER pod by computing the difference between the originally sent timestamp which is found embedded in the message and the current timestamp when the message was actually decoded and processed by the SUBSCRIBER pod.
+
+![](snap_elk.png)
+
+KAFKA host CPU and RAM utilization:
+![](snap_kafka_grafana.png)
+
+	Undeploy Kafka + SNAPLOGIC:
+	./make_deploy.sh undeploy_core apache-kafka
+	kubectl delete -f kubernetes_yaml_files/core_components/kafka/apache
+	poddisruptionbudget.policy "kafka-pdb" deleted
+	service "kafka" deleted
+	statefulset.apps "kafka" deleted
+	namespace "loadtest" deleted
+	deployment.extensions "orchestrator" deleted
+	deployment.extensions "publisher" deleted
+	deployment.extensions "redis-commander" deleted
+	service "redis-commander" deleted
+	deployment.extensions "redis" deleted
+	service "redis" deleted
+	deployment.extensions "subscriber" deleted
+	deployment.extensions "transformer" deleted
+	service "zookeeper" deleted
+	poddisruptionbudget.policy "zk-pdb" deleted
+	statefulset.apps "zookeeper" deleted
+
+	INFERENCE:
+	----------
+	1. SNAPLOGIC + KAFKA performs well and we can achieve millisecond end-to-end latency with this.
+	
+	2. are observing that the thruput is not 100k because the host CPU for PUBLISHER and SUBSCRIBER pods is running hot (as seen on the above pics). This causes a lot of context switch to happen between the PODS and results in lesser thruput of messages at higher loads.
+	
+	3. We can overcome this problem by re-architecting the PUBLISHER and SUBSCRIBER pods with more CPU and RAM but we don't have enough RAM and CPU available on the Basking Ridge MEC.
+	
+	4. Note that this result is obtained from one Kafka Broker. But, with proper clustering of KAFKA brokers, and with proper load distribution across KAFKA brokers, it is possible to achieve 100K messages per second thruput with single digit millisecond latency.
+
+Apache Kafka + CAMEL (100k messages per second):
+------------------------------------------------
+ Latency Results(Redis):
+
+![](latency_redis_camel.png)
+
+Latency Results: (ELK)
+ ![](latency_elk_camel.png)
+ 
+	Increasing the partition count to 10 per kafka topic:
+
+ 	./make_deploy.sh change_kafka_partition PUBLISHER 10
+
+	Before:
+	
+	kubectl exec kafka-0 -n common-infrastructure -it -- /bin/bash ./opt/kafka_2.11-0.10.2.1/bin/kafka-topics.sh --describe --topic PUBLISHER --zookeeper zookeeper.common-infrastructure.svc.cluster.local:2181
+
+	Topic:PUBLISHER PartitionCount:1 ReplicationFactor:1 Configs:
+
+	Topic: PUBLISHER Partition: 0 Leader: 0 Replicas: 0 Isr: 0
+
+	kubectl exec kafka-0 -n common-infrastructure -it -- /bin/bash ./opt/kafka_2.11-0.10.2.1/bin/kafka-topics.sh --alter --partitions 10  --topic PUBLISHER --zookeeper zookeeper.common-infrastructure.svc.cluster.local:2181
+	WARNING: If partitions are increased for a topic that has a key, the partition logic or ordering of the messages will be affected
+
+	Adding partitions succeeded!
+	
+	After:
+	
+	kubectl exec kafka-0 -n common-infrastructure -it -- /bin/bash ./opt/kafka_2.11-0.10.2.1/bin/kafka-topics.sh --describe --topic PUBLISHER --zookeeper zookeeper.common-infrastructure.svc.cluster.local:2181
+
+	Topic:PUBLISHER PartitionCount:10 ReplicationFactor:1 Configs:
+	Topic: PUBLISHER Partition: 0 Leader: 0 Replicas: 0 Isr: 0
+	Topic: PUBLISHER Partition: 1 Leader: 0 Replicas: 0 Isr: 0
+	Topic: PUBLISHER Partition: 2 Leader: 0 Replicas: 0 Isr: 0
+	Topic: PUBLISHER Partition: 3 Leader: 0 Replicas: 0 Isr: 0
+	Topic: PUBLISHER Partition: 4 Leader: 0 Replicas: 0 Isr: 0
+	Topic: PUBLISHER Partition: 5 Leader: 0 Replicas: 0 Isr: 0
+	Topic: PUBLISHER Partition: 6 Leader: 0 Replicas: 0 Isr: 0
+	Topic: PUBLISHER Partition: 7 Leader: 0 Replicas: 0 Isr: 0
+	Topic: PUBLISHER Partition: 8 Leader: 0 Replicas: 0 Isr: 0
+	Topic: PUBLISHER Partition: 9 Leader: 0 Replicas: 0 Isr: 0
+	
+	ubuntu@master:~/git/IOT_load_test_client$ ./make_deploy.sh change_kafka_partition SUBSCRIBER 10
+	
+	Before:
+	kubectl exec kafka-0 -n common-infrastructure -it -- /bin/bash ./opt/kafka_2.11-0.10.2.1/bin/kafka-topics.sh --describe --topic SUBSCRIBER --zookeeper zookeeper.common-infrastructure.svc.cluster.local:2181
+	Topic:SUBSCRIBER PartitionCount:1 ReplicationFactor:1 Configs:
+	Topic: SUBSCRIBER Partition: 0 Leader: 0 Replicas: 0 Isr: 0
+	
+	kubectl exec kafka-0 -n common-infrastructure -it -- /bin/bash ./opt/kafka_2.11-0.10.2.1/bin/kafka-topics.sh --alter --partitions 10  --topic SUBSCRIBER --zookeeper zookeeper.common-infrastructure.svc.cluster.local:2181
+	WARNING: If partitions are increased for a topic that has a key, the partition logic or ordering of the messages will be affected
+	Adding partitions succeeded!
+	After:
+	kubectl exec kafka-0 -n common-infrastructure -it -- /bin/bash ./opt/kafka_2.11-0.10.2.1/bin/kafka-topics.sh --describe --topic SUBSCRIBER --zookeeper zookeeper.common-infrastructure.svc.cluster.local:2181
+	Topic:SUBSCRIBER PartitionCount:10 ReplicationFactor:1 Configs:
+	Topic: SUBSCRIBER Partition: 0 Leader: 0 Replicas: 0 Isr: 0
+	Topic: SUBSCRIBER Partition: 1 Leader: 0 Replicas: 0 Isr: 0
+	Topic: SUBSCRIBER Partition: 2 Leader: 0 Replicas: 0 Isr: 0
+	Topic: SUBSCRIBER Partition: 3 Leader: 0 Replicas: 0 Isr: 0
+	Topic: SUBSCRIBER Partition: 4 Leader: 0 Replicas: 0 Isr: 0
+	Topic: SUBSCRIBER Partition: 5 Leader: 0 Replicas: 0 Isr: 0
+	Topic: SUBSCRIBER Partition: 6 Leader: 0 Replicas: 0 Isr: 0
+	Topic: SUBSCRIBER Partition: 7 Leader: 0 Replicas: 0 Isr: 0
+	Topic: SUBSCRIBER Partition: 8 Leader: 0 Replicas: 0 Isr: 0
+	Topic: SUBSCRIBER Partition: 9 Leader: 0 Replicas: 0 Isr: 0
+
+
+  ![](latency_elk_camel2.png)
+  
+  With more data samples collected over a period of time, here is the ELK latency plot:
+  
+  ![](latency_elk_camel3.png)
+    
+  With 10k 5%, 50% and 99% latency range:
+    
+   ![](latency_elk_camel4.png)
+    
+   ![](latency_elk_camel5.png)
+
+	Inference:
+	----------
+	1. CAMEL + KAFKA is really good and with 10k messages per second, it performs really well with 5-15 msec end-to-end latency.
+	2. When we scale up the PUBLISHER and SUBSCRIBER pods, the thruput of the entire environment reduces because all these PODS are scheduled on two NODES (PUBLISHER and SUBSCRIBER Virtual Machines with 8 cores and with 8 GB RAM), the NODES are busy context switching between these PODS to service them. This causes reduction in thruput. But, the end-to-end latency is very low which tells us that the thruput problem is not a bottleneck on the broker rather on the producer and consumer PODS.
+	3. With proper kafka clustering and with fine tuning, KAFKA with CAMEL is expected to perform well even with 100k messages per second with single digit millisecond end-to-end latency.
+
+RABBITMQ + TRANSFORMER PODS:
+----------------------------
+Test Setup:
+1. RabbitMQ broker POD - on "Broker" Node.
+
+2. Queue Name: Auto generated by the ORCHESTRATOR POD. 
+
+3. 1 PUBLISHER POD publishing 1000 messages per second to a queue assigned to it.
+
+4. 1 CONSUMER POD subscribes to a queue assigned to it.
+
+5. Single node RabbitMQ instance was tested with the following MQTT optimizations on the Kubernetes MEC cluster:
+
+enabled_plugins: |
+    [rabbitmq_management,rabbitmq_mqtt,rabbitmq_peer_discovery_k8s].
+rabbitmq.conf: |
+
+mqtt.tcp_listen_options.backlog = 8192
+
+mqtt.tcp_listen_options.recbuf  = 131072
+
+mqtt.tcp_listen_options.sndbuf  = 131072
+
+mqtt.tcp_listen_options.keepalive = false
+
+mqtt.tcp_listen_options.nodelay   = true
+
+mqtt.tcp_listen_options.exit_on_close = true
+
+mqtt.tcp_listen_options.send_timeout  = 120
+
+mqtt.subscription_ttl = 86400000
+
+mqtt.prefetch         = 0
+
+	./make_deploy.sh deploy_core rabbitmq
+	kubectl apply -f kubernetes_yaml_files/core_components/rabbitmq
+	namespace/loadtest created
+	deployment.extensions/orchestrator created
+	deployment.extensions/publisher created
+	serviceaccount/rabbitmq created
+	role.rbac.authorization.k8s.io/endpoint-reader created
+	rolebinding.rbac.authorization.k8s.io/endpoint-reader created
+	service/rabbitmq created
+	configmap/rabbitmq-config created
+	statefulset.apps/rabbitmq created
+	deployment.extensions/redis-commander created
+	service/redis-commander created
+	deployment.extensions/redis created
+	service/redis created
+	deployment.extensions/subscriber created
+	deployment.extensions/transformer created
+
+1. One instance of PUBLISHER that sends 1000 messages a second is tested with one instance of SUBSCRIBER and one instance of TRANSFORMER.
+
+2. The PUBLISHER POD publishes 1000 messages to the queue. {'publisher': 'pub_publisher-7fc7cb9756-tgk4w'}
+
+3. The SUBSCRIBER POD subscribes messages from the queue. {'subscriber': 'sub_subscriber-79b4bc4c9f-wstj6'}
+
+4. The TRANSFORMER POD subscribes messages from queue {'publisher': 'pub_publisher-7fc7cb9756-tgk4w'} and publishes messages to queue  {'subscriber': 'sub_subscriber-79b4bc4c9f-wstj6'}
+
+![](redis_rabbitmq.png)
+
+This is a snapshot of how RABBITMQ server views the incoming message rate onto the queue.
+
+![](rabbitmq_server.png)
+
+This is snapshot from Prometheus and Grafana on the RABBITMQ POD CPU and RAM utilization.
+
+![](rabbitmq_grafana.png)
+
+![](rabbitmq_grafana2.png)
+
+Latency results published by the SUBSCRIBER POD in its logs.
+
+![](latency_rabbitmq_subscriber_pod.png)
+
+This is the latency result viewed from Redis Commander:
+
+![](latency_result_redis_rabbitmq.png)
+
+This latency result is published to ELK (Elasticsearch, Logstash and Kibana) via Filebeat and this is how the result is visualized in Kibana.
+
+![](latency_elk_rabbitmq.png)
+
+For a Larger Sample set with a lot of samples collected over a long period of time:
+
+![](latency_rabbitmq_elk2.png)
+
+
+	./make_deploy.sh undeploy_core rabbitmq
+	kubectl delete -f kubernetes_yaml_files/core_components/rabbitmq
+	namespace "loadtest" deleted
+	deployment.extensions "orchestrator" deleted
+	deployment.extensions "publisher" deleted
+	serviceaccount "rabbitmq" deleted
+	role.rbac.authorization.k8s.io "endpoint-reader" deleted
+	rolebinding.rbac.authorization.k8s.io "endpoint-reader" deleted
+	service "rabbitmq" deleted
+	configmap "rabbitmq-config" deleted
+	statefulset.apps "rabbitmq" deleted
+	deployment.extensions "redis-commander" deleted
+	service "redis-commander" deleted
+	deployment.extensions "redis" deleted
+	service "redis" deleted
+	deployment.extensions "subscriber" deleted
+	deployment.extensions "transformer" deleted
+
+	Inference:
+	----------
+	1. Single digit millisecond latency can be successfully achieved with RABBITMQ with one producer and one consumer queue with message rates unto 1000 messages per second.
+
+	2. For message rates above 1000 messages a second from multiple producers and from multiple subscribers, RABBITMQ has to be deployed in a clustered way with multiple brokers sharing workload via consistent hashing. 
+
+	3. This requires significant amount of effort and time to make it happen but it is doable and achievable.
+
+	4. Right now, we are half way through this process of perfecting the broker configuration but since we are out of time, we are publishing the results only for the successful and proven scenario.
+
+	5. Once we are able to perfect the correct broker deployment, we will be able to achieve higher thruput and single digit millisecond latency for 100k messages per second.
+
+Apache Pulsar:
+--------------
+	./make_deploy.sh deploy_core pulsar
+	kubectl apply -f kubernetes_yaml_files/core_components/pulsar
+	namespace/loadtest created
+	deployment.extensions/broker created
+	service/broker created
+	namespace/loadtest unchanged
+	deployment.extensions/orchestrator created
+	deployment.extensions/publisher created
+	deployment.extensions/redis-commander created
+	service/redis-commander created
+	deployment.extensions/redis created
+	service/redis created
+	deployment.extensions/subscriber created
+	deployment.extensions/transformer created
+
+1. 100K messages were pushed by 100 PUBLISHER pods each to a unique queue.
+
+2. 100 SUBSCRIBER PODS were configured to consume messages each from a unique queue identifier.
+100 TRANSFORMER PODS were configured in such a way that it consumes message from a PUBLISHER pod and transform the message and publish it to a unique topic that gets consumed by a unique SUBSCRIBER pod.
+
+
+![](pulsar_kubernetes.png)
+
+Latency Results published to Redis Database and seen via Redis Commander:
+
+![](latency_pulsar_redis.png)
+
+PUBLISHER NODE CPU and RAM Usage:
+
+![](pulsar_publisher_grafana.png)
+
+SUBSCRIBER NODE CPU and RAM Usage:
+
+![](subscriber_pulsar_grafana.png)
+
+ BROKER NODE CPU and RAM Usage:
+ 
+![](broker_pulsar_grafana.png)
+ 
+ Latency results vs original time.
+ 
+ ![](latency_elk_pulsar.png)
+ 
+	./make_deploy.sh undeploy_core pulsar
+	kubectl delete -f kubernetes_yaml_files/core_components/pulsar
+	namespace "loadtest" deleted
+	deployment.extensions "broker" deleted
+	service "broker" deleted
+	deployment.extensions "orchestrator" deleted
+	deployment.extensions "publisher" deleted
+	deployment.extensions "redis-commander" deleted
+	service "redis-commander" deleted
+	deployment.extensions "redis" deleted
+	service "redis" deleted
+	deployment.extensions "subscriber" deleted
+	deployment.extensions "transformer" deleted
+
+	Inference:
+	----------
+	1. Pulsar provides much better thruput than KAFKA for 100k messages per second.
+
+	2. Pulsar reaches a steady state latency of 9 msec after initial spikes which reached above 700-800 milliseconds.
+
+	3. With proper clustering of Pulsar message queue and with proper configuration, it is expected to perform very well for 100k messages per second.
+ 
+NATS
+----
+	./make_deploy.sh deploy_core nats
+	kubectl apply -f kubernetes_yaml_files/core_components/nats
+	namespace/loadtest created
+	namespace/loadtest unchanged
+	deployment.extensions/nats created
+	service/nats created
+	deployment.extensions/orchestrator created
+	deployment.extensions/publisher created
+	deployment.extensions/redis-commander created
+	service/redis-commander created
+	deployment.extensions/redis created
+	service/redis created
+	deployment.extensions/subscriber created
+	deployment.extensions/transformer created
+
+
+ ![](nats_kubernetes.png)
+ 
+  ![](nats_elk.png)
+  
+  PUBLISHER CPU+ MEM:
+  
+  ![](nats_publisher.png)
+  
+  SUBSCRIBER CPU + MEM:
+  
+  ![](nats_subscriber.png)
+  
+  BROKER CPU + MEM:
+  
+  ![](nats_broker.png)
+  
+  	./make_deploy.sh undeploy_core nats
+	kubectl delete -f kubernetes_yaml_files/core_components/nats
+	namespace "loadtest" deleted
+	deployment.extensions "nats" deleted
+	service "nats" deleted
+	deployment.extensions "orchestrator" deleted
+	deployment.extensions "publisher" deleted
+	deployment.extensions "redis-commander" deleted
+	service "redis-commander" deleted
+	deployment.extensions "redis" deleted
+	service "redis" deleted
+	deployment.extensions "subscriber" deleted
+	deployment.extensions "transformer" deleted
+
+ZeroMQ:
+-------
+	./make_deploy.sh deploy_core zeromq
+	kubectl apply -f kubernetes_yaml_files/core_components/zeromq
+	namespace/loadtest created
+	deployment.extensions/orchestrator created
+	deployment.extensions/publisher created
+	service/publisher created
+	deployment.extensions/redis-commander created
+	service/redis-commander created
+	deployment.extensions/redis created
+	service/redis created
+	deployment.extensions/subscriber created
+	deployment.extensions/transformer created
+	service/transformer created
+
+ ![](zeromq_kubernetes.png)
+ 
+ ![](zeromq_redis.png)
+ 
+ ![](zeromq_elk.png)
+ 
+ 	Inference:
+	 ----------
+	1. ZeroMQ has the best latency results for 100k messages per second because there is no broker and is peer-to-peer.
+
+	2. A PRODUCER POD is tied up to a TRANSFORMER POD where the PRODUCER POD produces messages and sends it to a TRANSFORMER POD via its auto-configured IP address and PORT number.
+
+	3. A SUBSCRIBER POD is tied up to a TRANSFORMER POD where the SUBSCRIBER  POD expects messages from a TRANSFORMER POD via its auto-configured IP address and PORT number.
+
+	4. The TRANSFORMER POD is configured to consume messages from the PRODUCER POD and generate message to a SUBSCRIBER POD.
+	5. This setup is scaled up to 100 PODS with one-to-one mapping of PRODUCER to TRANSFORMER to SUBSCRIBER pod.
+
+	./make_deploy.sh undeploy_core zeromq
+	kubectl delete -f kubernetes_yaml_files/core_components/zeromq
+	namespace "loadtest" deleted
+	deployment.extensions "orchestrator" deleted
+	deployment.extensions "publisher" deleted
+	service "publisher" deleted
+	deployment.extensions "redis-commander" deleted
+	service "redis-commander" deleted
+	deployment.extensions "redis" deleted
+	service "redis" deleted
+	deployment.extensions "subscriber" deleted
+	deployment.extensions "transformer" deleted
+	service "transformer" deleted
+
+EMQ
+---
+	./make_deploy.sh undeploy_core zeromq
+	kubectl delete -f kubernetes_yaml_files/core_components/zeromq
+	namespace "loadtest" deleted
+	deployment.extensions "orchestrator" deleted
+	deployment.extensions "publisher" deleted
+	service "publisher" deleted
+	deployment.extensions "redis-commander" deleted
+	service "redis-commander" deleted
+	deployment.extensions "redis" deleted
+	service "redis" deleted
+	deployment.extensions "subscriber" deleted
+	deployment.extensions "transformer" deleted
+	service "transformer" deleted
+
+Latency Results of EMQ will be published soon.
+
+	Inference:
+	----------
+1. EMQ performs much better and faster than RABBITMQ and EMQ supports MQTT.
+
+2. EMQ requires a little bit of tuning and configuration changes to make it work with 100k messages per second and is expected to work well under heavy load. 
+
+3. It is possible to achieve single digit end-to-end latency with EMQ.
+
+	./make_deploy.sh undeploy_core emq
+	kubectl delete -f kubernetes_yaml_files/core_components/emq
+	namespace "loadtest" deleted
+	service "emqx" deleted
+	deployment.extensions "emqx" deleted
+	deployment.extensions "orchestrator" deleted
+	deployment.extensions "publisher" deleted
+	deployment.extensions "redis-commander" deleted
+	service "redis-commander" deleted
+	deployment.extensions "redis" deleted
+	service "redis" deleted
+	deployment.extensions "subscriber" deleted
+	deployment.extensions "transformer" deleted
