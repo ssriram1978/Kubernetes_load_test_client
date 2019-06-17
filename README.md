@@ -73,7 +73,7 @@ The performance load test tool shall be able to provide the following options to
          
    4. The performance test tool should provide a plug-in factory interface for developers to plug different flavors of message queue clients into the test environment and be able to use the tool to initiate the load test towards those newly developed messaging queue brokers.
 	In other words, here is how the test environment should look like.
-	![](architecture_load_test.png)
+	![](png_files/architecture_load_test.png)
 	
    5. Each publisher instance must be capable of sending 1000 messages per second or publish 1 message every 1 millisecond.
    6. Each subscriber instance must be capable of handling 1000 messages per second or 1 message every millisecond.
@@ -215,7 +215,7 @@ This command will build docker images of producer, consumer, plotter and transfo
 	
 Strategy to evaluate various message queues:
 --------------------------------------------
-![](strategy.png)
+![](png_files/strategy.png)
 
 Run load test via kubernetes:
 -----------------------------
@@ -317,10 +317,10 @@ change_kafka_partition <topic_name> <partition_count> - Dynamically increase Kaf
 	...
 	Do the same thing for PUBLISHER topic.
 
-![](snap_deploy.png)
+![](png_files/snap_deploy.png)
 
 Latency results viewed in REDIS Database via REDIS COMMANDER: 
-![](snap_redis.png)
+![](png_files/snap_redis.png)
 
 View the graphical plot of Latency in milliseconds vs the original timestamp when the message was sent by the PUBLISHER pod.
 
@@ -328,10 +328,10 @@ ELK stack consolidates all these 100,000 latency points and plots it graphically
 
 This end-to-end latency is computed by the SUBSCRIBER pod by computing the difference between the originally sent timestamp which is found embedded in the message and the current timestamp when the message was actually decoded and processed by the SUBSCRIBER pod.
 
-![](snap_elk.png)
+![](png_files/snap_elk.png)
 
 KAFKA host CPU and RAM utilization:
-![](snap_kafka_grafana.png)
+![](png_files/snap_kafka_grafana.png)
 
 	Undeploy Kafka + SNAPLOGIC:
 	./make_deploy.sh undeploy_core apache-kafka
@@ -366,10 +366,10 @@ Apache Kafka + CAMEL (100k messages per second):
 ------------------------------------------------
  Latency Results(Redis):
 
-![](latency_redis_camel.png)
+![](png_files/latency_redis_camel.png)
 
 Latency Results: (ELK)
- ![](latency_elk_camel.png)
+ ![](png_files/latency_elk_camel.png)
  
 	Increasing the partition count to 10 per kafka topic:
 
@@ -429,17 +429,17 @@ Latency Results: (ELK)
 	Topic: SUBSCRIBER Partition: 9 Leader: 0 Replicas: 0 Isr: 0
 
 
-  ![](latency_elk_camel2.png)
+  ![](png_files/latency_elk_camel2.png)
   
   With more data samples collected over a period of time, here is the ELK latency plot:
   
-  ![](latency_elk_camel3.png)
+  ![](png_files/latency_elk_camel3.png)
     
   With 10k 5%, 50% and 99% latency range:
     
-   ![](latency_elk_camel4.png)
+   ![](png_files/latency_elk_camel4.png)
     
-   ![](latency_elk_camel5.png)
+   ![](png_files/latency_elk_camel5.png)
 
 	Inference:
 	----------
@@ -508,33 +508,33 @@ mqtt.prefetch         = 0
 
 4. The TRANSFORMER POD subscribes messages from queue {'publisher': 'pub_publisher-7fc7cb9756-tgk4w'} and publishes messages to queue  {'subscriber': 'sub_subscriber-79b4bc4c9f-wstj6'}
 
-![](redis_rabbitmq.png)
+![](png_files/redis_rabbitmq.png)
 
 This is a snapshot of how RABBITMQ server views the incoming message rate onto the queue.
 
-![](rabbitmq_server.png)
+![](png_files/rabbitmq_server.png)
 
 This is snapshot from Prometheus and Grafana on the RABBITMQ POD CPU and RAM utilization.
 
-![](rabbitmq_grafana.png)
+![](png_files/rabbitmq_grafana.png)
 
-![](rabbitmq_grafana2.png)
+![](png_files/rabbitmq_grafana2.png)
 
 Latency results published by the SUBSCRIBER POD in its logs.
 
-![](latency_rabbitmq_subscriber_pod.png)
+![](png_files/latency_rabbitmq_subscriber_pod.png)
 
 This is the latency result viewed from Redis Commander:
 
-![](latency_result_redis_rabbitmq.png)
+![](png_files/latency_result_redis_rabbitmq.png)
 
 This latency result is published to ELK (Elasticsearch, Logstash and Kibana) via Filebeat and this is how the result is visualized in Kibana.
 
-![](latency_elk_rabbitmq.png)
+![](png_files/latency_elk_rabbitmq.png)
 
 For a Larger Sample set with a lot of samples collected over a long period of time:
 
-![](latency_rabbitmq_elk2.png)
+![](png_files/latency_rabbitmq_elk2.png)
 
 
 	./make_deploy.sh undeploy_core rabbitmq
@@ -590,27 +590,27 @@ Apache Pulsar:
 100 TRANSFORMER PODS were configured in such a way that it consumes message from a PUBLISHER pod and transform the message and publish it to a unique topic that gets consumed by a unique SUBSCRIBER pod.
 
 
-![](pulsar_kubernetes.png)
+![](png_files/pulsar_kubernetes.png)
 
 Latency Results published to Redis Database and seen via Redis Commander:
 
-![](latency_pulsar_redis.png)
+![](png_files/latency_pulsar_redis.png)
 
 PUBLISHER NODE CPU and RAM Usage:
 
-![](pulsar_publisher_grafana.png)
+![](png_files/pulsar_publisher_grafana.png)
 
 SUBSCRIBER NODE CPU and RAM Usage:
 
-![](subscriber_pulsar_grafana.png)
+![](png_files/subscriber_pulsar_grafana.png)
 
  BROKER NODE CPU and RAM Usage:
  
-![](broker_pulsar_grafana.png)
+![](png_files/broker_pulsar_grafana.png)
  
  Latency results vs original time.
  
- ![](latency_elk_pulsar.png)
+ ![](png_files/latency_elk_pulsar.png)
  
 	./make_deploy.sh undeploy_core pulsar
 	kubectl delete -f kubernetes_yaml_files/core_components/pulsar
@@ -652,21 +652,21 @@ NATS
 	deployment.extensions/transformer created
 
 
- ![](nats_kubernetes.png)
+ ![](png_files/nats_kubernetes.png)
  
-  ![](nats_elk.png)
+  ![](png_files/nats_elk.png)
   
   PUBLISHER CPU+ MEM:
   
-  ![](nats_publisher.png)
+  ![](png_files/nats_publisher.png)
   
   SUBSCRIBER CPU + MEM:
   
-  ![](nats_subscriber.png)
+  ![](png_files/nats_subscriber.png)
   
   BROKER CPU + MEM:
   
-  ![](nats_broker.png)
+  ![](png_files/nats_broker.png)
   
   	./make_deploy.sh undeploy_core nats
 	kubectl delete -f kubernetes_yaml_files/core_components/nats
@@ -698,11 +698,11 @@ ZeroMQ:
 	deployment.extensions/transformer created
 	service/transformer created
 
- ![](zeromq_kubernetes.png)
+ ![](png_files/zeromq_kubernetes.png)
  
- ![](zeromq_redis.png)
+ ![](png_files/zeromq_redis.png)
  
- ![](zeromq_elk.png)
+ ![](png_files/zeromq_elk.png)
  
  	Inference:
 	 ----------
