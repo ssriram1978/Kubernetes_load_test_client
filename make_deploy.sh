@@ -629,14 +629,14 @@ change_kafka_partition() {
 
    echo "Before:"
    echo "kubectl exec kafka-0 -n common-infrastructure -it -- /bin/bash ./opt/kafka_2.11-0.10.2.1/bin/kafka-topics.sh --describe --topic $topic_name --zookeeper zookeeper.common-infrastructure.svc.cluster.local:2181"
-   kubectl exec kafka-0 -n common-infrastructure -it -- /bin/bash ./opt/kafka_2.11-0.10.2.1/bin/kafka-topics.sh --describe --topic $topic_name --zookeeper zookeeper.common-infrastructure.svc.cluster.local:2181
+   kubectl exec kafka-0 -n common-infrastructure -it -- /bin/bash ./opt/kafka_2.12-2.2.1/bin/kafka-topics.sh --describe --topic $topic_name --zookeeper zookeeper.common-infrastructure.svc.cluster.local:2181
 
    echo "kubectl exec kafka-0 -n common-infrastructure -it -- /bin/bash ./opt/kafka_2.11-0.10.2.1/bin/kafka-topics.sh --alter --partitions $partition_count  --topic $topic_name --zookeeper zookeeper.common-infrastructure.svc.cluster.local:2181"
-   kubectl exec kafka-0 -n common-infrastructure -it -- /bin/bash ./opt/kafka_2.11-0.10.2.1/bin/kafka-topics.sh --alter --partitions $partition_count  --topic $topic_name --zookeeper zookeeper.common-infrastructure.svc.cluster.local:2181
+   kubectl exec kafka-0 -n common-infrastructure -it -- /bin/bash ./opt/kafka_2.12-2.2.1/bin/kafka-topics.sh --alter --partitions $partition_count  --topic $topic_name --zookeeper zookeeper.common-infrastructure.svc.cluster.local:2181
 
    echo "After:"
    echo "kubectl exec kafka-0 -n common-infrastructure -it -- /bin/bash ./opt/kafka_2.11-0.10.2.1/bin/kafka-topics.sh --describe --topic $topic_name --zookeeper zookeeper.common-infrastructure.svc.cluster.local:2181"
-   kubectl exec kafka-0 -n common-infrastructure -it -- /bin/bash ./opt/kafka_2.11-0.10.2.1/bin/kafka-topics.sh --describe --topic $topic_name --zookeeper zookeeper.common-infrastructure.svc.cluster.local:2181
+   kubectl exec kafka-0 -n common-infrastructure -it -- /bin/bash ./opt/kafka_2.12-2.2.1/bin/kafka-topics.sh --describe --topic $topic_name --zookeeper zookeeper.common-infrastructure.svc.cluster.local:2181
 }
 
 case "$1" in
