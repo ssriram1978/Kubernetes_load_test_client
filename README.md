@@ -362,6 +362,30 @@ KAFKA host CPU and RAM utilization:
 	
 	4. Note that this result is obtained from one Kafka Broker. But, with proper clustering of KAFKA brokers, and with proper load distribution across KAFKA brokers, it is possible to achieve 100K messages per second thruput with single digit millisecond latency.
 
+Confluent Kafka + SNAPLOGIC (400k messages per second):
+-------------------------------------------------------
+Install Confluent-kafka as specified in https://docs.confluent.io/current/quickstart/cos-docker-quickstart.html
+
+Configure two topics PUBLISHER2 and SUBSCRIBER2 with 12 partitions.
+![](png_files/confluent-kafka_control_center.png)
+
+Point the SNAPLOGIC to confluent-kafka 
+![](png_files/snaplogic_kafka.png)
+![](png_files/snaplogic_consumer.png)
+![](png_files/snaplogic_producer.png)
+![](png_files/snaplogic_kafka_loadtest.png)
+
+Results:
+![](png_files/latency_result_subscriber.png)
+![](png_files/confluent-kafka-control-center2-latency.png)
+
+CPU and RAM usage:
+![](png_files/CPU_RAM_Usage.png)
+
+Inference:
+KAFKA + SNAPLOGIC performs very well. It introduces 1-3 millisecond latency and is 1/3rd of the latency computed end-to-end.
+The thruput as seen in the confluent dashboard is around 400,000 messages per second which is inclusive of the acknowledgements.
+
 Apache Kafka + CAMEL (100k messages per second):
 ------------------------------------------------
  Latency Results(Redis):
