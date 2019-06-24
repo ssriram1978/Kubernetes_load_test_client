@@ -621,6 +621,16 @@ change_kafka_partition() {
    kubectl exec kafka-0 -n common-infrastructure -it -- /bin/bash ./opt/kafka_2.12-2.2.1/bin/kafka-topics.sh --describe --topic $topic_name --zookeeper zookeeper.common-infrastructure.svc.cluster.local:2181
 }
 
+deploy_routing_manager() {
+   echo "kubectl apply -f kubernetes_yaml_files/routing_manager"
+   kubectl apply -f kubernetes_yaml_files/routing_manager
+}
+
+undeploy_routing_manager() {
+   echo "kubectl delete -f kubernetes_yaml_files/routing_manager"
+   kubectl delete -f kubernetes_yaml_files/routing_manager
+}
+
 case "$1" in
   build) create_infrastructure $2 $3 $4 ;;
   deploy) deploy_infrastructure $2 $3;;
@@ -645,6 +655,8 @@ case "$1" in
   undeploy_prometheus_grafana) undeploy_prometheus_grafana ;;
   delete_logstash_index)   delete_logstash_index ;;
   change_kafka_partition) change_kafka_partition $2 $3 ;;
+  deploy_routing_manager) deploy_routing_manager ;;
+  undeploy_routing_manager) undeploy_routing_manager ;;
   *) echo "usage: $0"
       echo "<build <all|directory_name> <yaml file> <tag -- optional> > |"
       echo "<deploy <yaml file> > |"
@@ -669,7 +681,8 @@ case "$1" in
       echo "undeploy_prometheus_grafana"
       echo "delete_logstash_index"
       echo "change_kafka_partition <topic_name> <partition_count>"
-
+      echo "deploy routing_manager"
+      echo "undeploy routing_manager"
      exit 1
      ;;
 esac
