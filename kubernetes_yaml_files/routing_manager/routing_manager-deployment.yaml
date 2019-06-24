@@ -1,110 +1,56 @@
-{
-  "kind": "Deployment",
-  "spec": {
-    "template": {
-      "spec": {
-        "containers": [
-          {
-            "name": "routing-manager",
-            "image": "ssriram1978/routing_manager:latest",
-            "imagePullPolicy": "IfNotPresent",
-            "resources": {
-              "limits": {
-                "memory": "Mi"
-              },
-              "requests": {
-                "memory": "Mi"
-              }
-            },
-            "ports": [
-              {
-                "containerPort": 8080
-              }
-            ],
-            "env": [
-              {
-                "name": "ACTIVE_MQ_AMQP",
-                "value": "mqcluster.mec.svc.cluster.local"
-              },
-              {
-                "name": "MQTT_HOST_PORT",
-                "value": "ssl://63.98.10.34:8883"
-              },
-              {
-                "name": "TENANT_DISCOVERY",
-                "value": "http://tenant-discovery.mec.svc.cluster.local:8081"
-              },
-              {
-                "name": "LOSANT_HOST_PORT",
-                "value": "http://losant-edge-agent.mec.svc.cluster.local:8080"
-              },
-              {
-                "name": "LOSTANT_POC",
-                "value": "false"
-              },
-              {
-                "name": "SMTP_HOSTANDPORT",
-                "value": "smtp.gmail.com"
-              },
-              {
-                "name": "SMTP_USER_NAME",
-                "value": "smtptestemaailverizon@gmail.com"
-              },
-              {
-                "name": "SMTP_PASSWORD",
-                "value": "Testemail1234"
-              },
-              {
-                "name": "SMTP_TO",
-                "value": "manasa.eppa@verizon.com"
-              },
-              {
-                "name": "LOAD_TESTING",
-                "value": "true"
-              },
-              {
-                "name": "MEC_DEMO_ID",
-                "value": "F3-0E-7F-C6-6A-17"
-              },
-              {
-                "name": "KAFKA_ROUTE",
-                "value": "true"
-              },
-              {
-                "name": "KAFKA_HOST_PORT",
-                "value": "10.10.75.14:9092"
-              },
-              {
-                "name": "KAFKA_IN_TOPIC",
-                "value": "PUBLISHER2"
-              },
-              {
-                "name": "KAFKA_OUT_TOPIC",
-                "value": "SUBSCRIBER2"
-              }
-            ]
-          }
-        ]
-      },
-      "metadata": {
-        "labels": {
-          "app": "routing-manager"
-        }
-      }
-    },
-    "replicas": 1,
-    "selector": {
-      "matchLabels": {
-        "app": "routing-manager"
-      }
-    }
-  },
-  "apiVersion": "apps/v1",
-  "metadata": {
-    "labels": {
-      "name": "routing-manager"
-    },
-    "name": "routing-manager",
-    "namespace": "mec-poc"
-  }
-}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: routing-manager
+  name: routing-manager
+  namespace: mec-poc
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: routing-manager
+    spec:
+      containers:
+      - env:
+        - name: LOAD_TESTING
+          value: true
+        - name: KAFKA_ROUTE
+          value: true
+        - name: KAFKA_HOST_PORT
+          value: 10.10.75.14:9092
+        - name: KAFKA_IN_TOPIC
+          value: PUBLISHER2
+        - name: KAFKA_OUT_TOPIC
+          value: SUBSCRIBER2
+        image: ssriram1978/routing_manager:latest
+        #imagePullPolicy: IfNotPresent
+        name: routing-manager
+        resources: {}
+        volumeMounts:
+            - mountPath: /var/run/docker.sock
+              name: routing-manager-hostpath0
+            - mountPath: /etc/timezone
+              name: routing-manager-hostpath1
+              readOnly: true
+            - mountPath: /etc/localtime
+              name: routing-manager-hostpath2
+              readOnly: true
+      restartPolicy: Always
+      nodeSelector:
+       kubernetes.io/hostname: transformer
+      volumes:
+                - hostPath:
+                    path: /var/run/docker.sock
+                  name: routing-manager-hostpath0
+                - hostPath:
+                    path: /etc/timezone
+                  name: routing-manager-hostpath1
+                - hostPath:
+                    path: /etc/localtime
+                  name: routing-manager-hostpath2
+status: {}
