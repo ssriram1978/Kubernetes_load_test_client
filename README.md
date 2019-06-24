@@ -270,6 +270,18 @@ Load Test results:
 ------------------
 Apache Kafka Broker + SNAPLOGIC  (100k messages per second)
 -----------------------------------------------------------
+With Kafka, you can do both real-time and batch processing. Kafka runs on JVM (Scala to be specific). Ingest tons of data, route via publish-subscribe (or queuing). The broker barely knows anything about the consumer. All that’s really stored is an “offset” value that specifies where in the log the consumer left off. 
+Unlike many integration brokers that assume consumers are mostly online, Kafka can successfully persist a lot of data and supports “replay” scenarios. 
+The architecture is fairly unique; Topics are arranged in partitions (for parallelism), and partitions are replicated across nodes (for high availability).
+Kafka is used by Unicorn startups, IOT, health, and large financial organizations ( LinkedIn, FB, Netflix, GE, Bank OF America, Fannie Mae, Chase Bank .. and so on…)
+NATS is a very small infrastructure compared to Kafka. Kafka is more matured compared to Nats and performs very well with huge data streams.
+NATS Server has a subset of the features in Kafka as it is focused on a narrower set of use cases. 
+NATS has been designed for scenarios where high performance and low latency are critical but losing some data is fine if needed in order to keep up with data-what the NATS documentation describes as “fire and forget”. Architecturally, that’s because NATS doesn’t have a persistence layer to use to store data durably.
+While Kafka does have a persistence layer (using storage on the cluster).
+To fully guarantee that a message won’t be lost, it looks like you need to declare the queue as durable + to mark your message as persistent + use publisher confirms. And this costs several hundreds of milliseconds of latency.
+The only queue or pub/sub system that is relatively safe from partition errors is Kafka. Kafka is just a really solid piece of engineering when you need 5–50 servers. With that many servers, you can handle millions of messages per second that usually enough for a mid-size company.
+Kafka is completely unsuitable for RPC, for several reasons. First, its data model shards queues into partitions, each of which can be consumed by just a single consumer. Assume we have partitions 1 and 2. P1 is empty, P2 has a ton of messages. You will now have one consumer C1 which is idle, while C2 is doing work. C1 can’t take any of C2’s work because it can only process its own partition. In other words: A single slow consumer can block a significant portion of the queue. Kafka is designed for fast (or at least evenly performant) consumers.
+
 Test Setup:
 1. Apache Kafka - on "Broker" Node.
 
@@ -471,8 +483,28 @@ Latency Results: (ELK)
 	2. When we scale up the PUBLISHER and SUBSCRIBER pods, the thruput of the entire environment reduces because all these PODS are scheduled on two NODES (PUBLISHER and SUBSCRIBER Virtual Machines with 8 cores and with 8 GB RAM), the NODES are busy context switching between these PODS to service them. This causes reduction in thruput. But, the end-to-end latency is very low which tells us that the thruput problem is not a bottleneck on the broker rather on the producer and consumer PODS.
 	3. With proper kafka clustering and with fine tuning, KAFKA with CAMEL is expected to perform well even with 100k messages per second with single digit millisecond end-to-end latency.
 
+	Kafka — Pros
+	Mature: very rich and useful JavaDoc
+	Kafka Streams
+	Mature & broad community
+	Simpler to operate in production — less components — broker node provides also storage
+	Transactions — atomic reads&writes within the topics
+	Offsets form a continuous sequence — consumer can easily seek to last message
+	Kafka — Cons
+	Consumer cannot acknowledge message from a different thread
+	No multitenancy
+	No robust Multi-DC replication — (offered in Confluent Enterprise)
+	Management in a cloud environment is difficult.
+
 RABBITMQ + TRANSFORMER PODS:
 ----------------------------
+RabbitMQ is a messaging engine that follows the AMQP 0.9.1 definition of a broker. It follows a standard store-and-forward pattern where you have the option to store the data in RAM, on disk, or both. It supports a variety of message routing paradigms. RabbitMQ can be deployed in a clustered fashion for performance, and mirrored fashion for high availability. Consumers listen directly on queues, but publishers only know about “exchanges.” These exchanges are linked to queues via bindings, which specify the routing paradigm (among other things).
+Unlike NATS, it’s a more traditional message queue in the sense that it supports binding queues and transactional-delivery semantics. 
+Consequently, RabbitMQ is a more “heavyweight” queuing solution and tends to pay an additional premium with.
+Cons:
+RabbitMQ’s high availability support is terrible. It’s a single point of failure no matter how you turn it because it cannot merge conflicting queues that result from a split-brain situation. Partitions can happen not just on network outage, but also in high-load situations.
+RabbitMQ does not persist messages to disk.
+
 Test Setup:
 1. RabbitMQ broker POD - on "Broker" Node.
 
@@ -593,6 +625,22 @@ For a Larger Sample set with a lot of samples collected over a long period of ti
 
 Apache Pulsar:
 --------------
+(pulsar.incubator.apache.org): Java
+It was designed at Yahoo as a high-performance, low latency, scalable, durable solution for both pub-sub messaging and message queuing. 
+Apache Pulsar combines high-performance streaming (which Apache Kafka pursues) and flexible traditional queuing (which RabbitMQ pursues) into a unified messaging model and API. Pulsar gives you one system for both streaming and queuing, with the same high performance, using a unified API. To sum up, Kafka aims for high throughput, Pulsar for low latency.
+Pulsar — Pros
+Feature rich — persistent/nonpersistent topics, multitenancy, ACLs, Multi-DC replication etc.
+More flexible client API that is easier to use — including CompletableFutures, fluent interfaces etc.
+Java client components are thread-safe — a consumer can acknowledge messages from different threads
+Pulsar — Cons
+Java client has little to no Javadoc
+Small community — 8 stackoverflow questions currently
+MessageId concept tied to BookKeeper — consumers cannot easily position itself on the topic compared to Kafka offset which is continuous sequence of numbers.
+A reader cannot easily read the last message on the topic — need to skim through all the messages to the end.
+No transactions
+Higher operational complexity — Zookeeper + Broker nodes + BookKeeper — all clustered
+Latency questionable — there is one extra remote call between Broker node and BookKeeper (compared to Kafka)
+
 	./make_deploy.sh deploy_core pulsar
 	kubectl apply -f kubernetes_yaml_files/core_components/pulsar
 	namespace/loadtest created
@@ -660,6 +708,34 @@ SUBSCRIBER NODE CPU and RAM Usage:
  
 NATS
 ----
+NATS: Ruby then Go
+https://nats.io/
+https://github.com/nats-io/nats-streaming-server
+NATS was originally built with Ruby and achieved a respectable 150k messages per second. The team rewrote it in Go, and now you can do an absurd 8–11 million messages per second. It works as a publish-subscribe engine, but you can also get synthetic queuing.
+
+Pros:
+Slogan: always on and available, dial tone
+Concise design
+Low CPU-consuming
+Fast: Ahigh-velocity communication bus
+High availability
+High scalability
+Light-weight: It’s tiny, just a 3MB Docker image! 
+Once deployment
+
+Cons:
+Fire and forget, no persistence: NATS doesn’t do persistent messaging; if you’re offline, you don’t get the message. 
+No transaction 
+No enhanced delivery modes
+No enterprise queueing
+In general, NATS and Redis are better suited to smaller messages (well below 1MB), in which latency tends to be sub-millisecond up to four nines.
+NATS is not HTTP, it’s its own very simple text-based protocol, RPC-like. So it does not add any header to the message envelope.
+NATS doesn’t have replication, sharding or total ordering. With NATS, queues are effectively sharded by node. If a node dies, its messages are lost. 
+Incoming messages to the live nodes will still go to connected subscribers, and subscribers are expected to reconnect to the pool of available nodes. Once a previously dead node rejoins, it will start receiving messages.
+NATS in this case replaces something like HAProxy; a simple in-memory router of requests to backends.
+Users of NATS include Buzzfeed, Tinder, Stripe, Rakutan, Ericsson, HTC, Siemens, VMware, Pivotal, GE and Baidu among many.
+One use case: “We’re using NATS for synchronous communication, sending around 10k messages each second through it. Must say that the stability is great, even with larger payloads (over 10MB in size). We’re running it in production for a couple of weeks now and haven’t had any issues. The main limitation is that there is no federation and massive clustering. You can have a pretty robust cluster, but each node can only forward once, which is limiting.”
+
 	./make_deploy.sh deploy_core nats
 	kubectl apply -f kubernetes_yaml_files/core_components/nats
 	namespace/loadtest created
@@ -705,6 +781,23 @@ NATS
 	service "redis" deleted
 	deployment.extensions "subscriber" deleted
 	deployment.extensions "transformer" deleted
+
+	NATS vs. Kafka
+	NATS recently joined CNCF (which host projects like Kubernetes, Prometheus etc. — look at the dominance of Golang here!)
+	Protocol — Kafka is binary over TCP as opposed to NATS being simple text (also over TCP)
+	Messaging patterns — Both support pub-sub and queues, but NATS supports request-reply as well (sync and async)
+	NATS has a concept of a queue (with a unique name of course) and all the subscribers hooked on the same queue end up being a part of the same queue group. 
+	Only one of the (potentially multiple) subscribers gets the message. Multiple such queue groups would also receive the same set of messages. This makes it a hybrid pub-sub (one-to-many) and queue (point-to-point). The same thing is supported in Kafka via consumer groups which can pull data from one or more topics.
+	Stream processing — NATS does not support stream processing as a first class feature like Kafka does with Kafka Streams
+	Kafka clients use a poll-based technique in order to extract messages as opposed to NATS where the server itself routes messages to clients (maintains an interest-graph internally).
+	NATS can act pretty sensitive in the sense that it has the ability to cut off consumers who are not keeping pace with the rate of production as well as clients who don’t respond to heartbeat requests.
+	The consumer liveness check is executed by Kafka as well. This is done/initiated from the client itself & there are complex situations that can arise due to this (e.g. when you’re in a message processing loop and don’t poll ). 
+	There are a bunch of configuration parameter/knobs to tune this behavior (on the client side)
+	Delivery semantic — NATS supports at-most once (and at-least-once with NATS streaming) as opposed to Kafka which also supports exactly-once (tough!)
+	NATS doesn’t seem to have a notion of partitioning/sharding messages like Kafka does
+	No external dependency in case of NATS. Kafka requires Zookeeper
+	NATS Streaming seems to be similar to Kafka feature set, but built using Go and looks to be easier to set up.
+	NATS does not support replication (or really any high availability settings) currently. Which is a major missing feature when comparing it to Kafka.
 
 ZeroMQ:
 -------
@@ -792,3 +885,37 @@ Latency Results of EMQ will be published soon.
 		service "redis" deleted
 		deployment.extensions "subscriber" deleted
 		deployment.extensions "transformer" deleted
+
+References: 
+-----------
+[1] [A high performance C++ (14) messaging lib for latency sensitive software development : cpp] 
+https://www.reddit.com/r/cpp/comments/894y48/a_high_performance_c_14_messaging_lib_for_latency/
+[Modern Open Source Messaging: Apache Kafka, RabbitMQ and NATS in Action — Richard Seroter’s Architecture Musings]
+https://seroter.wordpress.com/2016/05/16/modern-open-source-messaging-apache-kafka-rabbitmq-and-nats-in-action/
+[The Open Source Messaging Landscape]
+https://www.slideshare.net/rseroter/the-open-source-messaging-landscape
+[Is NATS.IO a real alternative to Kafka? Who used it in a production? — Quora]
+https://www.quora.com/Is-NATS-IO-a-real-alternative-to-Kafka-Who-used-it-in-a-production
+[RabbitMQ vs Kafka vs NSQ 2018 Comparison of Message Queue | StackShare] good side by side comparison
+https://stackshare.io/stackups/kafka-vs-nsq-vs-rabbitmq
+[Kafka vs NSQ 2018 Comparison of Message Queue | StackShare]
+https://stackshare.io/stackups/kafka-vs-nsq
+[As someone who has used RabbitMQ in production for many years, you should rather… | Hacker News] 
+https://news.ycombinator.com/item?id=11284489
+[Jepsen: RabbitMQ]
+https://aphyr.com/posts/315-jepsen-rabbitmq
+[NATS & Kafka: random notes | Simply Distributed] good
+https://simplydistributed.wordpress.com/2018/03/30/kafka-nats-random-notes/
+[Apache Pulsar Outperforms Apache Kafka by 2.5x on OpenMessaging Benchmark | Business Wire]
+https://www.businesswire.com/news/home/20180306005633/en/Apache-Pulsar-Outperforms-Apache-Kafka-2.5x-OpenMessaging
+[What are the advantages and disadvantages of Kafka over Apache Pulsar — Stack Overflow]
+https://stackoverflow.com/questions/46048608/what-are-the-advantages-and-disadvantages-of-kafka-over-apache-pulsar
+[Comparing Pulsar and Kafka: unified queuing and streaming] good
+https://streaml.io/blog/pulsar-streaming-queuing
+[Apache Pulsar : Is it a KAFKA Killer? — Bhagwan s. Soni — Medium]
+https://medium.com/@bhagwanssoni/apache-pulsar-is-it-a-kafka-killer-a7538afedd0b
+# Good benchmarking report: 
+[Benchmarking Message Queue Latency — Brave New Geek]
+https://bravenewgeek.com/benchmarking-message-queue-latency/
+[Benchmarking NATS Streaming and Apache Kafka — DZone Performance]
+https://dzone.com/articles/benchmarking-nats-streaming-and-apache-kafka
