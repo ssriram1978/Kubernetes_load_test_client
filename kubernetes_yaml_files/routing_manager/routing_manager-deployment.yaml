@@ -1,4 +1,9 @@
-apiVersion: apps/v1
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mec-poc
+---
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
@@ -9,24 +14,28 @@ spec:
   replicas: 1
   strategy:
     type: Recreate
+  selector:
+    matchLabels: 
+        app: routing-manager
   template:
     metadata:
       creationTimestamp: null
       labels:
         app: routing-manager
+      namespace: mec-poc
     spec:
       containers:
       - env:
         - name: LOAD_TESTING
-          value: true
+          value: "true"
         - name: KAFKA_ROUTE
-          value: true
+          value: "true"
         - name: KAFKA_HOST_PORT
-          value: 10.10.75.14:9092
+           value: "10.10.75.14:9092"
         - name: KAFKA_IN_TOPIC
-          value: PUBLISHER2
+          value: "PUBLISHER2"
         - name: KAFKA_OUT_TOPIC
-          value: SUBSCRIBER2
+          value: "SUBSCRIBER2"
         image: ssriram1978/routing_manager:latest
         #imagePullPolicy: IfNotPresent
         name: routing-manager

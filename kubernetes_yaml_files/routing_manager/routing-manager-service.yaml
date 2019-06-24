@@ -1,16 +1,17 @@
 apiVersion: v1
 kind: Service
 metadata:
-    name: routing-manager
-    namespace: mec-poc
-    labels:
-      name: routing-manager
-  spec:
-    selector:
-      app: routing-manager
-    ports:
-      - name: "rest",
-        port: 8080,
-        targetPort: 8080
+  name: routing-manager
+  creationTimestamp: null
+  namespace: mec-poc
+  labels:
+     app: routing-manager
+spec:
+  ports:
+  - name: "rest"
+    port: 8080
+    targetPort: 8080
+  selector:
+     app: routing-manager
 status:
   loadBalancer: {}
