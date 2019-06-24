@@ -539,32 +539,14 @@ connect_to_mec() {
    echo "Redis: http://localhost:32622"
    ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 32622:10.10.75.17:32622 &
 
-   echo "netdata master: http://localhost:19999"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 19999:10.10.75.17:19999 &
-
-   echo "netdata publisher: http://localhost:20000"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20000:10.10.75.17:19999 &
-
-   echo "netdata subscriber: http://localhost:20001"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20001:10.10.75.17:19999 &
-
-   echo "netdata broker: http://localhost:20002"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20002:10.10.75.17:19999 &
-
-   echo "netdata transformer: http://localhost:20003"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20003:10.10.75.17:19999 &
-
-   echo "netdata elk: http://localhost:20004"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20004:10.10.75.17:19999 &
-
-   echo "netdata common infra: http://localhost:20005"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 20005:10.10.75.17:19999 &
-
    echo "EMQX broker: http://localhost:32333"
    ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 32333:10.10.75.17:32333 &
 
    echo "RabbitMQ broker: http://localhost:31672"
    ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 31672:10.10.75.17:31672 &
+
+   echo "Confluent KAFKA broker: http://localhost:9021"
+   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 9021:10.10.75.14:9021 &
 
    echo "Kibana elk: http://localhost:30010"
    ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 30010:10.10.75.17:30010 &
