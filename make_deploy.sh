@@ -681,8 +681,8 @@ case "$1" in
       echo "undeploy_prometheus_grafana"
       echo "delete_logstash_index"
       echo "change_kafka_partition <topic_name> <partition_count>"
-      echo "deploy routing_manager"
-      echo "undeploy routing_manager"
+      echo "deploy_routing_manager"
+      echo "undeploy_routing_manager"
      exit 1
      ;;
 esac
