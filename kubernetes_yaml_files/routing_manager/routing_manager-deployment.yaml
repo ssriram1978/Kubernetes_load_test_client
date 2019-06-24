@@ -22,19 +22,18 @@ spec:
       creationTimestamp: null
       labels:
         app: routing-manager
-      namespace: mec-poc
     spec:
       containers:
       - env:
-        - name: LOAD_TESTING
+        - name: "LOAD_TESTING"
           value: "true"
-        - name: KAFKA_ROUTE
+        - name: "KAFKA_ROUTE"
           value: "true"
-        - name: KAFKA_HOST_PORT
-           value: "10.10.75.14:9092"
-        - name: KAFKA_IN_TOPIC
+        - name: "KAFKA_HOST_PORT"
+          value: "10.10.75.14:9092"
+        - name: "KAFKA_IN_TOPIC"
           value: "PUBLISHER2"
-        - name: KAFKA_OUT_TOPIC
+        - name: "KAFKA_OUT_TOPIC"
           value: "SUBSCRIBER2"
         image: ssriram1978/routing_manager:latest
         #imagePullPolicy: IfNotPresent
