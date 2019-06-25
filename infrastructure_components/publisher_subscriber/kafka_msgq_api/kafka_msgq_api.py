@@ -223,6 +223,8 @@ class KafkaMsgQAPI(object):
                     self.producer_instance = kafka.KafkaProducer(
                         bootstrap_servers='{}:{}'
                             .format(self.broker_hostname, self.broker_port),
+                        max_in_flight_requests_per_connection=1000,
+                        batch_size=0,
                         acks=0)
 
                 self.is_producer_connected = True
@@ -303,7 +305,7 @@ class KafkaMsgQAPI(object):
             # self.producer_instance.poll(timeout=0.1)
             # Wait until all messages have been delivered
             # sys.stderr.write('%% Waiting for %d deliveries\n' % len(self.producer_instance))
-            self.producer_instance.flush(timeout=0.1)
+            # self.producer_instance.flush()
 
             return status
 
@@ -328,6 +330,8 @@ class KafkaMsgQAPI(object):
                 else:
                     self.consumer_instance = kafka.KafkaConsumer(
                         bootstrap_servers='{}:{}'.format(self.broker_hostname, self.broker_port),
+                        max_in_flight_requests_per_connection=1000,
+                        max_poll_records=1000,
                         group_id="kafka-consumer")
 
                 logging.info("Consumer:{}:Consumer Successfully "
@@ -400,7 +404,7 @@ class KafkaMsgQAPI(object):
                         KafkaMsgQAPI.process_subscriber_message(consumer_instance,
                                                                 msg.value.decode('utf-8'))
                 else:
-                    msgs = consumer_instance.consumer_instance.poll(timeout_ms=10,
+                    msgs = consumer_instance.consumer_instance.poll(timeout_ms=0,
                                                                     max_records=1000
                                                                     )
                     for msg in msgs.values():
