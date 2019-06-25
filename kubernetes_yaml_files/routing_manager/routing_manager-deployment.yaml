@@ -50,7 +50,7 @@ spec:
               readOnly: true
       restartPolicy: Always
       nodeSelector:
-       kubernetes.io/hostname: transformer
+       kubernetes.io/hostname: transformer-pass
       volumes:
                 - hostPath:
                     path: /var/run/docker.sock

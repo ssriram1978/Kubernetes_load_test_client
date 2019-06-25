@@ -49,7 +49,7 @@ spec:
         - name: total_job_enqueued_count_redis_name_key
           value: total_produced_count
         - name: broker_hostname_key
-          value: kafka.common-infrastructure.svc.cluster.local
+          value: 10.10.75.14
         - name: broker_port_key
           value: "9092"
         - name: type_of_messaging_queue_key

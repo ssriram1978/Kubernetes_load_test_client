@@ -48,13 +48,13 @@ spec:
         - name: broker_port_key
           value: "9092"
         - name: messages_per_second_key
-          value: "500"
+          value: "1000"
         - name: test_duration_in_sec_key
           value: "10000"
         - name: type_of_messaging_queue_key
           value: Kafka
         - name: kafka_type_key
-          value: ConfluentKafka
+          value: Kafka
         image: ssriram1978/publisher:latest
         #imagePullPolicy: IfNotPresent
         name: publisher

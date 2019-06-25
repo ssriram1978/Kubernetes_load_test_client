@@ -11,7 +11,7 @@ metadata:
   name: transformer
   namespace: loadtest
 spec:
-  replicas: 1
+  replicas: 0
   strategy:
     type: Recreate
   template:
@@ -39,7 +39,7 @@ spec:
         - name: transformer_key_name
           value: transformer
         - name: broker_hostname_key
-          value: kafka.common-infrastructure.svc.cluster.local
+          value: 10.10.75.14
         - name: broker_port_key
           value: "9092"
         - name: type_of_messaging_queue_key

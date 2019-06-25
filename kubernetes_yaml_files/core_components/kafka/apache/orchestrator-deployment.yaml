@@ -46,9 +46,9 @@ spec:
         - name: assign_static_topics_key
           value: "true"
         - name: static_publisher_topic_key
-          value: "PUBLISHER"
+          value: "PUBLISHER2"
         - name: static_subscriber_topic_key
-          value: "SUBSCRIBER"
+          value: "SUBSCRIBER2"
         image: ssriram1978/orchestrator:latest
         name: orchestrator
         #imagePullPolicy: IfNotPresent

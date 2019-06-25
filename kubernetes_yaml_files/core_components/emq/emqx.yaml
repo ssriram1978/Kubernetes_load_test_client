@@ -42,7 +42,7 @@ metadata:
         app: emqx
   namespace: common-infrastructure
 spec:
-  replicas: 2
+  replicas: 1
   template:
     metadata:
       labels:
@@ -66,7 +66,7 @@ spec:
         - name: EMQX_NAME
           value: emqx
         - name: EMQX_CLUSTER__K8S__APISERVER
-          value: http://10.10.75.12:8080
+          value: http://10.10.75.17:8080
         - name: EMQX_CLUSTER__K8S__NAMESPACE
           value: default
         - name: EMQX_CLUSTER__K8S__SERVICE_NAME
