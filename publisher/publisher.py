@@ -127,9 +127,11 @@ class Publisher:
                                                           self.container_id + ' ')
                 value = self.redis_instance.get_value_based_upon_the_key(self.publisher_key_name)
                 if not value or value.decode('utf-8').find(self.container_id) == -1:
-                    logging.info("Unable to publish key = {}, value = {} in redis. Sleeping for 1 second."
-                                 .format(self.publisher_key_name,
-                                         self.container_id + ' '))
+                    logging.info(
+                        "Unable to publish key = {}, value = {} in redis. Trying to reconnect and sleep for 1 second."
+                        .format(self.publisher_key_name,
+                                self.container_id + ' '))
+                    self.redis_instance.reconnect()
                     time.sleep(1)
                 else:
                     published_successfully = True

@@ -67,9 +67,9 @@ data:
       mqtt.vhost            = /
       mqtt.default_user     = guest
       mqtt.default_pass     = guest
-      #mqtt.allow_anonymous  = true
-      #mqtt.subscription_ttl = 86400000
-      mqtt.prefetch         = 10
+      mqtt.allow_anonymous  = true
+      mqtt.subscription_ttl = 86400000
+      mqtt.prefetch         = 0
 ---
 apiVersion: apps/v1beta1
 kind: StatefulSet

@@ -151,5 +151,9 @@ class RedisInterface(object):
                               value))
         return value
 
+    def reconnect(self):
+        logging.debug("Trying to Reconnect.")
+        self.redis_instance.connect_to_redis_server()
+
     def cleanup(self):
         pass

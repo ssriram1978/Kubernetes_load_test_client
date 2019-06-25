@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mec-poc
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: routing-manager
+  name: routing-manager
+  namespace: mec-poc
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels: 
+        app: routing-manager
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: routing-manager
+    spec:
+      containers:
+      - env:
+        - name: "LOAD_TESTING"
+          value: "true"
+        - name: "ACTIVE_MQ_AMQP"
+          value: "rabbitmq.common-infrastructure.svc.cluster.local"
+        - name: "MQTT_HOST_PORT"
+          value: "rabbitmq.common-infrastructure.svc.cluster.local:1883"
+        image: ssriram1978/routing_manager:latest
+        #imagePullPolicy: IfNotPresent
+        name: routing-manager
+        resources: {}
+        volumeMounts:
+            - mountPath: /var/run/docker.sock
+              name: routing-manager-hostpath0
+            - mountPath: /etc/timezone
+              name: routing-manager-hostpath1
+              readOnly: true
+            - mountPath: /etc/localtime
+              name: routing-manager-hostpath2
+              readOnly: true
+      restartPolicy: Always
+      nodeSelector:
+       kubernetes.io/hostname: transformer-pass
+      volumes:
+                - hostPath:
+                    path: /var/run/docker.sock
+                  name: routing-manager-hostpath0
+                - hostPath:
+                    path: /etc/timezone
+                  name: routing-manager-hostpath1
+                - hostPath:
+                    path: /etc/localtime
+                  name: routing-manager-hostpath2
+status: {}
