@@ -631,6 +631,23 @@ undeploy_routing_manager() {
    kubectl delete -f kubernetes_yaml_files/routing_manager
 }
 
+change_kafka_topic_partition_docker() {
+  topic_name=$1
+  partition_count=$2
+
+  echo "Before:"
+  echo "docker exec -it zookeeper usr/bin/kafka-topics --describe  --topic $topic_name --zookeeper 10.10.75.14 "
+  docker exec -it zookeeper usr/bin/kafka-topics --describe  --topic $topic_name --zookeeper 10.10.75.14
+
+  echo "docker exec -it zookeeper usr/bin/kafka-topics --alter --partitions $partition_count  --topic $topic_name --zookeeper 10.10.75.14 "
+  docker exec -it zookeeper usr/bin/kafka-topics --alter --partitions $partition_count  --topic $topic_name --zookeeper 10.10.75.14 "
+
+  echo "After:"
+  echo "docker exec -it zookeeper usr/bin/kafka-topics --describe  --topic $topic_name --zookeeper 10.10.75.14 "
+  docker exec -it zookeeper usr/bin/kafka-topics --describe  --topic $topic_name --zookeeper 10.10.75.14
+
+}
+
 case "$1" in
   build) create_infrastructure $2 $3 $4 ;;
   deploy) deploy_infrastructure $2 $3;;
@@ -657,6 +674,7 @@ case "$1" in
   change_kafka_partition) change_kafka_partition $2 $3 ;;
   deploy_routing_manager) deploy_routing_manager ;;
   undeploy_routing_manager) undeploy_routing_manager ;;
+  change_kafka_topic_partition_docker) change_kafka_topic_partition_docker $2 $3 ;;
   *) echo "usage: $0"
       echo "<build <all|directory_name> <yaml file> <tag -- optional> > |"
       echo "<deploy <yaml file> > |"
@@ -683,6 +701,7 @@ case "$1" in
       echo "change_kafka_partition <topic_name> <partition_count>"
       echo "deploy_routing_manager"
       echo "undeploy_routing_manager"
+      echo "change_kafka_topic_partition_docker"
      exit 1
      ;;
 esac
