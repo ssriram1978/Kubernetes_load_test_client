@@ -640,7 +640,7 @@ change_kafka_topic_partition_docker() {
   docker exec -it zookeeper usr/bin/kafka-topics --describe  --topic $topic_name --zookeeper 10.10.75.14
 
   echo "docker exec -it zookeeper usr/bin/kafka-topics --alter --partitions $partition_count  --topic $topic_name --zookeeper 10.10.75.14 "
-  docker exec -it zookeeper usr/bin/kafka-topics --alter --partitions $partition_count  --topic $topic_name --zookeeper 10.10.75.14 "
+  docker exec -it zookeeper usr/bin/kafka-topics --alter --partitions $partition_count  --topic $topic_name --zookeeper 10.10.75.14
 
   echo "After:"
   echo "docker exec -it zookeeper usr/bin/kafka-topics --describe  --topic $topic_name --zookeeper 10.10.75.14 "
@@ -676,9 +676,9 @@ case "$1" in
   undeploy_routing_manager) undeploy_routing_manager ;;
   change_kafka_topic_partition_docker) change_kafka_topic_partition_docker $2 $3 ;;
   *) echo "usage: $0"
-      echo "<build <all|directory_name> <yaml file> <tag -- optional> > |"
-      echo "<deploy <yaml file> > |"
-      echo "<build_and_deploy <all|directory_name> <yaml file> <tag --optional>> | "
+      echo "build <all|directory_name> <yaml file> <tag -- optional>"
+      echo "deploy <yaml file>"
+      echo "build_and_deploy <all|directory_name> <yaml file> <tag --optional>"
       echo "stop"
       echo "prune"
       echo "deploy_cpu_ram_monitor"
@@ -701,7 +701,7 @@ case "$1" in
       echo "change_kafka_partition <topic_name> <partition_count>"
       echo "deploy_routing_manager"
       echo "undeploy_routing_manager"
-      echo "change_kafka_topic_partition_docker"
+      echo "change_kafka_topic_partition_docker  <topic_name> <partition_count>"
      exit 1
      ;;
 esac
