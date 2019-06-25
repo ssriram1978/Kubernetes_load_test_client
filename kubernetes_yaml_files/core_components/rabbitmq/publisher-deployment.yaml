@@ -47,7 +47,7 @@ spec:
         - name: broker_port_key
           value: "1883"
         - name: messages_per_second_key
-          value: "500"
+          value: "1000"
         - name: test_duration_in_sec_key
           value: "100000"
         - name: type_of_messaging_queue_key
