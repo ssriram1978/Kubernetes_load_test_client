@@ -10,7 +10,7 @@ metadata:
   name: transformer
   namespace: loadtest
 spec:
-  replicas: 0
+  replicas: 1
   strategy: {}
   template:
     metadata:
@@ -39,7 +39,7 @@ spec:
         - name: broker_hostname_key
           value: rabbitmq.common-infrastructure.svc.cluster.local
         - name: broker_port_key
-          value: "1883"
+          value: "5672"
         - name: type_of_messaging_queue_key
           value: RabbitMQ
         image: ssriram1978/transformer:latest

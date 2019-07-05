@@ -30,6 +30,8 @@ from infrastructure_components.publisher_subscriber.rabbit_msgq_api.rabbit_msgq_
 from infrastructure_components.publisher_subscriber.rabbit_msgq_api.amqp_rabbit_msgq_api import AMQPRabbitMsgQAPI
 from infrastructure_components.publisher_subscriber.kafka_msgq_api.kafka_msgq_api import \
     KafkaMsgQAPI
+from infrastructure_components.publisher_subscriber.kafka_msgq_api.async_io_kafka_msgq_api import \
+    AsyncIOKafkaMsgQAPI
 from infrastructure_components.publisher_subscriber.pulsar_msgq_api.pulsar_msgq_api import \
     PulsarMsgQAPI
 from infrastructure_components.publisher_subscriber.nats_msgq_api.nats_msgq_api import \

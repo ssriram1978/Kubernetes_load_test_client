@@ -129,7 +129,7 @@ class AsyncIOKafkaMsgQAPI(object):
             logging.error('%% Message delivered to %s [%d] @ %s\n' %
                           (msg.topic(), msg.partition(), str(msg.offset())))
 
-    def producer_connect(self):
+    async def producer_connect(self):
         """
         This method tries to connect to the kafka broker based upon the type of kafka.
         :return:
@@ -153,7 +153,7 @@ class AsyncIOKafkaMsgQAPI(object):
                              "connected to broker={}:{}"
                              .format(self.broker_hostname, self.broker_port))
 
-    def publish(self, message):
+    async def publish(self, message):
         """
         This method tries to post a message to the pre-defined kafka topic.
         :param message:
@@ -205,7 +205,7 @@ class AsyncIOKafkaMsgQAPI(object):
                         self.publisher_topic)
         finally:
             # Wait for all pending messages to be delivered or expire.
-            await self.producer_instance.stop()
+            #await self.producer_instance.stop()
             return status
 
     def consumer_connect(self):
@@ -228,6 +228,7 @@ class AsyncIOKafkaMsgQAPI(object):
                     bootstrap_servers='{}:{}'.format(self.broker_hostname, self.broker_port),
                     auto_offset_reset='earliest')
 
+                self.consumer_instance.start()
                 logging.info("Consumer:{}:Consumer Successfully "
                              "connected to broker_hostname={}"
                              .format(self.thread_identifier,

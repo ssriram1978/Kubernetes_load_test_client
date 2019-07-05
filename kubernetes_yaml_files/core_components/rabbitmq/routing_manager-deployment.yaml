@@ -29,8 +29,6 @@ spec:
           value: "true"
         - name: "ACTIVE_MQ_AMQP"
           value: "rabbitmq.common-infrastructure.svc.cluster.local"
-        - name: "MQTT_HOST_PORT"
-          value: "rabbitmq.common-infrastructure.svc.cluster.local:1883"
         image: ssriram1978/routing_manager:latest
         #imagePullPolicy: IfNotPresent
         name: routing-manager

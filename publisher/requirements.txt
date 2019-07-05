@@ -1,3 +1,4 @@
+paho-mqtt
 pika
 datetime
 python-dateutil

@@ -45,7 +45,7 @@ spec:
         - name: broker_hostname_key
           value: rabbitmq.common-infrastructure.svc.cluster.local
         - name: broker_port_key
-          value: "1883"
+          value: "5672"
         - name: messages_per_second_key
           value: "1000"
         - name: test_duration_in_sec_key
