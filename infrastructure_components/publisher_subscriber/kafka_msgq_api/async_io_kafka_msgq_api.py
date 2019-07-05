@@ -312,10 +312,8 @@ class AsyncIOKafkaMsgQAPI(object):
         logging.info("Trying to consume messages from {}.".format(consumer_instance.subscriber_topic))
         consumer_instance.loop.run_until_complete(consumer_instance.consumer_connect_and_consume())
         while getattr(t, "do_run", True):
-            t = threading.currentThread()
             try:
-
-
+                t = threading.currentThread()
             except:
                 logging.debug("Exception occurred when trying to poll a kafka topic.")
         logging.info("Consumer {}: Exiting"
