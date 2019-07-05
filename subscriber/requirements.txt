@@ -1,4 +1,4 @@
-paho-mqtt
+pika
 datetime
 python-dateutil
 redis
@@ -6,4 +6,6 @@ confluent-kafka
 kafka-python
 pulsar-client
 asyncio-nats-client
+asyncio
+aiokafka
 pyzmq

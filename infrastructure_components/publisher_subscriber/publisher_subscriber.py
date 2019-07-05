@@ -27,6 +27,7 @@ def import_all_modules():
 import_all_modules()
 
 from infrastructure_components.publisher_subscriber.rabbit_msgq_api.rabbit_msgq_api import RabbitMsgQAPI
+from infrastructure_components.publisher_subscriber.rabbit_msgq_api.amqp_rabbit_msgq_api import AMQPRabbitMsgQAPI
 from infrastructure_components.publisher_subscriber.kafka_msgq_api.kafka_msgq_api import \
     KafkaMsgQAPI
 from infrastructure_components.publisher_subscriber.pulsar_msgq_api.pulsar_msgq_api import \
@@ -48,7 +49,9 @@ class PublisherSubscriberAPI:
     3. Pulsar Message Queue.
     """
     rabbitMsgQType = "RabbitMQ"
+    amqp_rabbitMsgQType = "AMQPRabbitMQ"
     kafkaMsqQType = "Kafka"
+    async_io_kafkaMsqQType = "AsyncIOKafka"
     pulsarMsgQType = "Pulsar"
     natsMsgQType = "NATS"
     zeroMQType = "ZeroMQ"
@@ -137,8 +140,20 @@ class PublisherSubscriberAPI:
                                                                 thread_identifier=self.thread_identifier,
                                                                 subscription_cb=self.subscription_cb,
                                                                 queue_name=queue_name)
+                elif self.type_of_messaging_queue == PublisherSubscriberAPI.amqp_rabbitMsgQType:
+                    self.message_queue_instance = AMQPRabbitMsgQAPI(is_producer=self.is_producer,
+                                                                    is_consumer=self.is_consumer,
+                                                                    thread_identifier=self.thread_identifier,
+                                                                    subscription_cb=self.subscription_cb,
+                                                                    queue_name=queue_name)
                 elif self.type_of_messaging_queue == PublisherSubscriberAPI.kafkaMsqQType:
                     self.message_queue_instance = KafkaMsgQAPI(is_producer=self.is_producer,
+                                                               is_consumer=self.is_consumer,
+                                                               thread_identifier=self.thread_identifier,
+                                                               subscription_cb=self.subscription_cb,
+                                                               queue_name=queue_name)
+                elif self.type_of_messaging_queue == PublisherSubscriberAPI.async_io_kafkaMsqQType:
+                    self.message_queue_instance = AsyncIOKafkaMsgQAPI(is_producer=self.is_producer,
                                                                is_consumer=self.is_consumer,
                                                                thread_identifier=self.thread_identifier,
                                                                subscription_cb=self.subscription_cb,
