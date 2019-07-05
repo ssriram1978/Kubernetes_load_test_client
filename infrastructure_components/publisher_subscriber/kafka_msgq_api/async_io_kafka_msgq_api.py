@@ -208,7 +208,7 @@ class AsyncIOKafkaMsgQAPI(object):
             # await self.producer_instance.stop()
             return status
 
-    def consumer_connect(self):
+    async def consumer_connect_and_consume(self):
         """
         This method tries to connect to the kafka broker.
         :return:
@@ -227,13 +227,23 @@ class AsyncIOKafkaMsgQAPI(object):
                     group_id="kafka-consumer",
                     bootstrap_servers='{}:{}'.format(self.broker_hostname, self.broker_port),
                     auto_offset_reset='earliest')
-
-                self.consumer_instance.start()
                 logging.info("Consumer:{}:Consumer Successfully "
                              "connected to broker_hostname={}"
                              .format(self.thread_identifier,
                                      self.broker_hostname))
                 self.is_consumer_connected = True
+                await self.consumer_instance.start()
+                try:
+                    # Consume messages
+                    async for msg in self.consumer_instance:
+                        print("consumed: ", msg.topic, msg.partition, msg.offset,
+                              msg.key, msg.value, msg.timestamp)
+                        if msg:
+                            msg = msg[0].value.decode('utf-8')
+                            AsyncIOKafkaMsgQAPI.process_subscriber_message(self, msg)
+                finally:
+                    # Will leave consumer group; perform autocommit if enabled.
+                    await self.consumer_instance.stop()
             except:
                 logging.info("Consumer:{}:Exception in user code:"
                              .format(self.thread_identifier))
@@ -241,6 +251,7 @@ class AsyncIOKafkaMsgQAPI(object):
                 traceback.print_exc(file=sys.stdout)
                 logging.info("-" * 60)
                 time.sleep(5)
+            self.is_consumer_connected = False
 
     @staticmethod
     def process_subscriber_message(consumer_instance, msg):
@@ -297,16 +308,14 @@ class AsyncIOKafkaMsgQAPI(object):
             if name == 'consumer_instance':
                 consumer_instance = value
         t = threading.currentThread()
-        consumer_instance.consumer_connect()
+
         logging.info("Trying to consume messages from {}.".format(consumer_instance.subscriber_topic))
-        consumer_instance.loop.run_until_complete(consumer_instance.consumer.stop())
+        consumer_instance.loop.run_until_complete(consumer_instance.consumer_connect_and_consume())
         while getattr(t, "do_run", True):
             t = threading.currentThread()
             try:
-                msg = consumer_instance.loop.run_until_complete(consumer_instance.consumer.getone())
-                if msg:
-                    msg = msg[0].value.decode('utf-8')
-                    AsyncIOKafkaMsgQAPI.process_subscriber_message(consumer_instance, msg)
+
+
             except:
                 logging.debug("Exception occurred when trying to poll a kafka topic.")
         logging.info("Consumer {}: Exiting"
