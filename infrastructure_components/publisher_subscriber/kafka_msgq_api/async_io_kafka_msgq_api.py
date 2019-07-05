@@ -129,7 +129,7 @@ class AsyncIOKafkaMsgQAPI(object):
             logging.error('%% Message delivered to %s [%d] @ %s\n' %
                           (msg.topic(), msg.partition(), str(msg.offset())))
 
-    async def producer_connect(self):
+    def producer_connect(self):
         """
         This method tries to connect to the kafka broker based upon the type of kafka.
         :return:
@@ -141,7 +141,7 @@ class AsyncIOKafkaMsgQAPI(object):
                     bootstrap_servers='{}:{}'.format(self.broker_hostname, self.broker_port))
                 self.is_producer_connected = True
                 # Get cluster layout and initial topic/partition leadership information
-                await self.producer_instance.start()
+                self.producer_instance.start()
             except:
                 print("Exception in user code:")
                 print("-" * 60)
@@ -205,7 +205,7 @@ class AsyncIOKafkaMsgQAPI(object):
                         self.publisher_topic)
         finally:
             # Wait for all pending messages to be delivered or expire.
-            await self.producer_instance.stop()
+            # await self.producer_instance.stop()
             return status
 
     def consumer_connect(self):
@@ -267,13 +267,13 @@ class AsyncIOKafkaMsgQAPI(object):
                 producer_instance = value
         t = threading.currentThread()
         producer_instance.producer_connect()
+        producer_instance.loop.run_forever()
         while getattr(t, "do_run", True):
-            t = threading.currentThread()
             try:
-                producer_instance.loop.run_until_complete(producer_instance.producer.stop())
+                t = threading.currentThread()
             except:
                 logging.debug("Exception occurred when trying to poll a kafka topic.")
-        logging.info("Consumer {}: Exiting"
+        logging.info("Producer {}: Exiting"
                      .format(threading.current_thread().getName()))
         producer_instance.loop.close()
 
