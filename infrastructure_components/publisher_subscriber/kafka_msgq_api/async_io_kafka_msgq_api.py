@@ -10,9 +10,8 @@ from pprint import pformat
 from aiokafka import AIOKafkaProducer, AIOKafkaConsumer
 import asyncio
 
-# sys.path.append("..")  # Adds higher directory to python modules path.
 
-loop = asyncio.get_event_loop()
+# sys.path.append("..")  # Adds higher directory to python modules path.
 
 
 def import_all_paths():
@@ -87,6 +86,7 @@ class AsyncIOKafkaMsgQAPI(object):
         self.consumer_thread = None
         self.is_producer_connected = False
         self.is_consumer_connected = False
+        self.loop = asyncio.get_event_loop()
         self.thread_identifier = thread_identifier
         self.redis_instance = RedisInterface(self.thread_identifier)
         self.__read_environment_variables()
@@ -137,7 +137,7 @@ class AsyncIOKafkaMsgQAPI(object):
         while not self.is_producer_connected:
             try:
                 self.producer_instance = AIOKafkaProducer(
-                    loop=loop,
+                    loop=self.loop,
                     bootstrap_servers='{}:{}'.format(self.broker_hostname, self.broker_port))
                 self.is_producer_connected = True
                 # Get cluster layout and initial topic/partition leadership information
@@ -205,7 +205,7 @@ class AsyncIOKafkaMsgQAPI(object):
                         self.publisher_topic)
         finally:
             # Wait for all pending messages to be delivered or expire.
-            #await self.producer_instance.stop()
+            await self.producer_instance.stop()
             return status
 
     def consumer_connect(self):
@@ -223,7 +223,7 @@ class AsyncIOKafkaMsgQAPI(object):
                 # Create Consumer instance
                 self.consumer_instance = AIOKafkaConsumer(
                     self.subscriber_topic,
-                    loop=loop,
+                    loop=self.loop,
                     group_id="kafka-consumer",
                     bootstrap_servers='{}:{}'.format(self.broker_hostname, self.broker_port),
                     auto_offset_reset='earliest')
@@ -270,12 +270,12 @@ class AsyncIOKafkaMsgQAPI(object):
         while getattr(t, "do_run", True):
             t = threading.currentThread()
             try:
-                loop.run_until_complete(producer_instance.producer.stop())
+                producer_instance.loop.run_until_complete(producer_instance.producer.stop())
             except:
                 logging.debug("Exception occurred when trying to poll a kafka topic.")
         logging.info("Consumer {}: Exiting"
                      .format(threading.current_thread().getName()))
-        loop.close()
+        producer_instance.loop.close()
 
     def create_producer_thread(self):
         self.consumer_thread = None
@@ -299,11 +299,11 @@ class AsyncIOKafkaMsgQAPI(object):
         t = threading.currentThread()
         consumer_instance.consumer_connect()
         logging.info("Trying to consume messages from {}.".format(consumer_instance.subscriber_topic))
-        loop.run_until_complete(consumer_instance.consumer.stop())
+        consumer_instance.loop.run_until_complete(consumer_instance.consumer.stop())
         while getattr(t, "do_run", True):
             t = threading.currentThread()
             try:
-                msg = loop.run_until_complete(consumer_instance.consumer.getone())
+                msg = consumer_instance.loop.run_until_complete(consumer_instance.consumer.getone())
                 if msg:
                     msg = msg[0].value.decode('utf-8')
                     AsyncIOKafkaMsgQAPI.process_subscriber_message(consumer_instance, msg)
@@ -311,7 +311,7 @@ class AsyncIOKafkaMsgQAPI(object):
                 logging.debug("Exception occurred when trying to poll a kafka topic.")
         logging.info("Consumer {}: Exiting"
                      .format(threading.current_thread().getName()))
-        loop.close()
+        consumer_instance.loop.close()
 
     def create_consumer_thread(self):
         self.consumer_thread = None
