@@ -151,7 +151,11 @@ class AsyncIOKafkaMsgQAPI(object):
                 await self.producer_instance.send_and_wait(self.publisher_topic,
                                                            message)
         except:
-            
+            print("AsyncIOKafkaMsgQAPI: Exception in user code:")
+            print("-" * 60)
+            traceback.print_exc(file=sys.stdout)
+            print("-" * 60)
+
     def publish(self, message):
         """
         This method tries to post a message to the pre-defined kafka topic.
