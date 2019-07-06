@@ -59,6 +59,7 @@ class Publisher:
         self.redis_instance = RedisInterface('Publisher')
         self.next_call = None
         self.broker_type = None
+        self.space_out_messages=False
         self.load_environment_variables()
         self.timer_resolution = 0
         self.messages_per_millisecond = 0
@@ -95,6 +96,9 @@ class Publisher:
                                                       default='0'))
             self.publisher_key_name = os.getenv("publisher_key_name",
                                                 default=None)
+            if os.getenv("space_out_messages_key_name",default="False") == "True":
+                self.space_out_messages = True
+            
             self.log_level = os.getenv("log_level_key",
                                        default="info")
 
@@ -102,11 +106,13 @@ class Publisher:
                       "messages_per_second={},\n"
                       "test_duration_in_sec={},\n"
                       "publisher_key_name={},\n"
+                      "space_out_messages={},\n"
                       "self.log_level={}.\n"
                       .format(self.message,
                               self.messages_per_second,
                               self.test_duration_in_sec,
                               self.publisher_key_name,
+                              self.space_out_messages,
                               self.log_level)))
 
     def set_log_level(self):
@@ -149,8 +155,20 @@ class Publisher:
         time.sleep(60)
         self.start_test_time = datetime.now()
         logging.info("Starting the load test at {}".format(self.start_test_time))
-        self.exec_every_n_milliseconds()
-        # self.exec_every_one_second(self.enqueue_message)
+        if self.space_out_messages:
+            self.exec_every_n_milliseconds()
+        else:
+            while True:
+                self.current_time = datetime.now()
+                duration_in_sec = (self.current_time - self.start_test_time).seconds
+                logging.debug("duration_in_sec={},total_test_duration={}."
+                              .format(duration_in_sec,
+                                      self.test_duration_in_sec))
+                if duration_in_sec > self.test_duration_in_sec:
+                    logging.info("Stopping the test.")
+                    break
+                else:
+                    self.publish_messages()
         while True:
             time.sleep(60)
 
@@ -166,6 +184,10 @@ class Publisher:
                       .format(io.getvalue()))
         logging.info("published_ts={}".format(self.json_parsed_data['lastUpdated']))
         self.producer_consumer_instance.publish(io.getvalue())
+
+    def publish_messages(self):
+        for _ in range(self.messages_per_millisecond):
+            self.enqueue_message()
 
     def exec_every_n_milliseconds(self):
         for _ in range(self.messages_per_millisecond):

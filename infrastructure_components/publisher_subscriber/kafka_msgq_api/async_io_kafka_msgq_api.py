@@ -138,7 +138,9 @@ class AsyncIOKafkaMsgQAPI(object):
         """
         self.producer_instance = AIOKafkaProducer(
                 loop=self.loop,
-                bootstrap_servers='{}:{}'.format(self.broker_hostname, self.broker_port))
+                bootstrap_servers='{}:{}'.format(self.broker_hostname, self.broker_port),
+                max_batch_size=1000,
+                acks=0)
         self.is_producer_connected = True
         # Get cluster layout and initial topic/partition leadership information
         await self.producer_instance.start()
@@ -149,8 +151,9 @@ class AsyncIOKafkaMsgQAPI(object):
                     message = message.encode('utf-8')
                     logging.debug("Posting message {} into topic {}.".format(message,self.publisher_topic))
                     # Produce message
-                    await self.producer_instance.send_and_wait(self.publisher_topic,
+                    fut=await self.producer_instance.send(self.publisher_topic,
                                                                message)
+                    #msg=await fut
             else:
                 logging.info("No messages in the producer message queue. Sleeping for 1 second")
                 time.sleep(1)
