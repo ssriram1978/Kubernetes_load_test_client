@@ -6,6 +6,7 @@ import threading
 import time
 import traceback
 from pprint import pformat
+from collections import deque
 
 from aiokafka import AIOKafkaProducer, AIOKafkaConsumer
 import asyncio
@@ -86,6 +87,7 @@ class AsyncIOKafkaMsgQAPI(object):
         self.consumer_thread = None
         self.is_producer_connected = False
         self.is_consumer_connected = False
+        self.message_queue = deque()
         self.loop = asyncio.get_event_loop()
         self.thread_identifier = thread_identifier
         self.redis_instance = RedisInterface(self.thread_identifier)
@@ -129,31 +131,28 @@ class AsyncIOKafkaMsgQAPI(object):
             logging.error('%% Message delivered to %s [%d] @ %s\n' %
                           (msg.topic(), msg.partition(), str(msg.offset())))
 
-    def producer_connect(self):
+    async def producer_connect_and_send(self):
         """
         This method tries to connect to the kafka broker based upon the type of kafka.
         :return:
         """
-        while not self.is_producer_connected:
-            try:
-                self.producer_instance = AIOKafkaProducer(
-                    loop=self.loop,
-                    bootstrap_servers='{}:{}'.format(self.broker_hostname, self.broker_port))
-                self.is_producer_connected = True
-                # Get cluster layout and initial topic/partition leadership information
-                self.producer_instance.start()
-            except:
-                print("Exception in user code:")
-                print("-" * 60)
-                traceback.print_exc(file=sys.stdout)
-                print("-" * 60)
-                time.sleep(5)
-            else:
-                logging.info("AsyncIOKafkaMsgQAPI: Successfully "
-                             "connected to broker={}:{}"
-                             .format(self.broker_hostname, self.broker_port))
-
-    async def publish(self, message):
+        if not self.is_producer_connected:
+            self.producer_instance = AIOKafkaProducer(
+                loop=self.loop,
+                bootstrap_servers='{}:{}'.format(self.broker_hostname, self.broker_port))
+            self.is_producer_connected = True
+            # Get cluster layout and initial topic/partition leadership information
+            await self.producer_instance.start()
+        try:
+            while len(self.message_queue):
+                message = self.message_queue.popleft()
+                message = message.encode('utf-8')
+                # Produce message
+                await self.producer_instance.send_and_wait(self.publisher_topic,
+                                                           message)
+        except:
+            
+    def publish(self, message):
         """
         This method tries to post a message to the pre-defined kafka topic.
         :param message:
@@ -165,25 +164,16 @@ class AsyncIOKafkaMsgQAPI(object):
             logging.info("AsyncIOKafkaMsgQAPI: filename is None or invalid")
             return status
 
-        if not self.is_producer_connected:
-            self.producer_connect()
-
-        # Asynchronously produce a message, the delivery report callback
-        # will be triggered from poll() above, or flush() below, when the message has
-        # been successfully delivered or failed permanently.
-
         event_message = "AsyncIOKafkaMsgQAPI: Posting filename={} into kafka broker={}, topic={}" \
             .format(message,
                     self.broker_hostname,
                     self.publisher_topic)
         logging.debug(event_message)
 
-        value = message.encode('utf-8')
         try:
             # Produce line (without newline)
             self.redis_instance.write_an_event_in_redis_db(event_message)
-            # Produce message
-            await self.producer_instance.send_and_wait(self.publisher_topic, value)
+            self.message_queue.append(message)
             self.redis_instance.increment_enqueue_count()
             status = True
         except BufferError:
@@ -277,8 +267,7 @@ class AsyncIOKafkaMsgQAPI(object):
             if name == 'producer_instance':
                 producer_instance = value
         t = threading.currentThread()
-        producer_instance.producer_connect()
-        producer_instance.loop.run_forever()
+        producer_instance.loop.run_forever(producer_instance.producer_connect_and_send())
         while getattr(t, "do_run", True):
             try:
                 t = threading.currentThread()
