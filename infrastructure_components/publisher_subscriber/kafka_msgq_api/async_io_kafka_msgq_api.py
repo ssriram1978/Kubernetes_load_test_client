@@ -136,25 +136,31 @@ class AsyncIOKafkaMsgQAPI(object):
         This method tries to connect to the kafka broker based upon the type of kafka.
         :return:
         """
-        if not self.is_producer_connected:
-            self.producer_instance = AIOKafkaProducer(
+        self.producer_instance = AIOKafkaProducer(
                 loop=self.loop,
                 bootstrap_servers='{}:{}'.format(self.broker_hostname, self.broker_port))
-            self.is_producer_connected = True
-            # Get cluster layout and initial topic/partition leadership information
-            await self.producer_instance.start()
+        self.is_producer_connected = True
+        # Get cluster layout and initial topic/partition leadership information
+        await self.producer_instance.start()
         try:
-            while len(self.message_queue):
-                message = self.message_queue.popleft()
-                message = message.encode('utf-8')
-                # Produce message
-                await self.producer_instance.send_and_wait(self.publisher_topic,
-                                                           message)
+            while True:
+                if len(self.message_queue):
+                    message = self.message_queue.popleft()
+                    message = message.encode('utf-8')
+                    logging.debug("Posting message {} into topic {}.".format(message,self.publisher_topic))
+                    # Produce message
+                    await self.producer_instance.send_and_wait(self.publisher_topic,
+                                                               message)
+            else:
+                logging.info("No messages in the producer message queue. Sleeping for 1 second")
+                time.sleep(1)
         except:
             print("AsyncIOKafkaMsgQAPI: Exception in user code:")
             print("-" * 60)
             traceback.print_exc(file=sys.stdout)
             print("-" * 60)
+        finally:
+            await self.producer_instance.stop()
 
     def publish(self, message):
         """
@@ -264,14 +270,14 @@ class AsyncIOKafkaMsgQAPI(object):
 
     @staticmethod
     def run_producer_thread(*args, **kwargs):
-        logging.info("Starting {}".format(threading.current_thread().getName()))
+        logging.info("Starting {} thread".format(threading.current_thread().getName()))
         producer_instance = None
         for name, value in kwargs.items():
             logging.info("name={},value={}".format(name, value))
             if name == 'producer_instance':
                 producer_instance = value
         t = threading.currentThread()
-        producer_instance.loop.run_forever(producer_instance.producer_connect_and_send())
+        producer_instance.loop.run_until_complete(producer_instance.producer_connect_and_send())
         while getattr(t, "do_run", True):
             try:
                 t = threading.currentThread()
@@ -289,12 +295,12 @@ class AsyncIOKafkaMsgQAPI(object):
                                                 kwargs={'producer_instance':
                                                             self})
         self.consumer_thread.do_run = True
-        self.consumer_thread.name = "consumer"
+        self.consumer_thread.name = "Producer"
         self.consumer_thread.start()
 
     @staticmethod
     def run_consumer_thread(*args, **kwargs):
-        logging.info("Starting {}".format(threading.current_thread().getName()))
+        logging.info("Starting {} thread".format(threading.current_thread().getName()))
         consumer_instance = None
         for name, value in kwargs.items():
             logging.info("name={},value={}".format(name, value))
