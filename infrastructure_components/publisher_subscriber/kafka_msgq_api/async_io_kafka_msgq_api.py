@@ -226,10 +226,10 @@ class AsyncIOKafkaMsgQAPI(object):
                 try:
                     # Consume messages
                     async for msg in self.consumer_instance:
-                        print("consumed: ", msg.topic, msg.partition, msg.offset,
+                        logging.debug("consumed: ", msg.topic, msg.partition, msg.offset,
                               msg.key, msg.value, msg.timestamp)
                         if msg:
-                            msg = msg[0].value.decode('utf-8')
+                            msg = msg.value.decode('utf-8')
                             AsyncIOKafkaMsgQAPI.process_subscriber_message(self, msg)
                 finally:
                     # Will leave consumer group; perform autocommit if enabled.
