@@ -49,7 +49,9 @@ spec:
         - name: total_job_enqueued_count_redis_name_key
           value: total_produced_count
         - name: broker_hostname_key
-          value: 10.10.75.14
+          value: 192.168.1.92
+        - name: subscriber_topic
+          value: PUBLISHER2
         - name: broker_port_key
           value: "9092"
         - name: type_of_messaging_queue_key
@@ -71,7 +73,7 @@ spec:
             readOnly: true
       restartPolicy: Always
       nodeSelector:
-       kubernetes.io/hostname: subscriber
+       kubernetes.io/hostname: machinelearning
       volumes:
             - hostPath:
                 path: /var/run/docker.sock
