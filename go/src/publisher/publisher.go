@@ -14,6 +14,10 @@ func main() {
 	kafka_broker := os.Getenv("broker_hostname_key")
 	kafka_broker_port := os.Getenv("broker_port_key")
 	fmt.Printf("Topic=%s,broker=%s,port=%s\n",topic,kafka_broker,kafka_broker_port)
+	message :=`{"lastUpdated": "2018-11-19T18:21:03Z","unitName": "VZW_LH_UNIT_01","unitMacId":
+            "864508030027459","sensor": {"name": "cHe_AssetTracker","characteristics":
+            [{"characteristicsName": "temperature","currentValue": "30.2999","readLevel":
+            "R","parameterType": "Number","measurementUnit": "Celcius"}]}}`
 
 	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": kafka_broker})
 	if err != nil {
@@ -49,11 +53,12 @@ func main() {
 			}
 		}
 	}()
+	time.Sleep(60 * time.Second)
        for  {
 	       t := time.Now().Format(time.RFC3339Nano)
 		sensor := SensorReading{
 			Date: t,
-			Data: "ssss",
+			Data: message,
 		}
 		b, err := json.Marshal(sensor)
 		if err != nil {

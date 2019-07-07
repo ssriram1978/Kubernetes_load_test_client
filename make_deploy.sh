@@ -649,6 +649,17 @@ change_kafka_topic_partition_docker() {
 
 }
 
+build_publish_go_directory() {
+	directory=$1
+	docker_tag=$2
+
+	echo "docker build $directory -t $docker_tag"
+	docker build $directory -t $docker_tag
+
+	echo "docker push  $docker_tag"
+	docker push  $docker_tag
+}
+
 case "$1" in
   build) create_infrastructure $2 $3 $4 ;;
   deploy) deploy_infrastructure $2 $3;;
@@ -676,6 +687,7 @@ case "$1" in
   deploy_routing_manager) deploy_routing_manager ;;
   undeploy_routing_manager) undeploy_routing_manager ;;
   change_kafka_topic_partition_docker) change_kafka_topic_partition_docker $2 $3 $4 ;;
+  build_publish_go_directory) build_publish_go_directory $2 $3 ;;
   *) echo "usage: $0"
       echo "build <all|directory_name> <yaml file> <tag -- optional>"
       echo "deploy <yaml file>"
@@ -703,6 +715,7 @@ case "$1" in
       echo "deploy_routing_manager"
       echo "undeploy_routing_manager"
       echo "change_kafka_topic_partition_docker  <topic_name> <partition_count> <kafka_broker_ip>"
+      echo "build_publish_go_directory <directory>  <docker_tag>" 
      exit 1
      ;;
 esac
