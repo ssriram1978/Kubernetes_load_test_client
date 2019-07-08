@@ -46,7 +46,7 @@ spec:
         - name: total_job_enqueued_count_redis_name_key
           value: total_produced_count
         - name: broker_hostname_key
-          value: 192.168.1.92
+          value: 10.10.75.14
         - name: publisher_topic
           value: PUBLISHER2
         - name: broker_port_key
@@ -74,7 +74,7 @@ spec:
               readOnly: true
       restartPolicy: Always
       nodeSelector:
-       kubernetes.io/hostname: machinelearning
+       kubernetes.io/hostname: publisher
       volumes:
                 - hostPath:
                     path: /var/run/docker.sock
