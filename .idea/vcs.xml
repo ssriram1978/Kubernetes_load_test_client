@@ -2,5 +2,7 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/go/src/github.com/GoesToEleven/go-programming" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/go/src/gopkg.in/confluentinc/confluent-kafka-go.v1" vcs="Git" />
   </component>
 </project>
