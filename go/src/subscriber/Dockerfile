@@ -17,5 +17,6 @@ RUN apt-get install -y golang-go
 # build the library
 WORKDIR /go/src/
 ADD . .
+RUN go get gopkg.in/confluentinc/confluent-kafka-go.v1/kafka
 RUN GOPATH=/go GOOS=linux go build  -o main .
 ENTRYPOINT ["./main"]
