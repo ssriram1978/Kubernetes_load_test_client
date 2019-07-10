@@ -13,10 +13,12 @@ RUN apt-get install -y librdkafka-dev
 RUN add-apt-repository ppa:longsleep/golang-backports
 RUN apt-get update
 RUN apt-get install -y golang-go
+RUN apt-get install -y git
 
 # build the library
-WORKDIR /go/src/
+WORKDIR /go/src
 ADD . .
+RUN GOPATH=/go/src
 RUN go get gopkg.in/confluentinc/confluent-kafka-go.v1/kafka
-RUN GOPATH=/go GOOS=linux go build  -o main .
+RUN  GOOS=linux go build  -o main .
 ENTRYPOINT ["./main"]

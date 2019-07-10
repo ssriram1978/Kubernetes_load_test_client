@@ -17,10 +17,10 @@ RUN apt-get install -y golang-go
 RUN apt-get install -y git
 
 # build the library
-WORKDIR /go/src/
+WORKDIR /go/src
 ADD . .
-RUN export GOPATH=/go/src/
+RUN export GOPATH=/go/src
 RUN go get gopkg.in/confluentinc/confluent-kafka-go.v1/kafka
-RUN GOPATH=/go GOOS=linux go build  -o main .
+RUN  GOOS=linux go build  -o main .
 ENTRYPOINT ["./main"]
 
