@@ -352,14 +352,14 @@ deploy_cpu_ram_monitor() {
    -v /var/run/docker.sock:/var/run/docker.sock:ro \
    -v /proc/:/host/proc/:ro \
    -v /sys/fs/cgroup/:/host/sys/fs/cgroup:ro \
-   -e DD_API_KEY=34f093cb0b22208d56cd241028a632b8 \
+   -e DD_API_KEY= your_key \
    datadog/agent:latest"
 
    docker run -d --name dd-agent \
    -v /var/run/docker.sock:/var/run/docker.sock:ro \
    -v /proc/:/host/proc/:ro \
    -v /sys/fs/cgroup/:/host/sys/fs/cgroup:ro \
-   -e DD_API_KEY=34f093cb0b22208d56cd241028a632b8 \
+   -e DD_API_KEY=your_key \
    datadog/agent:latest
 
 #   echo "docker run -d \
@@ -534,34 +534,34 @@ connect_to_mec() {
    ps aux | grep id_rsa_mec |  awk '{print $2}' | xargs kill -9
 
    echo "kubernetes dashboard: http://localhost:30783"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 30783:10.10.75.17:30783 &
+   ssh -i ~/.ssh/id_rsa_mec -p221 user@hostname -NL 30783:10.10.75.17:30783 &
 
    echo "Redis: http://localhost:32622"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 32622:10.10.75.17:32622 &
+   ssh -i ~/.ssh/id_rsa_mec -p221 user@hostname -NL 32622:10.10.75.17:32622 &
 
    echo "EMQX broker: http://localhost:32333"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 32333:10.10.75.17:32333 &
+   ssh -i ~/.ssh/id_rsa_mec -p221 user@hostname -NL 32333:10.10.75.17:32333 &
 
    echo "RabbitMQ broker: http://localhost:31672"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 31672:10.10.75.17:31672 &
+   ssh -i ~/.ssh/id_rsa_mec -p221 user@hostname -NL 31672:10.10.75.17:31672 &
 
    echo "Confluent KAFKA broker: http://localhost:9021"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 9021:10.10.75.14:9021 &
+   ssh -i ~/.ssh/id_rsa_mec -p221 user@hostname  -NL 9021:10.10.75.14:9021 &
 
    echo "Kibana elk: http://localhost:30010"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 30010:10.10.75.17:30010 &
+   ssh -i ~/.ssh/id_rsa_mec -p221 user@hostname -NL 30010:10.10.75.17:30010 &
 
    echo "Elasticsearch elk: http://localhost:30011"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 30011:10.10.75.17:30011 &
+   ssh -i ~/.ssh/id_rsa_mec -p221 user@hostname  -NL 30011:10.10.75.17:30011 &
 
    echo "Logstash elk: http://localhost:30012"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 30012:10.10.75.17:30012 &
+   ssh -i ~/.ssh/id_rsa_mec -p221 user@hostname -NL 30012:10.10.75.17:30012 &
 
    echo "grafana elk: http://localhost:30580"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 30580:10.10.75.17:30580 &
+   ssh -i ~/.ssh/id_rsa_mec -p221 user@hostname -NL 30580:10.10.75.17:30580 &
 
    echo "prometheus elk: http://localhost:31905"
-   ssh -i ~/.ssh/id_rsa_mec -p221 charles.d@bastion.br-vm.mec-poc.aws.oath.cloud -NL 31905:10.10.75.17:31905 &
+   ssh -i ~/.ssh/id_rsa_mec -p221 user@hostname -NL 31905:10.10.75.17:31905 &
 
 
 }
