@@ -1,14 +1,14 @@
-# IOT_load_test_client
-IOT_load_test_client
+# Kubernetes_load_test_client
+Kubernetes_load_test_client
 --------------------
-Here is a Github page that details about a proposal for developing a performance load test tool for evaluating our IOT-MEC environment.
+Here is a Github page that details about a proposal for developing a performance load test tool for evaluating our environment for single digit millisecond latency for performing run-time inference on a linear regression machine learning model.
 
 Reason:
 --------
-  To evaluate the latency introduced by the IOT-MEC environment and justify the value proposition that IOT on MEC provides to the enterprise users.
-  To measure the performance of the IOT-MEC environment when it simultaneously handles thousands of IOT devices.
-  To evaluate the various iPass solutions which are plugged into the IOT-MEC environment and that consumes, transforms and control the IOT end devices.
-  To evaluate the processing delay introduced by various open source messaging queues which is the critical component of our IOT-MEC environment.
+  To evaluate the latency introduced by our environment and justify the value proposition that it provides to the enterprise users.
+  To measure the performance of the environment when it simultaneously handles thousands of IOT devices.
+  To evaluate the various iPass solutions which are plugged into the IOT environment and that consumes, transforms and control the IOT end devices.
+  To evaluate the processing delay introduced by various open source messaging queues which is the critical component of our IOT environment.
  
  Performance Parameters.
 ------------------------
@@ -20,10 +20,10 @@ Reason:
 
   Round-trip delay time (the one-way latency from source to destination plus the one-way latency from the destination back to the source). Round-trip latency is more often quoted, because it can be measured from a single point. Note that round trip latency excludes the amount of time that a destination system spends processing the packet.
 
-Pros and Cons of purchasing a performance load test tool for evaluating IOT-MEC environment:
+Pros and Cons of purchasing a performance load test tool for evaluating IOT environment:
 --------------------------------------------------------------------------------------------
   Pros - Perform faster evaluation of various iPass solutions and messaging queues.
-  Pros - Spend more time on developing other components of IOT-MEC environment rather than developing a performance load test tool to evaluate IOT-MEC.
+  Pros - Spend more time on developing other components of IOT environment rather than developing a performance load test tool to evaluate IOT.
   Cons - Expensive. 
   Cons - Each vendor has their own proprietary tools and there is learning curve associated in getting to know how to fine tune the tool to our needs.
     
@@ -31,13 +31,13 @@ Pros and Cons of purchasing a performance load test tool for evaluating IOT-MEC 
     Bevywise IoT Simulator
     MIMIC IOT Simulator.
       
-  With both these simulators, we found that there is definitely a steep learning curve associated in using them and also they are not easily customizable to our IOT-MEC requirements.
+  With both these simulators, we found that there is definitely a steep learning curve associated in using them and also they are not easily customizable to our IOT requirements.
 
 Requirements:
 -------------
 The performance load test tool shall deliver the following requirements:
 
-The performance load test tool shall be able to emulate/mimic thousands of IOT endpoints by authenticating and establish a secure connection with the IOT-MEC environment.
+The performance load test tool shall be able to emulate/mimic thousands of IOT endpoints by authenticating and establish a secure connection with the IOT environment.
     
 The performance load test tool shall be able to provide the following options to the end user:
   For the message producer instance:
@@ -45,7 +45,7 @@ The performance load test tool shall be able to provide the following options to
    
    2. An option to choose how many instances of IOT end points should it emulate.
     
-   3. Frequency in seconds which translates to the the number of message to be sent in one second to the IOT-MEC environment.
+   3. Frequency in seconds which translates to the the number of message to be sent in one second to the IOT environment.
     
    4. Duration in seconds of the performance load test to be conducted.
 
@@ -56,12 +56,12 @@ The performance load test tool shall be able to provide the following options to
     
    2. Duration in seconds of the performance load test to be conducted.
 
-   3. Accurately measure (in milliseconds) the end-to-end latency introduced by the IOT-MEC environment for every IOT data that it produces and that get translated to an equivalent action from the IOT-MEC environment. For this, the following steps highlight how the end-to-end latency shall be computed by the performance load test tool.
+   3. Accurately measure (in milliseconds) the end-to-end latency introduced by the IOT environment for every IOT data that it produces and that get translated to an equivalent action from the IOT environment. For this, the following steps highlight how the end-to-end latency shall be computed by the performance load test tool.
 
        The message producer instance shall:
             1. Insert the current date and timestamp in microseconds into the original payload which informs when the message was published to the Unique queue identifier (a topic).
 
-        IOT-MEC environment hosting the iPass solution shall 
+        IOT environment hosting the iPass solution shall 
           1. Consume the message published to the Unique queue identifier (a topic). 
           2. Produce a corresponding action (example: turn off a water valve,...) by publishing it to another Unique queue identifier (a topic).
           3. In this process, it makes sure to copy the original sender date and timestamp from the original payload to the corresponding action payload.
@@ -104,7 +104,7 @@ Evaluation of open source languages and tools for delivering the expected perfor
 
 Goals:
 ------
- We plan to evaluate the following options for Messaging system that could be incorporated into our MEC-IOT environment:
+ We plan to evaluate the following options for Messaging system that could be incorporated into our IOT environment:
  
       	RabbitMQ
 	
@@ -118,7 +118,7 @@ Goals:
 	
 	EMQ
 	
- We plan to evaluate the following iPass solutions that could be incorporated into our MEC-IOT environment.
+ We plan to evaluate the following iPass solutions that could be incorporated into our IOT environment.
  	
 	Snaplogic
 	
@@ -126,9 +126,9 @@ Goals:
 	
       	Kafka Streams.
       
-A working prototype of a Performance Load test tool for IOT-MEC:
+A working prototype of a Performance Load test tool for IOT:
 ----------------------------------------------------------------
-Here is the source code that is still work in progress that demonstrates a possible solution for a performance load test tool for IOT-MEC.
+Here is the source code that is still work in progress that demonstrates a possible solution for a performance load test tool for IOT.
 
 
 1. git clone https://github.com/ssriram1978/IOT_load_test_client.git
@@ -370,7 +370,7 @@ KAFKA host CPU and RAM utilization:
 	
 	2. are observing that the thruput is not 100k because the host CPU for PUBLISHER and SUBSCRIBER pods is running hot (as seen on the above pics). This causes a lot of context switch to happen between the PODS and results in lesser thruput of messages at higher loads.
 	
-	3. We can overcome this problem by re-architecting the PUBLISHER and SUBSCRIBER pods with more CPU and RAM but we don't have enough RAM and CPU available on the Basking Ridge MEC.
+	3. We can overcome this problem by re-architecting the PUBLISHER and SUBSCRIBER pods with more CPU and RAM but we don't have enough RAM and CPU available on the compute hardware.
 	
 	4. Note that this result is obtained from one Kafka Broker. But, with proper clustering of KAFKA brokers, and with proper load distribution across KAFKA brokers, it is possible to achieve 100K messages per second thruput with single digit millisecond latency.
 
@@ -514,7 +514,7 @@ Test Setup:
 
 4. 1 CONSUMER POD subscribes to a queue assigned to it.
 
-5. Single node RabbitMQ instance was tested with the following MQTT optimizations on the Kubernetes MEC cluster:
+5. Single node RabbitMQ instance was tested with the following MQTT optimizations on the Kubernetes cluster:
 
 enabled_plugins: |
     [rabbitmq_management,rabbitmq_mqtt,rabbitmq_peer_discovery_k8s].
@@ -890,32 +890,47 @@ References:
 -----------
 [1] [A high performance C++ (14) messaging lib for latency sensitive software development : cpp] 
 https://www.reddit.com/r/cpp/comments/894y48/a_high_performance_c_14_messaging_lib_for_latency/
+	
 [Modern Open Source Messaging: Apache Kafka, RabbitMQ and NATS in Action — Richard Seroter’s Architecture Musings]
 https://seroter.wordpress.com/2016/05/16/modern-open-source-messaging-apache-kafka-rabbitmq-and-nats-in-action/
+	
 [The Open Source Messaging Landscape]
 https://www.slideshare.net/rseroter/the-open-source-messaging-landscape
+	
 [Is NATS.IO a real alternative to Kafka? Who used it in a production? — Quora]
 https://www.quora.com/Is-NATS-IO-a-real-alternative-to-Kafka-Who-used-it-in-a-production
+	
 [RabbitMQ vs Kafka vs NSQ 2018 Comparison of Message Queue | StackShare] good side by side comparison
 https://stackshare.io/stackups/kafka-vs-nsq-vs-rabbitmq
+	
 [Kafka vs NSQ 2018 Comparison of Message Queue | StackShare]
 https://stackshare.io/stackups/kafka-vs-nsq
+	
 [As someone who has used RabbitMQ in production for many years, you should rather… | Hacker News] 
 https://news.ycombinator.com/item?id=11284489
+	
 [Jepsen: RabbitMQ]
 https://aphyr.com/posts/315-jepsen-rabbitmq
+	
 [NATS & Kafka: random notes | Simply Distributed] good
 https://simplydistributed.wordpress.com/2018/03/30/kafka-nats-random-notes/
+	
 [Apache Pulsar Outperforms Apache Kafka by 2.5x on OpenMessaging Benchmark | Business Wire]
 https://www.businesswire.com/news/home/20180306005633/en/Apache-Pulsar-Outperforms-Apache-Kafka-2.5x-OpenMessaging
+	
 [What are the advantages and disadvantages of Kafka over Apache Pulsar — Stack Overflow]
 https://stackoverflow.com/questions/46048608/what-are-the-advantages-and-disadvantages-of-kafka-over-apache-pulsar
+	
 [Comparing Pulsar and Kafka: unified queuing and streaming] good
 https://streaml.io/blog/pulsar-streaming-queuing
+	
 [Apache Pulsar : Is it a KAFKA Killer? — Bhagwan s. Soni — Medium]
 https://medium.com/@bhagwanssoni/apache-pulsar-is-it-a-kafka-killer-a7538afedd0b
+	
 # Good benchmarking report: 
 [Benchmarking Message Queue Latency — Brave New Geek]
 https://bravenewgeek.com/benchmarking-message-queue-latency/
+	
 [Benchmarking NATS Streaming and Apache Kafka — DZone Performance]
 https://dzone.com/articles/benchmarking-nats-streaming-and-apache-kafka
+
